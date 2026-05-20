@@ -10249,8 +10249,9 @@ a.contact-card__text:hover {
 
 /* Premium Pulsing Map Pins */
 .hwh-map-pin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;z-index:10;cursor:pointer;pointer-events:auto}
-.hwh-map-pin__dot{width:12px;height:12px;background:#F22F3A;border-radius:50%;box-shadow:0 0 8px rgba(242,47,58,0.8);position:relative;z-index:2;transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease}
-.hwh-map-pin__pulse{position:absolute;top:6px;left:50%;width:12px;height:12px;margin-top:-6px;margin-left:-6px;background:rgba(242,47,58,0.45);border-radius:50%;animation:hwh-map-pulse 2s infinite ease-out;pointer-events:none;z-index:1}
+.hwh-map-pin__marker{position:relative;width:12px;height:12px}
+.hwh-map-pin__dot{width:12px;height:12px;background:#F22F3A;border-radius:50%;box-shadow:0 0 8px rgba(242,47,58,0.8);position:absolute;top:0;left:0;z-index:2;transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease}
+.hwh-map-pin__pulse{position:absolute;top:0;left:0;width:12px;height:12px;background:rgba(242,47,58,0.45);border-radius:50%;animation:hwh-map-pulse 2s infinite ease-out;pointer-events:none;z-index:1}
 @keyframes hwh-map-pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(4);opacity:0}}
 .hwh-map-pin__label{font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:700;color:#0A1628;background:rgba(255,255,255,0.92);padding:0.2rem 0.5rem;border-radius:4px;margin-top:6px;border:1px solid rgba(10,22,40,0.12);box-shadow:0 4px 10px rgba(0,0,0,0.08);white-space:nowrap;pointer-events:none;transition:all 0.3s ease}
 .hwh-map-pin:hover .hwh-map-pin__dot, .hwh-map-pin.is-active .hwh-map-pin__dot{transform:scale(1.35);background:#0A1628;box-shadow:0 0 12px rgba(10, 22, 40, 0.8)}
