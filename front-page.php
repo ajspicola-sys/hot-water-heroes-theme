@@ -521,6 +521,41 @@ get_header(); ?>
         update();
     });
 
+    // Touch Swipe Gestures for Mobile Devices
+    var touchStartX = 0;
+    var touchEndX = 0;
+
+    track.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    track.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, {passive: true});
+
+    function handleSwipe() {
+        var swipeThreshold = 50;
+        var maxIdx = getMaxIndex();
+        if (touchStartX - touchEndX > swipeThreshold) {
+            // Swiped left -> Next slide
+            if (current === maxIdx) {
+                current = 0;
+            } else {
+                current++;
+            }
+            update();
+        } else if (touchEndX - touchStartX > swipeThreshold) {
+            // Swiped right -> Prev slide
+            if (current === 0) {
+                current = maxIdx;
+            } else {
+                current--;
+            }
+            update();
+        }
+    }
+
     var resizeTimeout;
     window.addEventListener('resize', function(){
         clearTimeout(resizeTimeout);
