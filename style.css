@@ -10004,21 +10004,193 @@ a.contact-card__text:hover {
 .hwh-stat-item__div{width:1px;height:40px;background:rgba(255,255,255,.25);flex-shrink:0}
 
 /* HWH Services */
-.hwh-services{padding:7rem 0;background:#F8F9FB}
-.hwh-services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.hwh-service-card{background:#fff;border:1.5px solid #E5EBF5;border-radius:18px;padding:2.2rem 2rem;display:flex;flex-direction:column;gap:.75rem;transition:all .35s ease;position:relative;overflow:hidden}
-.hwh-service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#F22F3A,#F0595F);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
-.hwh-service-card:hover{border-color:#F22F3A;transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.1)}
-.hwh-service-card:hover::before{transform:scaleX(1)}
-.hwh-service-card__img{width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:12px;margin-bottom:.75rem}
-.hwh-service-card__img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.hwh-service-card:hover .hwh-service-card__img img{transform:scale(1.05)}
-.hwh-service-card__icon{font-size:2.2rem}
-.hwh-service-card__title{font-family:'Montserrat',serif;font-size:.92rem;font-weight:800;color:#0F2440;line-height:1.2}
-.hwh-service-card__text{font-size:.88rem;color:#3D6491;line-height:1.65;flex:1}
-.hwh-service-card__price{font-size:.78rem;font-weight:700;color:#F22F3A;letter-spacing:.04em}
-.hwh-service-card__link{font-size:.82rem;font-weight:700;color:#F22F3A;text-decoration:none;display:inline-block;margin-top:.25rem;transition:letter-spacing .2s ease}
-.hwh-service-card:hover .hwh-service-card__link{letter-spacing:.04em}
+/* Upgraded Services Section */
+.hwh-services {
+  padding: 7rem 0;
+  background: #F8F9FB;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Elegant Backdrop elements */
+.hwh-services::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500px;
+  background: radial-gradient(circle at 50% 0%, rgba(242, 47, 58, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hwh-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.hwh-service-card {
+  background: #ffffff;
+  border: 1.5px solid #E5EBF5;
+  border-radius: 20px;
+  padding: 2.5rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 36, 64, 0.02);
+}
+
+/* Dual-layered top hover bar */
+.hwh-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #F22F3A, #FF7854);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hwh-service-card:hover {
+  border-color: rgba(242, 47, 58, 0.4);
+  transform: translateY(-6px);
+  box-shadow: 
+    0 20px 40px rgba(15, 36, 64, 0.08),
+    0 4px 24px rgba(242, 47, 58, 0.08);
+}
+
+.hwh-service-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Subtle radial warmth on card hover */
+.hwh-service-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 10% 10%, rgba(242, 47, 58, 0.015), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hwh-service-card:hover::after {
+  opacity: 1;
+}
+
+.hwh-service-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Header line - contains Icon & Price */
+.hwh-service-card__header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* Custom premium icon wrap */
+.hwh-service-card__icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.hwh-service-card:hover .hwh-service-card__icon-wrap {
+  transform: scale(1.08) rotate(3deg);
+}
+
+/* Gradient types */
+.hwh-gradient-red { background: linear-gradient(135deg, #F22F3A, #FF7854); }
+.hwh-gradient-orange { background: linear-gradient(135deg, #FF6A00, #FFAE00); }
+.hwh-gradient-crimson { background: linear-gradient(135deg, #D31027, #EA384D); }
+.hwh-gradient-blue { background: linear-gradient(135deg, #0F2440, #3498db); }
+.hwh-gradient-darkred { background: linear-gradient(135deg, #C0392B, #F22F3A); }
+.hwh-gradient-teal { background: linear-gradient(135deg, #1A365D, #00B4DB); }
+.hwh-gradient-navy { background: linear-gradient(135deg, #0A1628, #18375D); }
+
+.hwh-service-card__img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  border-radius: 14px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.hwh-service-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hwh-service-card:hover .hwh-service-card__img img {
+  transform: scale(1.06);
+}
+
+.hwh-service-card__title {
+  font-family: 'Montserrat', serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F2440;
+  line-height: 1.25;
+}
+
+.hwh-service-card__text {
+  font-size: 0.88rem;
+  color: #3D6491;
+  line-height: 1.65;
+  flex: 1;
+}
+
+/* Upgraded Price Tag Pill */
+.hwh-service-card__price-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #F22F3A;
+  background: rgba(242, 47, 58, 0.06);
+  border: 1px solid rgba(242, 47, 58, 0.15);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.hwh-service-card__link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #F22F3A;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  transition: gap 0.25s ease, color 0.25s ease;
+}
+
+.hwh-service-card:hover .hwh-service-card__link {
+  gap: 0.45rem;
+  color: #AF2D37;
+}
 
 /* HWH Process */
 .hwh-process{padding:7rem 0;background:#0F2440}
