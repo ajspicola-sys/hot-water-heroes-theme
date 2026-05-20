@@ -567,38 +567,28 @@ get_header(); ?>
                 
                 <!-- Premium Pulsing Coordinate pins on Map Overlay -->
                 <div class="hwh-map-pin" data-city="tampa" style="top: 59%; left: 76%;" aria-hidden="true">
-                    <div class="hwh-map-pin__marker">
-                        <span class="hwh-map-pin__pulse"></span>
-                        <span class="hwh-map-pin__dot"></span>
-                    </div>
+                    <span class="hwh-map-pin__pulse" style="position: absolute !important; top: 6px !important; left: 50% !important; width: 12px !important; height: 12px !important; margin-top: -6px !important; margin-left: -6px !important; border-radius: 50% !important; pointer-events: none !important;"></span>
+                    <span class="hwh-map-pin__dot" style="position: relative !important; display: block !important; width: 12px !important; height: 12px !important; border-radius: 50% !important; margin: 0 auto !important;"></span>
                     <span class="hwh-map-pin__label">Tampa</span>
                 </div>
                 <div class="hwh-map-pin" data-city="stpete" style="top: 88%; left: 56%;" aria-hidden="true">
-                    <div class="hwh-map-pin__marker">
-                        <span class="hwh-map-pin__pulse"></span>
-                        <span class="hwh-map-pin__dot"></span>
-                    </div>
+                    <span class="hwh-map-pin__pulse" style="position: absolute !important; top: 6px !important; left: 50% !important; width: 12px !important; height: 12px !important; margin-top: -6px !important; margin-left: -6px !important; border-radius: 50% !important; pointer-events: none !important;"></span>
+                    <span class="hwh-map-pin__dot" style="position: relative !important; display: block !important; width: 12px !important; height: 12px !important; border-radius: 50% !important; margin: 0 auto !important;"></span>
                     <span class="hwh-map-pin__label">St. Pete</span>
                 </div>
                 <div class="hwh-map-pin" data-city="clearwater" style="top: 57%; left: 38%;" aria-hidden="true">
-                    <div class="hwh-map-pin__marker">
-                        <span class="hwh-map-pin__pulse"></span>
-                        <span class="hwh-map-pin__dot"></span>
-                    </div>
+                    <span class="hwh-map-pin__pulse" style="position: absolute !important; top: 6px !important; left: 50% !important; width: 12px !important; height: 12px !important; margin-top: -6px !important; margin-left: -6px !important; border-radius: 50% !important; pointer-events: none !important;"></span>
+                    <span class="hwh-map-pin__dot" style="position: relative !important; display: block !important; width: 12px !important; height: 12px !important; border-radius: 50% !important; margin: 0 auto !important;"></span>
                     <span class="hwh-map-pin__label">Clearwater</span>
                 </div>
                 <div class="hwh-map-pin" data-city="brandon" style="top: 61%; left: 95%;" aria-hidden="true">
-                    <div class="hwh-map-pin__marker">
-                        <span class="hwh-map-pin__pulse"></span>
-                        <span class="hwh-map-pin__dot"></span>
-                    </div>
+                    <span class="hwh-map-pin__pulse" style="position: absolute !important; top: 6px !important; left: 50% !important; width: 12px !important; height: 12px !important; margin-top: -6px !important; margin-left: -6px !important; border-radius: 50% !important; pointer-events: none !important;"></span>
+                    <span class="hwh-map-pin__dot" style="position: relative !important; display: block !important; width: 12px !important; height: 12px !important; border-radius: 50% !important; margin: 0 auto !important;"></span>
                     <span class="hwh-map-pin__label">Brandon</span>
                 </div>
                 <div class="hwh-map-pin" data-city="wesleychapel" style="top: 13%; left: 91%;" aria-hidden="true">
-                    <div class="hwh-map-pin__marker">
-                        <span class="hwh-map-pin__pulse"></span>
-                        <span class="hwh-map-pin__dot"></span>
-                    </div>
+                    <span class="hwh-map-pin__pulse" style="position: absolute !important; top: 6px !important; left: 50% !important; width: 12px !important; height: 12px !important; margin-top: -6px !important; margin-left: -6px !important; border-radius: 50% !important; pointer-events: none !important;"></span>
+                    <span class="hwh-map-pin__dot" style="position: relative !important; display: block !important; width: 12px !important; height: 12px !important; border-radius: 50% !important; margin: 0 auto !important;"></span>
                     <span class="hwh-map-pin__label">Wesley Chapel</span>
                 </div>
 
