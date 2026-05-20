@@ -560,33 +560,33 @@ get_header(); ?>
                 <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy">View All Areas →</a>
             </div>
             <div class="hwh-areas__visual reveal">
-                <img src="<?php echo esc_url(home_url('/')); ?>wp-content/uploads/hwh-service-area-map.png"
+                <img src="<?php echo esc_url(home_url('/')); ?>wp-content/uploads/2026/05/Screenshot-2026-05-20-114454.png"
                      alt="Hot Water Heroes service area map — Tampa Bay FL"
                      loading="lazy" decoding="async" width="500" height="500"
                      class="hwh-areas__map">
                 
                 <!-- Premium Pulsing Coordinate pins on Map Overlay -->
-                <div class="hwh-map-pin" data-city="tampa" style="top: 45%; left: 48%;" aria-hidden="true">
+                <div class="hwh-map-pin" data-city="tampa" style="top: 59%; left: 76%;" aria-hidden="true">
                     <span class="hwh-map-pin__pulse"></span>
                     <span class="hwh-map-pin__dot"></span>
                     <span class="hwh-map-pin__label">Tampa</span>
                 </div>
-                <div class="hwh-map-pin" data-city="stpete" style="top: 65%; left: 25%;" aria-hidden="true">
+                <div class="hwh-map-pin" data-city="stpete" style="top: 88%; left: 56%;" aria-hidden="true">
                     <span class="hwh-map-pin__pulse"></span>
                     <span class="hwh-map-pin__dot"></span>
                     <span class="hwh-map-pin__label">St. Pete</span>
                 </div>
-                <div class="hwh-map-pin" data-city="clearwater" style="top: 52%; left: 20%;" aria-hidden="true">
+                <div class="hwh-map-pin" data-city="clearwater" style="top: 57%; left: 38%;" aria-hidden="true">
                     <span class="hwh-map-pin__pulse"></span>
                     <span class="hwh-map-pin__dot"></span>
                     <span class="hwh-map-pin__label">Clearwater</span>
                 </div>
-                <div class="hwh-map-pin" data-city="brandon" style="top: 50%; left: 62%;" aria-hidden="true">
+                <div class="hwh-map-pin" data-city="brandon" style="top: 61%; left: 95%;" aria-hidden="true">
                     <span class="hwh-map-pin__pulse"></span>
                     <span class="hwh-map-pin__dot"></span>
                     <span class="hwh-map-pin__label">Brandon</span>
                 </div>
-                <div class="hwh-map-pin" data-city="wesleychapel" style="top: 25%; left: 55%;" aria-hidden="true">
+                <div class="hwh-map-pin" data-city="wesleychapel" style="top: 13%; left: 91%;" aria-hidden="true">
                     <span class="hwh-map-pin__pulse"></span>
                     <span class="hwh-map-pin__dot"></span>
                     <span class="hwh-map-pin__label">Wesley Chapel</span>
