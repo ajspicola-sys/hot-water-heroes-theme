@@ -81,27 +81,6 @@ get_header(); ?>
                      fetchpriority="high" loading="eager" decoding="async"
                      class="hwh-hero__van">
             </div>
-            <!-- Premium Glassmorphic Floating Cards -->
-            <div class="hwh-hero__card hwh-hero__card--1">
-                <span class="hwh-hero__card-icon">⭐</span>
-                <div>
-                    <strong>5.0 Google Rating</strong>
-                    <span>30+ Verified Reviews</span>
-                </div>
-            </div>
-            <div class="hwh-hero__card hwh-hero__card--2">
-                <span class="hwh-hero__card-icon">⚡</span>
-                <div>
-                    <strong>Same-Day Service</strong>
-                    <span>Available Today</span>
-                </div>
-            </div>
-            <div class="hwh-hero__card hwh-hero__card--3">
-                <span class="hwh-hero__card-icon">🛡️</span>
-                <div>
-                    <strong>Licensed &amp; Insured</strong>
-                    <span>FL State Certified</span>
-                </div>
             </div>
         </div>
     </div>
