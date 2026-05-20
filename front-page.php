@@ -81,6 +81,28 @@ get_header(); ?>
                      fetchpriority="high" loading="eager" decoding="async"
                      class="hwh-hero__van">
             </div>
+            <!-- Premium Glassmorphic Floating Cards -->
+            <div class="hwh-hero__card hwh-hero__card--1">
+                <span class="hwh-hero__card-icon">⭐</span>
+                <div>
+                    <strong>5.0 Google Rating</strong>
+                    <span>30+ Verified Reviews</span>
+                </div>
+            </div>
+            <div class="hwh-hero__card hwh-hero__card--2">
+                <span class="hwh-hero__card-icon">⚡</span>
+                <div>
+                    <strong>Same-Day Service</strong>
+                    <span>Available Today</span>
+                </div>
+            </div>
+            <div class="hwh-hero__card hwh-hero__card--3">
+                <span class="hwh-hero__card-icon">🛡️</span>
+                <div>
+                    <strong>Licensed &amp; Insured</strong>
+                    <span>FL State Certified</span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -284,28 +306,36 @@ get_header(); ?>
                 <p class="hwh-section-desc">We built our reputation one job at a time — showing up when others won't, being honest about pricing, and doing work that lasts.</p>
                 <ul class="hwh-why__list">
                     <li class="hwh-why__item">
-                        <span class="hwh-why__check" aria-hidden="true">✔</span>
+                        <span class="hwh-why__check" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
                         <div>
                             <strong>State-Licensed &amp; Fully Insured</strong>
                             <p>Every technician is background-checked and licensed for your protection.</p>
                         </div>
                     </li>
                     <li class="hwh-why__item">
-                        <span class="hwh-why__check" aria-hidden="true">✔</span>
+                        <span class="hwh-why__check" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
                         <div>
                             <strong>Upfront, Honest Pricing</strong>
                             <p>You get a clear quote before any work begins. No hidden fees, ever.</p>
                         </div>
                     </li>
                     <li class="hwh-why__item">
-                        <span class="hwh-why__check" aria-hidden="true">✔</span>
+                        <span class="hwh-why__check" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
                         <div>
                             <strong>Water Heater Specialists</strong>
                             <p>All brands, all types — including tankless conversions and full replacements.</p>
                         </div>
                     </li>
                     <li class="hwh-why__item">
-                        <span class="hwh-why__check" aria-hidden="true">✔</span>
+                        <span class="hwh-why__check" aria-hidden="true">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
                         <div>
                             <strong>True 24/7 Emergency Response</strong>
                             <p>We actually answer nights, weekends, and holidays — no voicemail runaround.</p>
@@ -421,48 +451,87 @@ get_header(); ?>
     var dotsEl  = document.getElementById('rev-dots');
     var prevBtn = document.getElementById('rev-prev');
     var nextBtn = document.getElementById('rev-next');
-    if (!track || cards.length < 2) return;
+    if (!track || cards.length === 0) return;
 
-    var perPage = 2;
-    var total   = cards.length;
-    var pages   = Math.ceil(total / perPage);
     var current = 0;
 
-    // Build dots
-    for (var i = 0; i < pages; i++) {
-        var dot = document.createElement('button');
-        dot.className = 'hwh-rev-carousel__dot' + (i === 0 ? ' is-active' : '');
-        dot.setAttribute('role', 'tab');
-        dot.setAttribute('aria-label', 'Page ' + (i + 1));
-        (function(idx){ dot.addEventListener('click', function(){ goTo(idx); }); })(i);
-        dotsEl.appendChild(dot);
+    function getPerPage() {
+        return window.innerWidth <= 768 ? 1 : 2;
     }
 
-    function goTo(page) {
-        current = ((page % pages) + pages) % pages;
-        var start = current * perPage;
-        cards.forEach(function(c, i) {
-            c.style.display = (i >= start && i < start + perPage) ? '' : 'none';
-            c.style.opacity = '0';
-            c.style.transform = 'translateY(8px)';
-            if (i >= start && i < start + perPage) {
-                requestAnimationFrame(function(){
-                    requestAnimationFrame(function(){
-                        c.style.transition = 'opacity .35s ease, transform .35s ease';
-                        c.style.opacity = '1';
-                        c.style.transform = 'translateY(0)';
-                    });
+    function getMaxIndex() {
+        return Math.max(0, cards.length - getPerPage());
+    }
+
+    function buildDots() {
+        dotsEl.innerHTML = '';
+        var numDots = getMaxIndex() + 1;
+        for (var i = 0; i < numDots; i++) {
+            var dot = document.createElement('button');
+            dot.className = 'hwh-rev-carousel__dot' + (i === current ? ' is-active' : '');
+            dot.setAttribute('role', 'tab');
+            dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+            (function(idx){
+                dot.addEventListener('click', function(){
+                    current = idx;
+                    update();
                 });
-            }
-        });
-        dotsEl.querySelectorAll('.hwh-rev-carousel__dot').forEach(function(d, i){
+            })(i);
+            dotsEl.appendChild(dot);
+        }
+    }
+
+    function update() {
+        var perPage = getPerPage();
+        var maxIdx = getMaxIndex();
+        if (current > maxIdx) current = maxIdx;
+        if (current < 0) current = 0;
+
+        var step;
+        if (perPage === 1) {
+            step = 'calc(' + (current * 100) + '% + ' + (current * 1.25) + 'rem)';
+        } else {
+            step = 'calc(' + (current * 50) + '% + ' + (current * 0.625) + 'rem)';
+        }
+        track.style.transform = 'translateX(-' + step + ')';
+
+        var dots = dotsEl.querySelectorAll('.hwh-rev-carousel__dot');
+        dots.forEach(function(d, i) {
             d.classList.toggle('is-active', i === current);
         });
     }
 
-    prevBtn.addEventListener('click', function(){ goTo(current - 1); });
-    nextBtn.addEventListener('click', function(){ goTo(current + 1); });
-    goTo(0);
+    prevBtn.addEventListener('click', function(){
+        var maxIdx = getMaxIndex();
+        if (current === 0) {
+            current = maxIdx;
+        } else {
+            current--;
+        }
+        update();
+    });
+
+    nextBtn.addEventListener('click', function(){
+        var maxIdx = getMaxIndex();
+        if (current === maxIdx) {
+            current = 0;
+        } else {
+            current++;
+        }
+        update();
+    });
+
+    var resizeTimeout;
+    window.addEventListener('resize', function(){
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function(){
+            buildDots();
+            update();
+        }, 100);
+    });
+
+    buildDots();
+    update();
 })();
 </script>
 
@@ -478,10 +547,11 @@ get_header(); ?>
                 <h2 class="hwh-section-title">Serving All of<br><em>Tampa Bay</em></h2>
                 <p class="hwh-section-desc">Hillsborough, Pinellas, and Pasco County — if you're in the Tampa Bay area, we've got you covered with fast, reliable plumbing service.</p>
                 <div class="hwh-areas__cities">
-                    <span class="hwh-areas__city">Tampa &amp; South Tampa</span>
-                    <span class="hwh-areas__city">St. Pete &amp; Clearwater</span>
-                    <span class="hwh-areas__city">Brandon &amp; Riverview</span>
-                    <span class="hwh-areas__city">Wesley Chapel &amp; Lutz</span>
+                    <span class="hwh-areas__city" data-city="tampa">Tampa &amp; South Tampa</span>
+                    <span class="hwh-areas__city" data-city="stpete">St. Pete &amp; Gulf Beaches</span>
+                    <span class="hwh-areas__city" data-city="clearwater">Clearwater &amp; Dunedin</span>
+                    <span class="hwh-areas__city" data-city="brandon">Brandon &amp; Riverview</span>
+                    <span class="hwh-areas__city" data-city="wesleychapel">Wesley Chapel &amp; Lutz</span>
                     <span class="hwh-areas__city">Carrollwood &amp; Westchase</span>
                     <span class="hwh-areas__city">Land O' Lakes &amp; Odessa</span>
                     <span class="hwh-areas__city">Lithia &amp; Valrico</span>
@@ -494,10 +564,71 @@ get_header(); ?>
                      alt="Hot Water Heroes service area map — Tampa Bay FL"
                      loading="lazy" decoding="async" width="500" height="500"
                      class="hwh-areas__map">
+                
+                <!-- Premium Pulsing Coordinate pins on Map Overlay -->
+                <div class="hwh-map-pin" data-city="tampa" style="top: 45%; left: 48%;" aria-hidden="true">
+                    <span class="hwh-map-pin__pulse"></span>
+                    <span class="hwh-map-pin__dot"></span>
+                    <span class="hwh-map-pin__label">Tampa</span>
+                </div>
+                <div class="hwh-map-pin" data-city="stpete" style="top: 65%; left: 25%;" aria-hidden="true">
+                    <span class="hwh-map-pin__pulse"></span>
+                    <span class="hwh-map-pin__dot"></span>
+                    <span class="hwh-map-pin__label">St. Pete</span>
+                </div>
+                <div class="hwh-map-pin" data-city="clearwater" style="top: 52%; left: 20%;" aria-hidden="true">
+                    <span class="hwh-map-pin__pulse"></span>
+                    <span class="hwh-map-pin__dot"></span>
+                    <span class="hwh-map-pin__label">Clearwater</span>
+                </div>
+                <div class="hwh-map-pin" data-city="brandon" style="top: 50%; left: 62%;" aria-hidden="true">
+                    <span class="hwh-map-pin__pulse"></span>
+                    <span class="hwh-map-pin__dot"></span>
+                    <span class="hwh-map-pin__label">Brandon</span>
+                </div>
+                <div class="hwh-map-pin" data-city="wesleychapel" style="top: 25%; left: 55%;" aria-hidden="true">
+                    <span class="hwh-map-pin__pulse"></span>
+                    <span class="hwh-map-pin__dot"></span>
+                    <span class="hwh-map-pin__label">Wesley Chapel</span>
+                </div>
+
                 <div class="hwh-areas__badge">
                     <span>Same-Day Available</span>
                 </div>
             </div>
+            
+            <script>
+            (function(){
+                var cityCards = document.querySelectorAll('.hwh-areas__city[data-city]');
+                var mapPins = document.querySelectorAll('.hwh-map-pin[data-city]');
+                
+                cityCards.forEach(function(card) {
+                    card.addEventListener('mouseenter', function() {
+                        var city = card.getAttribute('data-city');
+                        var pin = document.querySelector('.hwh-map-pin[data-city="' + city + '"]');
+                        if (pin) pin.classList.add('is-active');
+                    });
+                    card.addEventListener('mouseleave', function() {
+                        var city = card.getAttribute('data-city');
+                        var pin = document.querySelector('.hwh-map-pin[data-city="' + city + '"]');
+                        if (pin) pin.classList.remove('is-active');
+                    });
+                });
+                
+                mapPins.forEach(function(pin) {
+                    pin.addEventListener('mouseenter', function() {
+                        var city = pin.getAttribute('data-city');
+                        var card = document.querySelector('.hwh-areas__city[data-city="' + city + '"]');
+                        if (card) card.classList.add('is-highlighted');
+                    });
+                    pin.addEventListener('mouseleave', function() {
+                        var city = pin.getAttribute('data-city');
+                        var card = document.querySelector('.hwh-areas__city[data-city="' + city + '"]');
+                        if (card) card.classList.remove('is-highlighted');
+                    });
+                });
+            })();
+            </script>
         </div>
     </div>
 </section>
