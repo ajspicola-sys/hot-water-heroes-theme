@@ -574,7 +574,7 @@ get_header(); ?>
                 <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy">View All Areas →</a>
             </div>
             <div class="hwh-areas__visual reveal">
-                <img src="<?php echo esc_url(home_url('/')); ?>wp-content/uploads/2026/05/Screenshot-2026-05-20-114454.png"
+                <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2026/05/Screenshot-2026-05-20-114454.png"
                      alt="Hot Water Heroes service area map — Tampa Bay FL"
                      loading="lazy" decoding="async" width="500" height="500"
                      class="hwh-areas__map">

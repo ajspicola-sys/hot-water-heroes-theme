@@ -2798,3 +2798,22 @@ function hwh_sanitize_service_content($content) {
     </div>';
 }
 add_filter('the_content', 'hwh_sanitize_service_content', 20);
+
+// ============================================================================
+// DYNAMIC SEO ALT TAG FALLBACK
+// Automatically provides a fallback alt description based on the post/site title
+// for any uploaded media that has an empty alt description.
+// ============================================================================
+function hwh_seo_alt_fallback( $attributes, $attachment, $size ) {
+    if ( empty( $attributes['alt'] ) ) {
+        $post_title = get_the_title();
+        if ( ! empty( $post_title ) ) {
+            $attributes['alt'] = esc_attr( $post_title );
+        } else {
+            $attributes['alt'] = esc_attr( get_bloginfo( 'name' ) );
+        }
+    }
+    return $attributes;
+}
+add_filter( 'wp_get_attachment_image_attributes', 'hwh_seo_alt_fallback', 10, 3 );
+
