@@ -202,7 +202,7 @@ get_header(); ?>
                     </div>
                     <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
                     <p class="hwh-service-card__text"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
-                    <a href="<?php the_permalink(); ?>" class="hwh-service-card__link" aria-label="Learn more about <?php the_title_attribute(); ?>">Learn More →</a>
+                    <a href="<?php the_permalink(); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php the_title(); ?></span> →</a>
                 </div>
             <?php endwhile; wp_reset_postdata();
             else :
@@ -220,13 +220,13 @@ get_header(); ?>
                     </div>
                     <h3 class="hwh-service-card__title"><?php echo esc_html($svc['title']); ?></h3>
                     <p class="hwh-service-card__text"><?php echo esc_html($svc['text']); ?></p>
-                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card__link" aria-label="Learn more about <?php echo esc_attr($svc['title']); ?>">Learn More →</a>
+                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php echo esc_html($svc['title']); ?></span> →</a>
                 </div>
             <?php endforeach; endif; ?>
         </div>
 
         <div class="hwh-center hwh-center--spaced">
-            <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-btn hwh-btn--navy hwh-btn--lg" aria-label="See all plumbing services we offer">See All Services →</a>
+            <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-btn hwh-btn--navy hwh-btn--lg">See All Services <span class="hwh-visually-hidden">we offer</span> →</a>
         </div>
     </div>
 </section>
@@ -572,7 +572,7 @@ get_header(); ?>
                     <span class="hwh-areas__city hwh-areas__city--static">Lithia &amp; Valrico</span>
                     <span class="hwh-areas__city hwh-areas__city--static">New Tampa &amp; Zephyrhills</span>
                 </div>
-                <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy" aria-label="View all service areas we cover in Tampa Bay">View All Areas →</a>
+                <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy">View All Areas <span class="hwh-visually-hidden">we cover in Tampa Bay</span> →</a>
             </div>
             <div class="hwh-areas__visual reveal">
                 <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2026/05/Screenshot-2026-05-20-114454.png"

@@ -100,7 +100,7 @@ get_header();
                                 <span class="hwh-service-card__price">From <?php echo esc_html($price); ?></span>
                             <?php endif; ?>
 
-                            <a href="<?php the_permalink(); ?>" class="hwh-service-card__link" aria-label="Learn more about <?php the_title_attribute(); ?>">Learn More →</a>
+                            <a href="<?php the_permalink(); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php the_title(); ?></span> →</a>
 
                         </div>
                     <?php endwhile;
