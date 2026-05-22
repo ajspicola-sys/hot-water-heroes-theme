@@ -19,7 +19,7 @@
 
 <!-- Scroll to Top -->
 <button class="scroll-top" id="scroll-top" aria-label="Back to top">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
 </button>
 
 <footer class="hwh-foot">
@@ -30,7 +30,7 @@
 
             <!-- Brand col -->
             <div class="hwh-foot__brand">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-foot__logo" aria-label="Hot Water Heroes &mdash; Home">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-foot__logo" aria-label="Hot Water Heroes &mdash; Home"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>
                     <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2024/11/Untitled-design-12-scaled.png"
                          alt="Hot Water Heroes Plumbing" width="300" height="144"
                          loading="lazy" decoding="async">
@@ -38,13 +38,13 @@
                 <p class="hwh-foot__brand-text">Tampa Bay's trusted plumbing team &mdash; fast, honest, and available around the clock for water heater repair, installation, and emergency plumbing.</p>
                 <div class="hwh-foot__social">
                     <a href="https://www.facebook.com/hotwaterheroes/" class="hwh-foot__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                     </a>
                     <a href="https://www.instagram.com/hotwaterheroes/" class="hwh-foot__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
                     </a>
                     <a href="https://g.co/hotwaterheroes" class="hwh-foot__social-link" aria-label="Google Reviews" target="_blank" rel="noopener noreferrer">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
                     </a>
                 </div>
                 <div class="hwh-foot__rating">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="hwh-foot__contact-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;" class="hwh-foot__email-link">&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;</a>
+                        <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;" class="hwh-foot__email-link" aria-label="Send an email to joe@hotwaterheroesplumbing.com (opens mail application)">&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;</a>
                     </div>
                     <div class="hwh-foot__contact-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -293,7 +293,7 @@ if ($popup_active) :
     <div class="deal-popup__overlay" id="deal-popup-overlay"></div>
     <div class="deal-popup__modal">
         <button class="deal-popup__close" id="deal-popup-close" aria-label="Close offer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
         </button>
         <div class="deal-popup__glow" aria-hidden="true"></div>
         <div class="deal-popup__content">

@@ -203,7 +203,7 @@ $hwh_menu_services = hwh_get_menu_services();
         <div class="hwh-nav-bar__inner">
 
             <!-- Logo -->
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__logo" aria-label="Hot Water Heroes Plumbing — Home">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__logo" aria-label="Hot Water Heroes Plumbing — Home"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>
                 <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png"
                      alt="Hot Water Heroes Plumbing" width="260" height="65"
                      loading="eager" decoding="async" class="hwh-nav__logo-img">
@@ -213,7 +213,7 @@ $hwh_menu_services = hwh_get_menu_services();
             <nav class="hwh-nav" aria-label="Main navigation">
                 <ul class="hwh-nav__links">
                     <li class="hwh-nav__item<?php if (is_front_page()) echo ' hwh-nav__item--active'; ?>">
-                        <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__link">Home</a>
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__link"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>Home</a>
                     </li>
                     <li class="hwh-nav__item hwh-nav__item--has-drop<?php if (is_post_type_archive('service') || is_singular('service')) echo ' hwh-nav__item--active'; ?>">
                         <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-nav__link">
@@ -295,7 +295,7 @@ $hwh_menu_services = hwh_get_menu_services();
     <div class="mobile-menu__overlay" id="mobile-overlay"></div>
     <div class="mobile-menu__drawer">
         <div class="mobile-menu__header">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__logo">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__logo"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>
                 <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png" alt="Hot Water Heroes" width="180" height="45">
             </a>
             <button class="mobile-menu__close" id="mobile-close" aria-label="Close navigation">×</button>
@@ -305,13 +305,13 @@ $hwh_menu_services = hwh_get_menu_services();
         <form class="hwh-mobile-search" role="search" action="<?php echo esc_url(home_url('/')); ?>" method="get" aria-label="Search">
             <input type="search" name="s" placeholder="Search services…" aria-label="Search" value="<?php echo esc_attr(get_search_query()); ?>">
             <button type="submit" aria-label="Search">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             </button>
         </form>
 
         <nav class="mobile-menu__nav" aria-label="Mobile navigation">
             <ul class="mobile-menu__links">
-                <li><a href="<?php echo esc_url(home_url('/')); ?>">Home</a></li>
+                <li><a href="<?php echo esc_url(home_url('/')); ?>"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>Home</a></li>
                 <li><a href="<?php echo esc_url(home_url('/services/')); ?>">All Services</a></li>
                 <?php
                 // Dynamic mobile service sub-links (up to 6 total)
@@ -340,7 +340,7 @@ $hwh_menu_services = hwh_get_menu_services();
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                 813-42-PLUMB (75862) — 24/7 Emergency
             </a>
-            <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;" class="mobile-menu__contact-item">
+            <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;" class="mobile-menu__contact-item" aria-label="Send an email to joe@hotwaterheroesplumbing.com (opens mail application)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                 &#106;&#111;&#101;&#64;&#104;&#111;&#116;&#119;&#97;&#116;&#101;&#114;&#104;&#101;&#114;&#111;&#101;&#115;&#112;&#108;&#117;&#109;&#98;&#105;&#110;&#103;&#46;&#99;&#111;&#109;
             </a>

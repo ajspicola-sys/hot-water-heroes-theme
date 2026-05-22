@@ -182,7 +182,7 @@ get_header(); ?>
                     $icon  = get_post_meta(get_the_ID(), '_service_icon', true) ?: '';
                     $price = get_post_meta(get_the_ID(), '_service_price', true);
             ?>
-                <article class="hwh-service-card reveal">
+                <div class="hwh-service-card reveal">
                     <div class="hwh-service-card__header-row">
                         <?php if (has_post_thumbnail()) : ?>
                             <div class="hwh-service-card__img">
@@ -202,14 +202,14 @@ get_header(); ?>
                     </div>
                     <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
                     <p class="hwh-service-card__text"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
-                    <a href="<?php the_permalink(); ?>" class="hwh-service-card__link">Learn More →</a>
-                </article>
+                    <a href="<?php the_permalink(); ?>" class="hwh-service-card__link" aria-label="Learn more about <?php the_title_attribute(); ?>">Learn More →</a>
+                </div>
             <?php endwhile; wp_reset_postdata();
             else :
                 foreach ($fallback as $svc) : 
                     $visuals = hwh_get_service_visuals($svc['title']);
                 ?>
-                <article class="hwh-service-card reveal">
+                <div class="hwh-service-card reveal">
                     <div class="hwh-service-card__header-row">
                         <div class="hwh-service-card__icon-wrap <?php echo esc_attr($visuals['grad']); ?>">
                             <?php echo $visuals['svg']; ?>
@@ -220,13 +220,13 @@ get_header(); ?>
                     </div>
                     <h3 class="hwh-service-card__title"><?php echo esc_html($svc['title']); ?></h3>
                     <p class="hwh-service-card__text"><?php echo esc_html($svc['text']); ?></p>
-                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card__link">Learn More →</a>
-                </article>
+                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card__link" aria-label="Learn more about <?php echo esc_attr($svc['title']); ?>">Learn More →</a>
+                </div>
             <?php endforeach; endif; ?>
         </div>
 
         <div class="hwh-center hwh-center--spaced">
-            <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-btn hwh-btn--navy hwh-btn--lg">See All Services →</a>
+            <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-btn hwh-btn--navy hwh-btn--lg" aria-label="See all plumbing services we offer">See All Services →</a>
         </div>
     </div>
 </section>
@@ -244,28 +244,28 @@ get_header(); ?>
         <div class="hwh-process-steps">
             <div class="hwh-process-step">
                 <div class="hwh-process-step__num">01</div>
-                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
                 <h3 class="hwh-process-step__title">Call or Book Online</h3>
                 <p class="hwh-process-step__text">Reach us 24/7 by phone or schedule online. We confirm your appointment fast — often same-day.</p>
             </div>
             <div class="hwh-process-connector" aria-hidden="true"></div>
             <div class="hwh-process-step">
                 <div class="hwh-process-step__num">02</div>
-                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
                 <h3 class="hwh-process-step__title">We Show Up On Time</h3>
                 <p class="hwh-process-step__text">A licensed plumber arrives fully equipped and ready. We respect your time and your home.</p>
             </div>
             <div class="hwh-process-connector" aria-hidden="true"></div>
             <div class="hwh-process-step">
                 <div class="hwh-process-step__num">03</div>
-                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
                 <h3 class="hwh-process-step__title">Diagnose &amp; Quote</h3>
                 <p class="hwh-process-step__text">We find the problem and give you a clear, upfront price. No surprises, no pressure.</p>
             </div>
             <div class="hwh-process-connector" aria-hidden="true"></div>
             <div class="hwh-process-step">
                 <div class="hwh-process-step__num">04</div>
-                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="hwh-process-step__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
                 <h3 class="hwh-process-step__title">Fixed &amp; Guaranteed</h3>
                 <p class="hwh-process-step__text">We complete the work cleanly and efficiently. Every job is backed by our satisfaction guarantee.</p>
             </div>
@@ -376,32 +376,32 @@ get_header(); ?>
                 <div class="hwh-rev-carousel" id="reviews-carousel" role="region" aria-label="Customer reviews carousel">
                     <div class="hwh-rev-carousel__track">
 
-                        <article class="hwh-review-card hwh-review-card--stacked">
-                            <span class="hwh-review-card__stars" role="img" aria-label="5 stars">★★★★★</span>
+                        <div class="hwh-review-card hwh-review-card--stacked">
+                            <span class="hwh-review-card__stars" aria-hidden="true">★★★★★</span><span class="hwh-visually-hidden">5 stars</span>
                             <p class="hwh-review-card__text">"Hot Water Heroes are amazing. Fantastic communication, great plumbers, super nice and best of all your pricing seems very fair. I'm a realtor in this area for 23 years and I use them for my personal home. Such an awesome job — I highly recommend them."</p>
                             <div class="hwh-review-card__author">
                                 <strong>Bridget Breland</strong>
                                 <span>Google Review · Local Guide</span>
                             </div>
-                        </article>
+                        </div>
 
-                        <article class="hwh-review-card hwh-review-card--stacked">
-                            <span class="hwh-review-card__stars" role="img" aria-label="5 stars">★★★★★</span>
+                        <div class="hwh-review-card hwh-review-card--stacked">
+                            <span class="hwh-review-card__stars" aria-hidden="true">★★★★★</span><span class="hwh-visually-hidden">5 stars</span>
                             <p class="hwh-review-card__text">"Hot Water Heroes was absolutely outstanding! John was professional, knowledgeable, and showed up right on time. He quickly diagnosed the issue, explained everything clearly, and had it fixed faster than I expected. The pricing was fair and the quality of work was top-notch."</p>
                             <div class="hwh-review-card__author">
                                 <strong>Kirby Cummings</strong>
                                 <span>Google Review</span>
                             </div>
-                        </article>
+                        </div>
 
-                        <article class="hwh-review-card hwh-review-card--stacked">
-                            <span class="hwh-review-card__stars" role="img" aria-label="5 stars">★★★★★</span>
+                        <div class="hwh-review-card hwh-review-card--stacked">
+                            <span class="hwh-review-card__stars" aria-hidden="true">★★★★★</span><span class="hwh-visually-hidden">5 stars</span>
                             <p class="hwh-review-card__text">"Wow, great service, good pricing, professional and explained everything. Good to see such service and pricing still exist. I will be calling you first for all my plumbing needs. It was a pleasure to have service like this during the holidays. Keep up the good work!"</p>
                             <div class="hwh-review-card__author">
                                 <strong>Mark Watklevicz</strong>
                                 <span>Google Review</span>
                             </div>
-                        </article>
+                        </div>
 
 
 
@@ -409,11 +409,11 @@ get_header(); ?>
 
                     <div class="hwh-rev-carousel__controls">
                         <button class="hwh-rev-carousel__btn" id="rev-prev" aria-label="Previous reviews">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                         </button>
-                        <div class="hwh-rev-carousel__dots" id="rev-dots" role="tablist"></div>
+                        <div class="hwh-rev-carousel__dots" id="rev-dots"></div>
                         <button class="hwh-rev-carousel__btn" id="rev-next" aria-label="Next reviews">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
                         </button>
                     </div>
                 </div>
@@ -448,8 +448,8 @@ get_header(); ?>
         for (var i = 0; i < numDots; i++) {
             var dot = document.createElement('button');
             dot.className = 'hwh-rev-carousel__dot' + (i === current ? ' is-active' : '');
-            dot.setAttribute('role', 'tab');
-            dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+            dot.setAttribute('type', 'button');
+            dot.setAttribute('aria-label', 'Slide ' + (i + 1) + (i === current ? ' (current)' : ''));
             (function(idx){
                 dot.addEventListener('click', function(){
                     current = idx;
@@ -477,6 +477,7 @@ get_header(); ?>
         var dots = dotsEl.querySelectorAll('.hwh-rev-carousel__dot');
         dots.forEach(function(d, i) {
             d.classList.toggle('is-active', i === current);
+            d.setAttribute('aria-label', 'Slide ' + (i + 1) + (i === current ? ' (current)' : ''));
         });
     }
 
@@ -561,17 +562,17 @@ get_header(); ?>
                 <h2 class="hwh-section-title">Serving All of<br><em>Tampa Bay</em></h2>
                 <p class="hwh-section-desc">Hillsborough, Pinellas, and Pasco County — if you're in the Tampa Bay area, we've got you covered with fast, reliable plumbing service.</p>
                 <div class="hwh-areas__cities">
-                    <span class="hwh-areas__city" data-city="tampa">Tampa &amp; South Tampa</span>
-                    <span class="hwh-areas__city" data-city="stpete">St. Pete &amp; Gulf Beaches</span>
-                    <span class="hwh-areas__city" data-city="clearwater">Clearwater &amp; Dunedin</span>
-                    <span class="hwh-areas__city" data-city="brandon">Brandon &amp; Riverview</span>
-                    <span class="hwh-areas__city" data-city="wesleychapel">Wesley Chapel &amp; Lutz</span>
-                    <span class="hwh-areas__city">Carrollwood &amp; Westchase</span>
-                    <span class="hwh-areas__city">Land O' Lakes &amp; Odessa</span>
-                    <span class="hwh-areas__city">Lithia &amp; Valrico</span>
-                    <span class="hwh-areas__city">New Tampa &amp; Zephyrhills</span>
+                    <button type="button" class="hwh-areas__city" data-city="tampa" aria-label="Highlight Tampa &amp; South Tampa on service area map">Tampa &amp; South Tampa</button>
+                    <button type="button" class="hwh-areas__city" data-city="stpete" aria-label="Highlight St. Pete &amp; Gulf Beaches on service area map">St. Pete &amp; Gulf Beaches</button>
+                    <button type="button" class="hwh-areas__city" data-city="clearwater" aria-label="Highlight Clearwater &amp; Dunedin on service area map">Clearwater &amp; Dunedin</button>
+                    <button type="button" class="hwh-areas__city" data-city="brandon" aria-label="Highlight Brandon &amp; Riverview on service area map">Brandon &amp; Riverview</button>
+                    <button type="button" class="hwh-areas__city" data-city="wesleychapel" aria-label="Highlight Wesley Chapel &amp; Lutz on service area map">Wesley Chapel &amp; Lutz</button>
+                    <span class="hwh-areas__city hwh-areas__city--static">Carrollwood &amp; Westchase</span>
+                    <span class="hwh-areas__city hwh-areas__city--static">Land O' Lakes &amp; Odessa</span>
+                    <span class="hwh-areas__city hwh-areas__city--static">Lithia &amp; Valrico</span>
+                    <span class="hwh-areas__city hwh-areas__city--static">New Tampa &amp; Zephyrhills</span>
                 </div>
-                <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy">View All Areas →</a>
+                <a href="<?php echo esc_url(home_url('/service-areas/')); ?>" class="hwh-btn hwh-btn--navy" aria-label="View all service areas we cover in Tampa Bay">View All Areas →</a>
             </div>
             <div class="hwh-areas__visual reveal">
                 <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2026/05/Screenshot-2026-05-20-114454.png"
@@ -737,6 +738,16 @@ get_header(); ?>
                         if (pin) pin.classList.add('is-active');
                     });
                     card.addEventListener('mouseleave', function() {
+                        var city = card.getAttribute('data-city');
+                        var pin = document.querySelector('.hwh-map-pin[data-city="' + city + '"]');
+                        if (pin) pin.classList.remove('is-active');
+                    });
+                    card.addEventListener('focus', function() {
+                        var city = card.getAttribute('data-city');
+                        var pin = document.querySelector('.hwh-map-pin[data-city="' + city + '"]');
+                        if (pin) pin.classList.add('is-active');
+                    });
+                    card.addEventListener('blur', function() {
                         var city = card.getAttribute('data-city');
                         var pin = document.querySelector('.hwh-map-pin[data-city="' + city + '"]');
                         if (pin) pin.classList.remove('is-active');
