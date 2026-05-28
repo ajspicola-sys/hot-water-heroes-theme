@@ -172,12 +172,12 @@ get_header();
                         <div class="hwh-service-card reveal">
 
                             <?php if (has_post_thumbnail()): ?>
-                                <div class="hwh-service-card__img" style="margin: -2.2rem -2rem 1rem -2rem;border-radius: 18px 18px 0 0;aspect-ratio: 16 / 9;overflow:hidden;">
+                                <div class="hwh-service-card__img" style="margin: -2.2rem -2rem 1rem -2rem;border-radius: 18px 18px 0 0;aspect-ratio: 16 / 9;overflow:hidden;width:calc(100% + 4rem) !important;max-width:none !important;">
                                     <?php the_post_thumbnail('medium', [
                                         'loading' => 'lazy',
                                         'decoding' => 'async',
                                         'alt' => esc_attr(get_the_title()),
-                                        'style' => 'width:100%;height:100%;object-fit:cover;'
+                                        'style' => 'width:100% !important;height:100% !important;object-fit:cover !important;'
                                     ]); ?>
                                 </div>
                             <?php elseif ($icon): ?>
