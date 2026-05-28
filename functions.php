@@ -2839,3 +2839,27 @@ function hwh_seed_matrix_on_init() {
 }
 add_action('init', 'hwh_seed_matrix_on_init', 30);
 
+// ======================================================================
+// n8n AUTOMATION METADATA UNLOCK — YOAST SEO
+// Exposes hidden Yoast SEO title and description fields to the REST API
+// ======================================================================
+add_action('rest_api_init', 'register_yoast_seo_meta_in_rest');
+function register_yoast_seo_meta_in_rest() {
+    register_meta('post', '_yoast_wpseo_metadesc', array(
+        'show_in_rest' => true,
+        'single' => true,
+        'type' => 'string',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        }
+    ));
+    register_meta('post', '_yoast_wpseo_title', array(
+        'show_in_rest' => true,
+        'single' => true,
+        'type' => 'string',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        }
+    ));
+}
+
