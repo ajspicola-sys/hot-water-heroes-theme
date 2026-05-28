@@ -2822,7 +2822,7 @@ function hwh_register_locations() {
 add_action('init', 'hwh_register_locations');
 
 function hwh_create_locations() {
-    if (get_option('hwh_locations_created_v1')) return;
+    if (get_option('hwh_locations_created_v2')) return;
 
     $locations = [
         ['title' => 'Tampa',          'excerpt' => 'Premium 24/7 plumbing and water heater repair, installation, and maintenance across Tampa, FL.'],
@@ -2854,7 +2854,7 @@ function hwh_create_locations() {
         ]);
     }
 
-    update_option('hwh_locations_created_v1', true);
+    update_option('hwh_locations_created_v2', true);
     flush_rewrite_rules();
 }
 add_action('init', 'hwh_create_locations', 20);
@@ -2932,10 +2932,10 @@ add_action('save_post_service', 'hwh_generate_matrix_on_save', 10, 3);
 
 // One-time init seeder to generate everything instantly on next page load
 function hwh_seed_matrix_on_init() {
-    if (get_option('hwh_matrix_seeded_v1')) return;
+    if (get_option('hwh_matrix_seeded_v2')) return;
 
     hwh_generate_location_services_matrix();
-    update_option('hwh_matrix_seeded_v1', true);
+    update_option('hwh_matrix_seeded_v2', true);
 }
 add_action('init', 'hwh_seed_matrix_on_init', 30);
 
