@@ -31,8 +31,8 @@
             <!-- Brand col -->
             <div class="hwh-foot__brand">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-foot__logo" aria-label="Hot Water Heroes &mdash; Home"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>
-                    <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png"
-                         alt="Hot Water Heroes Plumbing" width="260" height="65"
+                    <img src="https://hotwaterheroesplumbing.com/wp-content/uploads/2024/11/Untitled-design-12-scaled.png"
+                         alt="Hot Water Heroes Plumbing" width="300" height="144"
                          loading="lazy" decoding="async">
                 </a>
                 <p class="hwh-foot__brand-text">Tampa Bay's trusted plumbing team &mdash; fast, honest, and available around the clock for water heater repair, installation, and emergency plumbing.</p>
