@@ -119,8 +119,6 @@
             <p class="hwh-foot__copyright">&copy; <?php echo date('Y'); ?> Hot Water Heroes Plumbing. All rights reserved. &middot; Licensed &amp; Insured &middot; Tampa Bay, FL</p>
             <div class="hwh-foot__legal">
                 <a href="<?php echo esc_url(home_url('/privacy-policy/')); ?>">Privacy Policy</a>
-                <a href="<?php echo esc_url(home_url('/cancellation-policy/')); ?>">Cancellation Policy</a>
-                <a href="<?php echo esc_url(home_url('/refund-policy/')); ?>">Refund Policy</a>
             </div>
         </div>
     </div>

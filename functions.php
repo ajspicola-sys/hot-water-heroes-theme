@@ -604,37 +604,6 @@ function hwh_create_privacy_page() {
 }
 add_action('init', 'hwh_create_privacy_page');
 
-// -- Auto-create Cancellation Policy page ------------------------------
-function hwh_create_cancellation_page() {
-    if ( get_option('hwh_cancellation_page_created_v1') ) return;
-    if ( ! hwh_page_slug_exists('cancellation-policy') ) {
-        wp_insert_post([
-            'post_title'   => 'Cancellation Policy',
-            'post_name'    => 'cancellation-policy',
-            'post_content' => '',
-            'post_status'  => 'publish',
-            'post_type'    => 'page',
-        ]);
-    }
-    update_option('hwh_cancellation_page_created_v1', true);
-}
-add_action('init', 'hwh_create_cancellation_page');
-
-// -- Auto-create Refund Policy page ------------------------------------
-function hwh_create_refund_page() {
-    if ( get_option('hwh_refund_page_created_v1') ) return;
-    if ( ! hwh_page_slug_exists('refund-policy') ) {
-        wp_insert_post([
-            'post_title'   => 'Refund Policy',
-            'post_name'    => 'refund-policy',
-            'post_content' => '',
-            'post_status'  => 'publish',
-            'post_type'    => 'page',
-        ]);
-    }
-    update_option('hwh_refund_page_created_v1', true);
-}
-add_action('init', 'hwh_create_refund_page');
 
 // -- Auto-create Maintenance Plan page --------------------------------------
 function hwh_create_specials_page() {
