@@ -2788,3 +2788,73 @@ function hwh_seo_alt_fallback( $attributes, $attachment, $size ) {
 }
 add_filter( 'wp_get_attachment_image_attributes', 'hwh_seo_alt_fallback', 10, 3 );
 
+
+// ============================================================================
+// LOCATION CUSTOM POST TYPE & AUTO-CREATION
+// Registers Areas Served (location) and dynamically generates the initial batch.
+// ============================================================================
+
+function hwh_register_locations() {
+    register_post_type('location', [
+        'labels' => [
+            'name'               => 'Areas Served',
+            'singular_name'      => 'Area Served',
+            'add_new'            => 'Add Area Served',
+            'add_new_item'       => 'Add New Area Served',
+            'edit_item'          => 'Edit Area Served',
+            'new_item'           => 'New Area Served',
+            'view_item'          => 'View Area Served',
+            'search_items'       => 'Search Areas Served',
+            'not_found'          => 'No areas served found',
+            'menu_name'          => '📍 Areas Served',
+        ],
+        'public'              => true,
+        'exclude_from_search' => false,
+        'has_archive'         => true,
+        'rewrite'             => ['slug' => 'area', 'with_front' => false],
+        'menu_icon'           => 'dashicons-location-alt',
+        'menu_position'       => 6,
+        'supports'            => ['title', 'editor', 'thumbnail', 'excerpt'],
+        'show_in_rest'        => true,
+    ]);
+}
+add_action('init', 'hwh_register_locations');
+
+function hwh_create_locations() {
+    if (get_option('hwh_locations_created_v1')) return;
+
+    $locations = [
+        ['title' => 'Tampa',          'excerpt' => 'Premium 24/7 plumbing and water heater repair, installation, and maintenance across Tampa, FL.'],
+        ['title' => 'South Tampa',    'excerpt' => 'Expert plumbing repairs and custom tankless water heater installations for South Tampa, FL homes.'],
+        ['title' => 'Citrus Park',    'excerpt' => 'Reliable, local plumbing services, water heater repair, and drain cleaning in Citrus Park, FL.'],
+        ['title' => 'Carrollwood',    'excerpt' => 'Tampa Bay\'s trusted local plumbing team offering 24/7 water heater and general plumbing repair in Carrollwood, FL.'],
+        ['title' => 'Westchase',      'excerpt' => 'High-end plumbing solutions, tankless water heaters, and water filtration installation in Westchase, FL.'],
+        ['title' => 'Lutz',           'excerpt' => 'Professional water heater repair, installation, and rapid emergency plumbing services in Lutz, FL.'],
+        ['title' => 'Land O Lakes',   'excerpt' => 'Trusted plumbing and water heater repair solutions for residential and commercial customers in Land O Lakes, FL.'],
+        ['title' => 'Brandon',        'excerpt' => 'Rapid response emergency plumbing and premium water heater services throughout Brandon, FL.'],
+        ['title' => 'Riverview',      'excerpt' => 'Sleek tankless installations, water heater repairs, and drain cleanings in Riverview, FL.'],
+        ['title' => 'Wesley Chapel',  'excerpt' => 'Emergency plumbing repair and professional water heater installation across Wesley Chapel, FL.'],
+        ['title' => 'New Tampa',      'excerpt' => 'Fast, high-quality residential plumbing repairs and new water heater installations in New Tampa, FL.'],
+        ['title' => 'Temple Terrace', 'excerpt' => 'Experienced, local plumbers offering leak detection, drain cleanings, and water heater service in Temple Terrace, FL.'],
+        ['title' => 'Odessa',         'excerpt' => 'Premium water heater upgrades, emergency plumbing, and water treatment solutions in Odessa, FL.'],
+        ['title' => 'Zephyrhills',    'excerpt' => 'Rapid plumbing repairs and water heater installation services for homes and businesses in Zephyrhills, FL.'],
+    ];
+
+    foreach ($locations as $loc) {
+        $existing = get_page_by_title($loc['title'], OBJECT, 'location');
+        if ($existing) continue;
+
+        wp_insert_post([
+            'post_title'   => $loc['title'],
+            'post_excerpt' => $loc['excerpt'],
+            'post_content' => 'Welcome to the local hub for Hot Water Heroes in ' . esc_html($loc['title']) . ', FL. We are proud to serve ' . esc_html($loc['title']) . ' with the highest quality plumbing, water heater, and water filtration solutions. Our licensed and insured plumbers are available 24/7 for emergency repairs, leaks, drain cleaning, and same-day water heater installations.',
+            'post_status'  => 'publish',
+            'post_type'    => 'location',
+        ]);
+    }
+
+    update_option('hwh_locations_created_v1', true);
+    flush_rewrite_rules();
+}
+add_action('init', 'hwh_create_locations', 20);
+
