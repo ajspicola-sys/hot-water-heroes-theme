@@ -3,6 +3,13 @@
  * Hot Water Heroes Plumbing — Single Area Served (Location) Template
  * Premium localized hub page for each targeted neighborhood/city.
  */
+
+// If this location has a parent, it is a service-location page (e.g. Lutz > Water Heater Repair)
+if ( wp_get_post_parent_id( get_the_ID() ) ) {
+    include get_template_directory() . '/single-location-service.php';
+    exit;
+}
+
 get_header();
 ?>
 

@@ -2811,10 +2811,11 @@ function hwh_register_locations() {
         'public'              => true,
         'exclude_from_search' => false,
         'has_archive'         => true,
+        'hierarchical'        => true,
         'rewrite'             => ['slug' => 'area', 'with_front' => false],
         'menu_icon'           => 'dashicons-location-alt',
         'menu_position'       => 6,
-        'supports'            => ['title', 'editor', 'thumbnail', 'excerpt'],
+        'supports'            => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
         'show_in_rest'        => true,
     ]);
 }
@@ -2857,4 +2858,84 @@ function hwh_create_locations() {
     flush_rewrite_rules();
 }
 add_action('init', 'hwh_create_locations', 20);
+
+
+// ============================================================================
+// SERVICE-LOCATION MATRIX GENERATOR ENGINE
+// Automatically cross-multiplies Areas Served & Services in the database.
+// ============================================================================
+
+function hwh_generate_location_services_matrix() {
+    // 1. Get all published parent locations (locations with no parent)
+    $locations = get_posts([
+        'post_type'      => 'location',
+        'post_status'    => 'publish',
+        'post_parent'    => 0,
+        'posts_per_page' => -1,
+    ]);
+
+    // 2. Get all published services
+    $services = get_posts([
+        'post_type'      => 'service',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+    ]);
+
+    if (empty($locations) || empty($services)) return;
+
+    // Temporarily remove action hooks to prevent infinite loops during wp_insert_post
+    remove_action('save_post_location', 'hwh_generate_matrix_on_save', 10);
+    remove_action('save_post_service', 'hwh_generate_matrix_on_save', 10);
+
+    foreach ($locations as $loc) {
+        foreach ($services as $svc) {
+            $child_slug = $svc->post_name;
+            $child_title = $svc->post_title . ' in ' . $loc->post_title . ', FL';
+
+            // Check if this child page already exists under this parent city
+            $existing = get_posts([
+                'post_type'      => 'location',
+                'post_parent'    => $loc->ID,
+                'name'           => $child_slug,
+                'posts_per_page' => 1,
+                'post_status'    => 'any',
+            ]);
+
+            if (empty($existing)) {
+                wp_insert_post([
+                    'post_title'   => $child_title,
+                    'post_name'    => $child_slug,
+                    'post_parent'  => $loc->ID,
+                    'post_type'    => 'location',
+                    'post_status'  => 'publish',
+                    'post_content' => 'Welcome to our hyper-local plumbing services landing page. Hot Water Heroes Plumbing provides high-quality, professional ' . esc_html($svc->post_title) . ' in and around ' . esc_html($loc->post_title) . ', FL.',
+                ]);
+            }
+        }
+    }
+
+    // Re-hook the save actions
+    add_action('save_post_location', 'hwh_generate_matrix_on_save', 10, 3);
+    add_action('save_post_service', 'hwh_generate_matrix_on_save', 10, 3);
+}
+
+// Background generator hooked to post saves
+function hwh_generate_matrix_on_save($post_id, $post, $update) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (wp_is_post_revision($post_id)) return;
+    if ($post->post_status !== 'publish') return;
+
+    hwh_generate_location_services_matrix();
+}
+add_action('save_post_location', 'hwh_generate_matrix_on_save', 10, 3);
+add_action('save_post_service', 'hwh_generate_matrix_on_save', 10, 3);
+
+// One-time init seeder to generate everything instantly on next page load
+function hwh_seed_matrix_on_init() {
+    if (get_option('hwh_matrix_seeded_v1')) return;
+
+    hwh_generate_location_services_matrix();
+    update_option('hwh_matrix_seeded_v1', true);
+}
+add_action('init', 'hwh_seed_matrix_on_init', 30);
 
