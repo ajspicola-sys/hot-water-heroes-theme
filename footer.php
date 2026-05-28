@@ -245,6 +245,50 @@
                 else this.value = '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6,10);
             });
         }
+
+        // -- Interactive Before/After Sliders --
+        var sliders = document.querySelectorAll('.before-after-slider');
+        if (sliders.length) {
+            sliders.forEach(function(slider) {
+                var range  = slider.querySelector('.slider-range');
+                var after  = slider.querySelector('.gallery-card__after');
+                var handle = slider.querySelector('.slider-handle');
+                if (range && after && handle) {
+                    var updateSlider = function() {
+                        var val = range.value;
+                        after.style.clipPath = 'polygon(0 0, ' + val + '% 0, ' + val + '% 100%, 0 100%)';
+                        handle.style.left = val + '%';
+                    };
+                    range.addEventListener('input', updateSlider);
+                    range.addEventListener('change', updateSlider);
+                    updateSlider();
+                }
+            });
+        }
+
+        // -- DOM Scroll-Lock Recovery Watchdog --
+        var tryUnlock = function() {
+            var dealPopup   = document.getElementById('deal-popup');
+            var mobileMenu  = document.getElementById('mobile-menu');
+            var dealOpen    = dealPopup  && dealPopup.classList.contains('is-open');
+            var menuOpen    = mobileMenu && mobileMenu.classList.contains('is-open');
+            if (!dealOpen && !menuOpen) {
+                document.documentElement.classList.remove('has-scroll-lock');
+                document.body.classList.remove('has-scroll-lock');
+                var bStyle = window.getComputedStyle(document.body);
+                var hStyle = window.getComputedStyle(document.documentElement);
+                if (bStyle.overflow === 'hidden' || bStyle.overflowY === 'hidden') {
+                    document.body.style.overflow = '';
+                    document.body.style.overflowY = '';
+                }
+                if (hStyle.overflow === 'hidden' || hStyle.overflowY === 'hidden') {
+                    document.documentElement.style.overflow = '';
+                    document.documentElement.style.overflowY = '';
+                }
+            }
+        };
+        document.addEventListener('click', function() { setTimeout(tryUnlock, 650); });
+        setInterval(tryUnlock, 2000);
     });
 
     // Cookie banner â€” HTML is server-rendered; JS only shows/hides it

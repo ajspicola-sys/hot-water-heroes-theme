@@ -29,7 +29,7 @@ get_header(); ?>
 
             <div class="gallery-grid reveal">
                 <div class="gallery-card" data-category="water-heater">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -37,6 +37,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
@@ -46,7 +54,7 @@ get_header(); ?>
                 </div>
 
                 <div class="gallery-card" data-category="pipe-repair">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -54,6 +62,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
@@ -63,7 +79,7 @@ get_header(); ?>
                 </div>
 
                 <div class="gallery-card" data-category="bathroom">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -71,6 +87,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
@@ -80,7 +104,7 @@ get_header(); ?>
                 </div>
 
                 <div class="gallery-card" data-category="drain">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -88,6 +112,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
@@ -97,7 +129,7 @@ get_header(); ?>
                 </div>
 
                 <div class="gallery-card" data-category="water-heater">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -105,6 +137,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
@@ -114,7 +154,7 @@ get_header(); ?>
                 </div>
 
                 <div class="gallery-card" data-category="pipe-repair">
-                    <div class="gallery-card__images">
+                    <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
                             <div class="gallery-card__placeholder">Before Photo</div>
@@ -122,6 +162,14 @@ get_header(); ?>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
                             <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
+                        <div class="slider-handle" aria-hidden="true">
+                            <div class="slider-handle__line"></div>
+                            <div class="slider-handle__circle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="8 17 3 12 8 7"/><polyline points="16 7 21 12 16 17"/></svg>
+                            </div>
+                            <div class="slider-handle__line"></div>
                         </div>
                     </div>
                     <div class="gallery-card__info">
