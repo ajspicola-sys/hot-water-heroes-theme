@@ -93,11 +93,58 @@ get_header(); ?>
                     </article>
 
                 <?php endwhile; wp_reset_postdata();
-                else : ?>
-                    <div class="empty-state">
-                        <p class="empty-state__text">Team members coming soon! Add them in <strong>WordPress Admin → Team</strong>.</p>
-                    </div>
-                <?php endif; ?>
+                else : 
+                    $fallbacks = [
+                        [
+                            'name'        => 'Joe Spicola',
+                            'role'        => 'Founder & Master Plumber',
+                            'initials'    => 'JS',
+                            'credentials' => 'Licensed Master Plumber, Water Heater Specialist, Emergency Expert',
+                            'bio'         => '<p>Joe is the driving force behind Hot Water Heroes and our family of companies (including Spicola Construction and RestoWrx). As a licensed Master Plumber with years of hands-on experience, he set out to build a local plumbing company that prioritizes honest pricing, top-tier workmanship, and immediate response.</p>',
+                            'specialties' => 'Tankless Conversions, Structural Rebuilding, Advanced Leak Diagnosis',
+                        ],
+                        [
+                            'name'        => 'John',
+                            'role'        => 'Lead Service Technician',
+                            'initials'    => 'JO',
+                            'credentials' => 'Water Heater Certified, Hydro-Jetting Specialist, Customer First Award',
+                            'bio'         => '<p>John has been servicing residential plumbing systems across Hillsborough and Pinellas counties for over a decade. Known for his friendly attitude and meticulous work, John specializes in drain cleaning, water heater repair, and fast emergency mitigation.</p>',
+                            'specialties' => 'Emergency Burst Pipes, Trenchless Snaking, Preventative Maintenance',
+                        ]
+                    ];
+                    $count = 0;
+                    foreach ($fallbacks as $member) :
+                        $count++;
+                        $reverse = ($count % 2 === 0) ? ' team-member--reverse' : '';
+                        $badges = array_map('trim', explode(',', $member['credentials']));
+                        $specs = array_map('trim', explode(',', $member['specialties']));
+                ?>
+                    <article class="team-member<?php echo $reverse; ?> reveal">
+                        <div class="team-member__image">
+                            <div class="team-card__placeholder team-card__placeholder--lg" aria-hidden="true"><?php echo esc_html($member['initials']); ?></div>
+                        </div>
+                        <div class="team-member__info">
+                            <h2 class="team-member__name"><?php echo esc_html($member['name']); ?></h2>
+                            <span class="team-member__role"><?php echo esc_html($member['role']); ?></span>
+
+                            <div class="team-member__credentials">
+                                <?php foreach ($badges as $badge) : ?>
+                                    <span class="team-member__badge"><?php echo esc_html($badge); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="team-member__bio">
+                                <?php echo $member['bio']; ?>
+                            </div>
+
+                            <div class="team-member__specialties">
+                                <?php foreach ($specs as $spec) : ?>
+                                    <span class="team-member__specialty"><?php echo esc_html($spec); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </article>
+                <?php endforeach; endif; ?>
 
             </div>
         </div>

@@ -96,13 +96,8 @@ $hwh_menu_services = hwh_get_menu_services();
           href="https://hotwaterheroesplumbing.com/wp-content/uploads/2025/12/HWH-HERO-VAN.png"
           fetchpriority="high">
 
-    <!-- Google Fonts: non-render-blocking via print→all swap trick -->
-    <link rel="preload" as="style"
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
-    </noscript>
+    <!-- Google Fonts: Loaded synchronously with preconnects to completely eliminate Flash of Unstyled Text (FOUT) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 
     <?php
     $theme_ver = filemtime(get_stylesheet_directory() . '/style.css');

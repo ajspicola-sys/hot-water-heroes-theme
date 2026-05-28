@@ -84,11 +84,56 @@ get_header(); ?>
                     </article>
 
                 <?php endwhile; wp_reset_postdata();
-                else : ?>
-                    <div class="empty-state empty-state--grid-full">
-                        <p class="empty-state__text">Products coming soon! Add them in <strong>WordPress Admin → Products</strong>.</p>
-                    </div>
-                <?php endif; ?>
+                else : 
+                    $fallbacks = [
+                        [
+                            'name'     => 'Rheem Prestige® Series Tankless Gas Water Heater',
+                            'price'    => 'From $1,899 (Installed)',
+                            'desc'     => '<p>The gold standard for tankless water heaters. Enjoy endless hot water with industry-leading energy efficiency (up to 0.96 UEF). High durability and a space-saving design make it perfect for Tampa Bay families.</p>',
+                            'url'      => home_url('/contact/'),
+                            'btn_text' => 'Get a Free Estimate',
+                        ],
+                        [
+                            'name'     => 'Bradford White Defender Safety System® Tank Water Heater',
+                            'price'    => 'From $1,299 (Installed)',
+                            'desc'     => '<p>The ultimate in reliable and safe residential tank-style water heating. Features a high recovery rate, intelligent temperature controls, and a robust glass-lined tank to resist mineral buildup from hard water.</p>',
+                            'url'      => home_url('/contact/'),
+                            'btn_text' => 'Get a Free Estimate',
+                        ],
+                        [
+                            'name'     => 'Halo 5 Whole House Water Filtration System',
+                            'price'    => 'From $2,499 (Installed)',
+                            'desc'     => '<p>Protect your family and your pipes from Tampa Bay\'s notoriously hard water. The Halo 5 is a complete, multi-stage water conditioning and filtration system that controls scale and filters out chlorine and heavy metals without chemicals.</p>',
+                            'url'      => home_url('/contact/'),
+                            'btn_text' => 'Learn More & Quote',
+                        ]
+                    ];
+                    foreach ($fallbacks as $product) :
+                ?>
+                    <article class="product-card reveal">
+                        <div class="product-card__inner">
+                            <div class="product-card__image">
+                                <div class="product-card__placeholder" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                </div>
+                            </div>
+
+                            <div class="product-card__content">
+                                <h2 class="product-card__name"><?php echo esc_html($product['name']); ?></h2>
+                                <span class="product-card__price"><?php echo esc_html($product['price']); ?></span>
+
+                                <div class="product-card__desc">
+                                    <?php echo $product['desc']; ?>
+                                </div>
+
+                                <a href="<?php echo esc_url($product['url']); ?>" class="btn btn--primary product-card__btn">
+                                    <?php echo esc_html($product['btn_text']); ?>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                <?php endforeach; endif; ?>
 
             </div>
         </div>

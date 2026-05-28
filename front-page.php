@@ -560,7 +560,7 @@ get_header(); ?>
             <div class="hwh-areas__content reveal">
                 <span class="hwh-label">Where We Work</span>
                 <h2 class="hwh-section-title">Serving All of<br><em>Tampa Bay</em></h2>
-                <p class="hwh-section-desc">Hillsborough, Pinellas, and Pasco County — if you're in the Tampa Bay area, we've got you covered with fast, reliable plumbing service.</p>
+                <p class="hwh-section-desc">Hillsborough, Pinellas, and Pasco County — whether you need an emergency plumber in <strong>Carrollwood</strong>, water heater repair in <strong>Lutz</strong>, or fast service in <strong>Citrus Park</strong>, <strong>South Tampa</strong>, <strong>Brandon</strong>, or <strong>Wesley Chapel</strong>, we've got you covered with fast, reliable plumbing service.</p>
                 <div class="hwh-areas__cities">
                     <button type="button" class="hwh-areas__city" data-city="tampa" aria-label="Highlight Tampa &amp; South Tampa on service area map">Tampa &amp; South Tampa</button>
                     <button type="button" class="hwh-areas__city" data-city="stpete" aria-label="Highlight St. Pete &amp; Gulf Beaches on service area map">St. Pete &amp; Gulf Beaches</button>

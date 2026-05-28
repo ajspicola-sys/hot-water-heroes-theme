@@ -432,6 +432,8 @@ function hwh_schema_markup() {
         ],
         'areaServed'       => [
             [ '@type' => 'City', 'name' => 'Tampa',          'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
+            [ '@type' => 'City', 'name' => 'South Tampa',    'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
+            [ '@type' => 'City', 'name' => 'Citrus Park',    'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
             [ '@type' => 'City', 'name' => 'Carrollwood',    'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
             [ '@type' => 'City', 'name' => 'Westchase',      'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
             [ '@type' => 'City', 'name' => 'Lutz',           'containedInPlace' => [ '@type' => 'State', 'name' => 'Florida' ] ],
