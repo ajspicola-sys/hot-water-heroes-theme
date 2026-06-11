@@ -900,13 +900,13 @@ function hwh_register_services() {
             'view_item'          => 'View Service',
             'search_items'       => 'Search Services',
             'not_found'          => 'No services found',
-            'menu_name'          => '?? Services',
+            'menu_name'          => 'Services',
         ],
         'public'              => true,
         'exclude_from_search' => false,
         'has_archive'         => true,
         'rewrite'             => ['slug' => 'services'],
-        'menu_icon'           => 'dashicons-heart',
+        'menu_icon'           => 'dashicons-wrench',
         'menu_position'       => 5,
         'supports'            => ['title', 'editor', 'thumbnail', 'excerpt'],
         'show_in_rest'        => true,
@@ -1235,7 +1235,7 @@ function hwh_register_team() {
             'view_item'          => 'View Team Member',
             'search_items'       => 'Search Team Members',
             'not_found'          => 'No team members found',
-            'menu_name'          => '????? Team',
+            'menu_name'          => 'Team',
         ],
         'public'             => false,
         'show_ui'            => true,
@@ -2706,7 +2706,7 @@ function hwh_register_locations() {
             'view_item'          => 'View Area Served',
             'search_items'       => 'Search Areas Served',
             'not_found'          => 'No areas served found',
-            'menu_name'          => '📍 Areas Served',
+            'menu_name'          => 'Areas Served',
         ],
         'public'              => true,
         'exclude_from_search' => false,
@@ -2862,4 +2862,16 @@ function register_yoast_seo_meta_in_rest() {
         }
     ));
 }
+
+// -- Filter third-party CPT Product labels and icon -----------------
+add_filter( 'register_post_type_args', function( $args, $post_type ) {
+    if ( $post_type === 'product' ) {
+        if ( isset( $args['labels'] ) ) {
+            $args['labels']['name'] = 'Products';
+            $args['labels']['menu_name'] = 'Products';
+        }
+        $args['menu_icon'] = 'dashicons-cart';
+    }
+    return $args;
+}, 10, 2 );
 
