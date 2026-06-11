@@ -357,6 +357,7 @@ $hwh_menu_services = hwh_get_menu_services();
     <!-- hwh-geolocation-script -->
     <script>
     (function() {
+        window.hwhLocalizedServices = <?php echo json_encode(array_keys(get_option('hwh_existing_localized_services', []))); ?>;
         const geoMapping = {
             'brandon': { name: 'Brandon' },
             'st-petersburg': { name: 'St. Petersburg' },
@@ -426,9 +427,15 @@ $hwh_menu_services = hwh_get_menu_services();
                         }
                         
                         // Re-apply the selected location suffix (unless it's 'tampa')
+                        // Only apply the suffix if it exists in our registry, preventing 404s
                         let newSlug = baseSlug;
+                        let isLocalized = false;
                         if (locationKey !== 'tampa') {
-                            newSlug = baseSlug + '-' + locationKey;
+                            const targetSlug = baseSlug + '-' + locationKey;
+                            if (window.hwhLocalizedServices && window.hwhLocalizedServices.includes(targetSlug)) {
+                                newSlug = targetSlug;
+                                isLocalized = true;
+                            }
                         }
                         
                         // Maintain base prefix and normalize to '/services/'
@@ -444,7 +451,7 @@ $hwh_menu_services = hwh_get_menu_services();
                         }
                         
                         link.setAttribute('href', newHref);
-
+ 
                         // Dynamic text update in service cards
                         const card = link.closest('.service-card, .hwh-service-card');
                         if (card) {
@@ -455,10 +462,33 @@ $hwh_menu_services = hwh_get_menu_services();
                                 }
                                 
                                 let originalHtml = titleEl.dataset.originalHtml;
-                                if (locationKey === 'tampa') {
+                                if (locationKey === 'tampa' || !isLocalized) {
                                     titleEl.innerHTML = originalHtml;
                                 } else {
                                     titleEl.innerHTML = originalHtml + ' in ' + loc.name;
+                                }
+                            }
+                        }
+
+                        // Dynamic text update in mega-menu and mobile menu links
+                        if (link.classList.contains('hwh-drop__item') || link.closest('.mobile-menu__links')) {
+                            const strongEl = link.querySelector('strong') || link;
+                            if (strongEl) {
+                                if (!strongEl.dataset.originalText) {
+                                    strongEl.dataset.originalText = strongEl.textContent;
+                                }
+                                
+                                let originalText = strongEl.dataset.originalText;
+                                let prefix = "";
+                                if (originalText.startsWith("↳ ")) {
+                                    prefix = "↳ ";
+                                    originalText = originalText.substring(2);
+                                }
+                                
+                                if (locationKey === 'tampa' || !isLocalized) {
+                                    strongEl.textContent = prefix + originalText;
+                                } else {
+                                    strongEl.textContent = prefix + originalText + ' in ' + loc.name;
                                 }
                             }
                         }
@@ -467,7 +497,8 @@ $hwh_menu_services = hwh_get_menu_services();
                     console.error('HWH Geo: Error rewriting link:', href, e);
                 }
             });
-
+        }
+        
             // Dynamic text updates on the page elements
             const traverseAndReplace = (node, locationName) => {
                 if (node.nodeType === Node.TEXT_NODE) {
