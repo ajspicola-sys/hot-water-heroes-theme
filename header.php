@@ -453,8 +453,7 @@ $hwh_menu_services = hwh_get_menu_services();
                     console.error('HWH Geo: Error rewriting link:', href, e);
                 }
             });
-        }
-        
+
             // Dynamic text updates on the page elements
             const traverseAndReplace = (node, locationName) => {
                 if (node.nodeType === Node.TEXT_NODE) {
