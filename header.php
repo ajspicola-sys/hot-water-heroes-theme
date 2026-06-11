@@ -418,10 +418,16 @@ $hwh_menu_services = hwh_get_menu_services();
                                 }
                                 
                                 let originalHtml = titleEl.dataset.originalHtml;
-                                if (locationKey === 'tampa' || !isLocalized) {
+                                if (locationKey === 'tampa') {
                                     titleEl.innerHTML = originalHtml;
                                 } else {
-                                    titleEl.innerHTML = originalHtml + ' in ' + loc.name;
+                                    if (/Tampa/i.test(originalHtml)) {
+                                        let temp = originalHtml.replace(/Tampa Bay/gi, loc.name);
+                                        temp = temp.replace(/Tampa/gi, loc.name);
+                                        titleEl.innerHTML = temp;
+                                    } else {
+                                        titleEl.innerHTML = originalHtml + ' in ' + loc.name;
+                                    }
                                 }
                             }
                         }
