@@ -26,8 +26,8 @@ if (!function_exists('hwh_localize_matrix_text')) {
     function hwh_localize_matrix_text($text, $city) {
         if (empty($text)) return '';
         $replacement = $city . ', FL';
-        return str_ireplace(
-            array('Tampa Bay, FL', 'Tampa, FL', 'Tampa Bay', 'Tampa'),
+        return preg_replace(
+            '/(?<!south\s|new\s|west\s|east\s|north\s)\bTampa(?:\s+Bay)?(?:,\s+FL)?\b/i',
             $replacement,
             $text
         );
