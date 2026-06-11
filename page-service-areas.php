@@ -80,6 +80,74 @@ get_header(); ?>
         </div>
     </section>
 
+    <!-- Service Area Directory Grid -->
+    <?php
+    // Temporarily bypass the exclude filter
+    remove_filter( 'posts_where', 'hwh_exclude_neighborhood_services', 10 );
+    $all_services = get_posts([
+        'post_type'      => 'service',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC'
+    ]);
+    add_filter( 'posts_where', 'hwh_exclude_neighborhood_services', 10, 2 );
+
+    // Group by location
+    $grouped_services = [];
+    $suffixes = get_option('hwh_localized_neighborhood_suffixes', []);
+    if ( empty( $suffixes ) ) {
+        $suffixes = ['brandon', 'st-petersburg', 'south-tampa', 'carrollwood', 'lutz', 'citrus-park', 'westchase', 'land-o-lakes', 'riverview', 'wesley-chapel', 'new-tampa', 'temple-terrace', 'odessa', 'zephyrhills'];
+    }
+
+    foreach ($all_services as $svc) {
+        $slug = $svc->post_name;
+        $found_loc = false;
+        foreach ($suffixes as $suffix) {
+            if ( substr($slug, -strlen('-' . $suffix)) === '-' . $suffix ) {
+                $loc_name = str_replace('-', ' ', $suffix);
+                $loc_name = ucwords($loc_name);
+                if (strtolower($loc_name) === 'st petersburg') $loc_name = 'St. Petersburg';
+                $grouped_services[$loc_name][] = $svc;
+                $found_loc = true;
+                break;
+            }
+        }
+        if (!$found_loc) {
+            $grouped_services['Tampa (Main)'][] = $svc;
+        }
+    }
+    ksort($grouped_services);
+    ?>
+    <section class="hwh-directory-section" style="padding: 5rem 0; background: #fff; border-top: 1px solid #EAF0F6;">
+        <div class="section__inner">
+            <div class="section__header reveal">
+                <span class="section__label">Service Directory</span>
+                <h2 class="section__title">All Local Services By Location</h2>
+                <p class="section__desc">Find specific water heater and plumbing services tailored to your local neighborhood.</p>
+            </div>
+            
+            <div class="hwh-directory-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; margin-top: 3rem;">
+                <?php foreach ($grouped_services as $location => $svcs): ?>
+                    <div class="hwh-directory-col" style="background: #F9FBFC; padding: 2rem; border-radius: 12px; border: 1px solid #EAF0F6;">
+                        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 700; color: #0B2347; margin-bottom: 1.25rem; border-bottom: 2px solid #F22F3A; padding-bottom: 0.5rem; display: inline-block;">
+                            📍 <?php echo esc_html($location); ?>
+                        </h3>
+                        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                            <?php foreach ($svcs as $s): ?>
+                                <li>
+                                    <a href="<?php echo esc_url(get_permalink($s->ID)); ?>" style="color: #3D6491; font-size: 0.95rem; font-weight: 500; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#F22F3A'" onmouseout="this.style.color='#3D6491'">
+                                        <?php echo esc_html($s->post_title); ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ -->
     <section class="party-faq">
         <div class="section__inner">

@@ -2875,3 +2875,145 @@ add_filter( 'register_post_type_args', function( $args, $post_type ) {
     return $args;
 }, 10, 2 );
 
+// ============================================================================
+// LOCALIZED NEIGHBORHOOD SERVICES SYSTEM
+// Replicates the Restowrx pattern for Hot Water Heroes
+// ============================================================================
+
+/**
+ * Get all published locations (Cities/Areas served)
+ */
+function hwh_get_locations() {
+    $locations = get_posts([
+        'post_type'      => 'location',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC'
+    ]);
+    return $locations;
+}
+
+/**
+ * Helper to identify if a service post is localized and get location details
+ */
+function hwh_get_service_location_info($post) {
+    if ( ! $post || $post->post_type !== 'service' ) return null;
+    
+    $slug = $post->post_name;
+    // Get all registered neighborhood suffixes
+    $suffixes = get_option('hwh_localized_neighborhood_suffixes', []);
+    if ( empty( $suffixes ) ) {
+        // Fallback default list
+        $suffixes = ['brandon', 'st-petersburg', 'south-tampa', 'carrollwood', 'lutz', 'citrus-park', 'westchase', 'land-o-lakes', 'riverview', 'wesley-chapel', 'new-tampa', 'temple-terrace', 'odessa', 'zephyrhills'];
+    }
+    
+    foreach ($suffixes as $suffix) {
+        if ( substr($slug, -strlen('-' . $suffix)) === '-' . $suffix ) {
+            $location_name = str_replace('-', ' ', $suffix);
+            $location_name = ucwords($location_name);
+            if ( strtolower($location_name) === 'st petersburg' ) $location_name = 'St. Petersburg';
+            
+            return [
+                'suffix' => $suffix,
+                'location_name' => $location_name,
+                'is_localized' => true,
+                'base_slug' => substr($slug, 0, -strlen('-' . $suffix))
+            ];
+        }
+    }
+    return null;
+}
+
+/**
+ * Rebuild the localized services registry cache mapping slugs to IDs
+ */
+function hwh_update_localized_services_registry() {
+    global $wpdb;
+    $suffixes = get_option('hwh_localized_neighborhood_suffixes', []);
+    if ( empty( $suffixes ) ) {
+        $suffixes = ['brandon', 'st-petersburg', 'south-tampa', 'carrollwood', 'lutz', 'citrus-park', 'westchase', 'land-o-lakes', 'riverview', 'wesley-chapel', 'new-tampa', 'temple-terrace', 'odessa', 'zephyrhills'];
+    }
+    
+    $like_clauses = [];
+    foreach ($suffixes as $suffix) {
+        $like_clauses[] = $wpdb->prepare("post_name LIKE %s", '%' . $wpdb->esc_like('-' . $suffix));
+    }
+    
+    if (empty($like_clauses)) return;
+    
+    $where_sql = implode(' OR ', $like_clauses);
+    $query = "SELECT ID, post_name FROM {$wpdb->posts} WHERE post_type = 'service' AND post_status = 'publish' AND ($where_sql)";
+    $results = $wpdb->get_results($query);
+    
+    $registry = [];
+    foreach ($results as $row) {
+        $registry[$row->post_name] = (int)$row->ID;
+    }
+    update_option('hwh_existing_localized_services', $registry);
+}
+add_action('save_post_service', 'hwh_update_localized_services_registry');
+add_action('delete_post', 'hwh_update_localized_services_registry');
+
+// Run one-time or periodically to ensure registry is initialized
+add_action('init', function() {
+    if (!get_option('hwh_existing_localized_services') || get_option('hwh_existing_localized_services') === '') {
+        hwh_update_localized_services_registry();
+    }
+}, 99);
+
+/**
+ * Exclude localized service pages from general queries/archives
+ */
+function hwh_exclude_neighborhood_services( $where, $query ) {
+    global $wpdb;
+    if ( is_admin() ) return $where;
+    
+    $post_types = isset( $query->query_vars['post_type'] ) ? $query->query_vars['post_type'] : '';
+    $has_service = is_array( $post_types ) ? in_array( 'service', $post_types, true ) : ( $post_types === 'service' );
+    
+    if ( $has_service ) {
+        // Allow query if fetching a specific single page or by ID
+        if ( $query->is_single() || $query->is_singular() || ! empty( $query->query_vars['name'] ) || ! empty( $query->query_vars['p'] ) || ! empty( $query->query_vars['post__in'] ) ) {
+            return $where;
+        }
+        
+        // Exclude location-specific suffixes from general listings
+        $suffixes = get_option('hwh_localized_neighborhood_suffixes', []);
+        if ( empty( $suffixes ) ) {
+            $suffixes = ['brandon', 'st-petersburg', 'south-tampa', 'carrollwood', 'lutz', 'citrus-park', 'westchase', 'land-o-lakes', 'riverview', 'wesley-chapel', 'new-tampa', 'temple-terrace', 'odessa', 'zephyrhills'];
+        }
+        
+        foreach ( $suffixes as $suffix ) {
+            $where .= $wpdb->prepare( " AND {$wpdb->posts}.post_name NOT LIKE %s ", '%' . $wpdb->esc_like( '-' . $suffix ) );
+        }
+    }
+    return $where;
+}
+add_filter( 'posts_where', 'hwh_exclude_neighborhood_services', 10, 2 );
+
+/**
+ * Server-Side Permalink Adjustments based on user's location cookie
+ */
+function hwh_adjust_service_permalink( $post_link, $post ) {
+    if ( is_admin() ) return $post_link;
+    if ( $post->post_type === 'service' ) {
+        $geo = isset( $_COOKIE['hwh_user_geo'] ) ? sanitize_text_field( $_COOKIE['hwh_user_geo'] ) : '';
+        if ( ! empty( $geo ) && $geo !== 'tampa' ) {
+            $suffix = '-' . $geo;
+            if ( substr( $post->post_name, -strlen( $suffix ) ) !== $suffix ) {
+                $target_slug = $post->post_name . $suffix;
+                
+                // Check cached registry instead of heavy DB query
+                $existing_localized = get_option('hwh_existing_localized_services', []);
+                if ( isset( $existing_localized[ $target_slug ] ) ) {
+                    return home_url( '/services/' . $target_slug . '/' );
+                }
+            }
+        }
+    }
+    return $post_link;
+}
+add_filter( 'post_type_link', 'hwh_adjust_service_permalink', 10, 2 );
+
+

@@ -137,6 +137,60 @@ $hwh_menu_services = hwh_get_menu_services();
             descent-override: 22%;
             line-gap-override: 0%;
         }
+        .hwh-location-selector {
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 4px;
+            padding: 2px 8px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .hwh-location-selector svg {
+            color: #F22F3A;
+        }
+        .hwh-location-selector select {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            padding: 2px 16px 2px 4px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right center;
+            background-size: 8px;
+        }
+        .hwh-location-selector select:hover {
+            color: #F22F3A;
+        }
+        .hwh-location-selector select option {
+            background: #0F2440;
+            color: #fff;
+        }
+        .hwh-fade-out {
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .hwh-topbar__left .hwh-topbar__item:nth-child(3),
+            .hwh-topbar__left .hwh-topbar__sep:nth-child(4),
+            .hwh-topbar__left .hwh-topbar__item:nth-child(5) {
+                display: none !important;
+            }
+            .hwh-location-selector {
+                margin-right: 0;
+            }
+        }
     </style>
 </head>
 
@@ -174,6 +228,24 @@ $hwh_menu_services = hwh_get_menu_services();
 
             <!-- Right: search + social -->
             <div class="hwh-topbar__right">
+                <div class="hwh-location-selector">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 4px; vertical-align: middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <select id="hwh-location-dropdown" aria-label="Select dispatch location">
+                        <option value="tampa">Tampa (Main)</option>
+                        <?php
+                        $locs = get_posts([
+                            'post_type' => 'location',
+                            'post_status' => 'publish',
+                            'posts_per_page' => -1,
+                            'orderby' => 'title',
+                            'order' => 'ASC'
+                        ]);
+                        foreach ($locs as $loc) {
+                            echo '<option value="' . esc_attr($loc->post_name) . '">' . esc_html($loc->post_title) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
                 <!-- Mini search -->
                 <form class="hwh-topbar__search" role="search" action="<?php echo esc_url(home_url('/')); ?>" method="get" aria-label="Site search">
                     <input type="search" name="s" class="hwh-topbar__search-input" placeholder="Search services…" aria-label="Search" value="<?php echo esc_attr(get_search_query()); ?>">
@@ -281,6 +353,311 @@ $hwh_menu_services = hwh_get_menu_services();
         </div>
     </div>
 
+    <!-- hwh-geolocation-script -->
+    <script>
+    window.hwhLocalizedServices = <?php echo json_encode(array_keys(get_option('hwh_existing_localized_services', []))); ?>;
+    (function() {
+        const geoMapping = {
+            'brandon': { name: 'Brandon' },
+            'st-petersburg': { name: 'St. Petersburg' },
+            'south-tampa': { name: 'South Tampa' },
+            'carrollwood': { name: 'Carrollwood' },
+            'lutz': { name: 'Lutz' },
+            'citrus-park': { name: 'Citrus Park' },
+            'westchase': { name: 'Westchase' },
+            'land-o-lakes': { name: 'Land O\' Lakes' },
+            'riverview': { name: 'Riverview' },
+            'wesley-chapel': { name: 'Wesley Chapel' },
+            'new-tampa': { name: 'New Tampa' },
+            'temple-terrace': { name: 'Temple Terrace' },
+            'odessa': { name: 'Odessa' },
+            'zephyrhills': { name: 'Zephyrhills' },
+            'tampa': { name: 'Tampa (Main)' }
+        };
+
+        // 1. Identify location from URL (always overrides lookup)
+        const path = window.location.pathname;
+        let urlLocation = null;
+        for (const key of Object.keys(geoMapping)) {
+            if (key === 'tampa') continue;
+            if (path.includes('-' + key)) {
+                urlLocation = key;
+                break;
+            }
+        }
+
+        const dropdown = document.getElementById('hwh-location-dropdown');
+
+        function updateServiceLinks(locationKey) {
+            if (!locationKey) return;
+            const suffixes = Object.keys(geoMapping).filter(k => k !== 'tampa');
+            const loc = geoMapping[locationKey];
+            if (!loc) return;
+            
+            // Find links matching either the plural /services/ or singular /service/ path
+            const links = document.querySelectorAll('a[href*="/services/"], a[href*="/service/"]');
+            
+            links.forEach(link => {
+                let href = link.getAttribute('href');
+                if (!href) return;
+                
+                try {
+                    let urlObj;
+                    if (href.startsWith('/') || href.startsWith('.') || !href.includes('://')) {
+                        urlObj = new URL(href, window.location.origin);
+                    } else {
+                        urlObj = new URL(href);
+                    }
+                    
+                    let pathVal = urlObj.pathname;
+                    // Match /services/slug/ or /service/slug/
+                    const serviceMatch = pathVal.match(/\/(services?)\/([^\/]+)\/?$/);
+                    if (serviceMatch && serviceMatch[2] !== 'services' && serviceMatch[2] !== 'service') {
+                        let matchedPostType = serviceMatch[1]; // 'services' or 'service'
+                        let slug = serviceMatch[2];
+                        let baseSlug = slug;
+                        
+                        // Strip any existing location suffix from the slug
+                        for (const suffix of suffixes) {
+                            if (baseSlug.endsWith('-' + suffix)) {
+                                baseSlug = baseSlug.slice(0, -(suffix.length + 1));
+                                break;
+                            }
+                        }
+                        
+                        // Re-apply the selected location suffix (only if it exists in window.hwhLocalizedServices registry!)
+                        let newSlug = baseSlug;
+                        if (locationKey !== 'tampa') {
+                            let targetSlug = baseSlug + '-' + locationKey;
+                            if (window.hwhLocalizedServices && window.hwhLocalizedServices.includes(targetSlug)) {
+                                newSlug = targetSlug;
+                            }
+                        }
+                        
+                        // Maintain base prefix and normalize to '/services/'
+                        const idx = pathVal.indexOf('/' + matchedPostType + '/');
+                        const pathPrefix = pathVal.substring(0, idx) + '/services/';
+                        urlObj.pathname = pathPrefix + newSlug + '/';
+                        
+                        let newHref;
+                        if (href.startsWith('/') && !href.startsWith('//')) {
+                            newHref = urlObj.pathname + urlObj.search + urlObj.hash;
+                        } else {
+                            newHref = urlObj.toString();
+                        }
+                        
+                        link.setAttribute('href', newHref);
+
+                        // Dynamic text update in service cards
+                        if (link.classList.contains('service-card') || link.classList.contains('hwh-service-card')) {
+                            const titleEl = link.querySelector('h3') || link.querySelector('.hwh-service-card__title') || link.querySelector('.service-card__title');
+                            if (titleEl) {
+                                if (!titleEl.dataset.originalHtml) {
+                                    titleEl.dataset.originalHtml = titleEl.innerHTML;
+                                }
+                                
+                                let originalHtml = titleEl.dataset.originalHtml;
+                                if (locationKey === 'tampa') {
+                                    titleEl.innerHTML = originalHtml;
+                                } else {
+                                    titleEl.innerHTML = originalHtml + ' in ' + loc.name;
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('HWH Geo: Error rewriting link:', href, e);
+                }
+            });
+
+            // Dynamic text updates on the page elements
+            const traverseAndReplace = (node, locationName) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    let text = node.nodeValue;
+                    text = text.replace(/Tampa Bay, FL/gi, locationName + ', FL');
+                    text = text.replace(/Tampa, FL/gi, locationName + ', FL');
+                    text = text.replace(/Tampa Bay/gi, locationName);
+                    text = text.replace(/\bTampa\b/gi, locationName);
+                    node.nodeValue = text;
+                } else {
+                    if (node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE' && node.nodeName !== 'SELECT' && node.nodeName !== 'OPTION') {
+                        node.childNodes.forEach(child => traverseAndReplace(child, locationName));
+                    }
+                }
+            };
+
+            if (locationKey !== 'tampa') {
+                const elementsToSearch = document.querySelectorAll('.hwh-hero__eyebrow, .hwh-hero__sub, .hwh-section-title, .hwh-section-desc, .svc-trust__heading, .svc-trust__desc, .svc-cta__title, .svc-cta__desc, .service-hero__title, .service-hero__desc, .service-hero__location, .page-hero__title, .page-hero__desc, .section__title, .section__desc');
+                elementsToSearch.forEach(el => {
+                    if (!el.dataset.originalHtml) {
+                        el.dataset.originalHtml = el.innerHTML;
+                    }
+                    traverseAndReplace(el, loc.name);
+                });
+            } else {
+                const elementsToSearch = document.querySelectorAll('.hwh-hero__eyebrow, .hwh-hero__sub, .hwh-section-title, .hwh-section-desc, .svc-trust__heading, .svc-trust__desc, .svc-cta__title, .svc-cta__desc, .service-hero__title, .service-hero__desc, .service-hero__location, .page-hero__title, .page-hero__desc, .section__title, .section__desc');
+                elementsToSearch.forEach(el => {
+                    if (el.dataset.originalHtml) {
+                        el.innerHTML = el.dataset.originalHtml;
+                    }
+                });
+            }
+        }
+
+        function updateUI(locationKey) {
+            if (!geoMapping[locationKey]) return;
+            
+            if (dropdown) {
+                dropdown.value = locationKey;
+            }
+            
+            document.cookie = "hwh_user_geo=" + encodeURIComponent(locationKey) + "; path=/; max-age=" + (30 * 24 * 60 * 60) + "; SameSite=Lax";
+            
+            updateServiceLinks(locationKey);
+        }
+
+        if (urlLocation) {
+            localStorage.setItem('hwh_user_geo', urlLocation);
+            updateUI(urlLocation);
+            return;
+        }
+
+        let cachedGeo = localStorage.getItem('hwh_user_geo');
+        const cacheTime = localStorage.getItem('hwh_user_geo_time');
+        const now = new Date().getTime();
+
+        const isCacheValid = cachedGeo && cacheTime && (now - parseInt(cacheTime) < 30 * 24 * 60 * 60 * 1000);
+
+        if (isCacheValid) {
+            updateUI(cachedGeo);
+        } else {
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(data => {
+                    let detected = 'tampa';
+                    const city = (data.city || '').toLowerCase();
+                    const zip = (data.postal || '').trim();
+
+                    const southTampaZips = ['33629', '33611', '33606', '33609', '33616', '33621'];
+
+                    if (city.includes('brandon')) {
+                        detected = 'brandon';
+                    } else if (city.includes('petersburg') || city.includes('st. pete')) {
+                        detected = 'st-petersburg';
+                    } else if (city.includes('carrollwood')) {
+                        detected = 'carrollwood';
+                    } else if (city.includes('lutz')) {
+                        detected = 'lutz';
+                    } else if (city.includes('citrus park')) {
+                        detected = 'citrus-park';
+                    } else if (city.includes('westchase')) {
+                        detected = 'westchase';
+                    } else if (city.includes('land o lakes') || city.includes('land o\' lakes')) {
+                        detected = 'land-o-lakes';
+                    } else if (city.includes('riverview')) {
+                        detected = 'riverview';
+                    } else if (city.includes('wesley chapel')) {
+                        detected = 'wesley-chapel';
+                    } else if (city.includes('new tampa')) {
+                        detected = 'new-tampa';
+                    } else if (city.includes('temple terrace')) {
+                        detected = 'temple-terrace';
+                    } else if (city.includes('odessa')) {
+                        detected = 'odessa';
+                    } else if (city.includes('zephyrhills')) {
+                        detected = 'zephyrhills';
+                    } else if (city.includes('tampa')) {
+                        if (southTampaZips.includes(zip)) {
+                            detected = 'south-tampa';
+                        } else {
+                            detected = 'tampa';
+                        }
+                    }
+
+                    localStorage.setItem('hwh_user_geo', detected);
+                    localStorage.setItem('hwh_user_geo_time', now.toString());
+                    updateUI(detected);
+                })
+                .catch(err => {
+                    localStorage.setItem('hwh_user_geo', 'tampa');
+                    localStorage.setItem('hwh_user_geo_time', now.toString());
+                    updateUI('tampa');
+                });
+        }
+
+        if (dropdown) {
+            dropdown.addEventListener('change', function() {
+                const selected = this.value;
+                localStorage.setItem('hwh_user_geo', selected);
+                localStorage.setItem('hwh_user_geo_time', new Date().getTime().toString());
+                document.cookie = "hwh_user_geo=" + encodeURIComponent(selected) + "; path=/; max-age=" + (30 * 24 * 60 * 60) + "; SameSite=Lax";
+                
+                let redirectUrl = null;
+                const origin = window.location.origin;
+                const suffixes = Object.keys(geoMapping).filter(k => k !== 'tampa');
+                
+                const serviceMatch = path.match(/\/services\/([^\/]+)\/?$/);
+                if (serviceMatch && serviceMatch[1] !== 'services') {
+                    let currentSlug = serviceMatch[1];
+                    let baseSlug = currentSlug;
+                    
+                    for (const suffix of suffixes) {
+                        if (baseSlug.endsWith('-' + suffix)) {
+                            baseSlug = baseSlug.slice(0, -(suffix.length + 1));
+                            break;
+                        }
+                    }
+                    
+                    const idx = path.indexOf('/services/');
+                    const pathPrefix = path.substring(0, idx) + '/services/';
+                    
+                    if (selected === 'tampa') {
+                        redirectUrl = origin + pathPrefix + baseSlug + '/';
+                    } else {
+                        let targetSlug = baseSlug + '-' + selected;
+                        if (window.hwhLocalizedServices && window.hwhLocalizedServices.includes(targetSlug)) {
+                            redirectUrl = origin + pathPrefix + targetSlug + '/';
+                        } else {
+                            redirectUrl = origin + pathPrefix + baseSlug + '/';
+                        }
+                    }
+                }
+                
+                const mainContent = document.getElementById('main-content');
+                if (mainContent) {
+                    mainContent.classList.add('hwh-fade-out');
+                    setTimeout(function() {
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else {
+                            updateUI(selected);
+                            setTimeout(function() {
+                                mainContent.classList.remove('hwh-fade-out');
+                            }, 50);
+                        }
+                    }, 300);
+                } else {
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        updateUI(selected);
+                    }
+                }
+            });
+        }
+
+        function initGeoAndLinks() {
+            const currentGeo = localStorage.getItem('hwh_user_geo') || 'tampa';
+            updateServiceLinks(currentGeo);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGeoAndLinks);
+        } else {
+            initGeoAndLinks();
+        }
+    })();
+    </script>
 </header>
 
 <!-- ═══════════════════════════════════════════

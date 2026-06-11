@@ -27,6 +27,10 @@ if ($video) {
 $categories    = get_the_terms($post_id, 'service_category');
 $category_name = ($categories && !is_wp_error($categories)) ? $categories[0]->name : 'Plumbing';
 $has_image     = has_post_thumbnail();
+
+$loc_info = hwh_get_service_location_info(get_post($post_id));
+$location_display = $loc_info ? 'in ' . $loc_info['location_name'] . ', FL' : 'in Tampa Bay, FL';
+$location_name = $loc_info ? $loc_info['location_name'] : 'Tampa Bay';
 ?>
 
 <main class="site-main" id="main-content">
@@ -39,7 +43,7 @@ $has_image     = has_post_thumbnail();
              itemscope itemtype="https://schema.org/Service">
         <meta itemprop="name" content="<?php the_title_attribute(); ?>">
         <meta itemprop="serviceType" content="<?php echo esc_attr($category_name); ?>">
-        <meta itemprop="areaServed" content="Tampa Bay, FL">
+        <meta itemprop="areaServed" content="<?php echo esc_attr($loc_info ? $loc_info['location_name'] . ', FL' : 'Tampa Bay, FL'); ?>">
         <span class="service-hero__glow" aria-hidden="true"></span>
 
         <div class="service-hero__inner">
@@ -73,7 +77,7 @@ $has_image     = has_post_thumbnail();
 
                 <h1 class="service-hero__title">
                     <?php the_title(); ?><br>
-                    <em class="service-hero__location">in Tampa Bay, FL</em>
+                    <em class="service-hero__location"><?php echo esc_html($location_display); ?></em>
                 </h1>
 
                 <?php if (has_excerpt()): ?>
@@ -227,8 +231,8 @@ $has_image     = has_post_thumbnail();
         <div class="svc-trust__inner">
             <div class="svc-trust__left reveal">
                 <span class="section__label section__label--light">The HWH Difference</span>
-                <h2 class="svc-trust__heading">Why Tampa<br><em>Trusts Us</em></h2>
-                <p class="svc-trust__desc">We've built our reputation one job at a time — honest work, fair prices, and no surprises. That's why Tampa Bay homeowners trust Hot Water Heroes.</p>
+                <h2 class="svc-trust__heading">Why <?php echo esc_html($location_name); ?><br><em>Trusts Us</em></h2>
+                <p class="svc-trust__desc">We've built our reputation one job at a time — honest work, fair prices, and no surprises. That's why <?php echo esc_html($location_name); ?> homeowners trust Hot Water Heroes.</p>
                 <div class="svc-trust__stat">
                     <span class="svc-trust__stat-stars">★★★★★</span>
                     <div>
