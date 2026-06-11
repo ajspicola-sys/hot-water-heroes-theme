@@ -450,8 +450,9 @@ $hwh_menu_services = hwh_get_menu_services();
                         link.setAttribute('href', newHref);
 
                         // Dynamic text update in service cards
-                        if (link.classList.contains('service-card') || link.classList.contains('hwh-service-card')) {
-                            const titleEl = link.querySelector('h3') || link.querySelector('.hwh-service-card__title') || link.querySelector('.service-card__title');
+                        const card = link.closest('.service-card, .hwh-service-card');
+                        if (card) {
+                            const titleEl = card.querySelector('h3') || card.querySelector('h2') || card.querySelector('.hwh-service-card__title') || card.querySelector('.service-card__title');
                             if (titleEl) {
                                 if (!titleEl.dataset.originalHtml) {
                                     titleEl.dataset.originalHtml = titleEl.innerHTML;
