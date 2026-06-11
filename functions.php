@@ -3036,10 +3036,29 @@ function hwh_get_service_image_url($post_id) {
     // Strip location suffixes to find the base service slug
     $suffixes = ['-brandon', '-st-petersburg', '-south-tampa', '-carrollwood', '-lutz', '-citrus-park', '-westchase', '-land-o-lakes', '-riverview', '-wesley-chapel', '-new-tampa', '-temple-terrace', '-odessa', '-zephyrhills'];
     $base_slug = $slug;
+    $is_localized_slug = false;
     foreach ($suffixes as $suffix) {
         if (substr($base_slug, -strlen($suffix)) === $suffix) {
             $base_slug = substr($base_slug, 0, -strlen($suffix));
+            $is_localized_slug = true;
             break;
+        }
+    }
+
+    if ($is_localized_slug) {
+        // Query the base service post to inherit its featured image
+        $base_posts = get_posts([
+            'post_type'        => 'service',
+            'name'             => $base_slug,
+            'posts_per_page'   => 1,
+            'post_status'      => 'publish',
+            'suppress_filters' => true,
+        ]);
+        if (!empty($base_posts)) {
+            $base_post = $base_posts[0];
+            if (has_post_thumbnail($base_post->ID)) {
+                return get_the_post_thumbnail_url($base_post->ID, 'medium_large');
+            }
         }
     }
 
