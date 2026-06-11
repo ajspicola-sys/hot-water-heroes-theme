@@ -142,7 +142,7 @@ get_header(); ?>
     <!-- Service CTA -->
     <section class="cta-section" aria-label="Book with us">
         <div class="cta-section__inner reveal">
-            <span class="cta-section__label">Need Help Choosing?</span>
+            <span class="cta-section__label">Expert Advice</span>
             <h2 class="cta-section__title">Need Help<br>Choosing?</h2>
             <p class="cta-section__text">Our team can recommend the right products for your plumbing needs. Call us anytime.</p>
             <div class="cta-section__actions">
