@@ -81,28 +81,6 @@ get_header(); ?>
                      fetchpriority="high" loading="eager" decoding="async"
                      class="hwh-hero__van">
             </div>
-            <!-- Floating feature cards -->
-            <div class="hwh-hero__card hwh-hero__card--1">
-                <span class="hwh-hero__card-icon">⭐</span>
-                <span>
-                    <strong>5.0 Google Rating</strong>
-                    <span>30+ Verified Reviews</span>
-                </span>
-            </div>
-            <div class="hwh-hero__card hwh-hero__card--2">
-                <span class="hwh-hero__card-icon">⚡</span>
-                <span>
-                    <strong>Same-Day Service</strong>
-                    <span>Fast Local Dispatch</span>
-                </span>
-            </div>
-            <div class="hwh-hero__card hwh-hero__card--3">
-                <span class="hwh-hero__card-icon">🛡️</span>
-                <span>
-                    <strong>Licensed & Insured</strong>
-                    <span>100% Satisfaction Guarantee</span>
-                </span>
-            </div>
         </div>
         </div>
     </div>
