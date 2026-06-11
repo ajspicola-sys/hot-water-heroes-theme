@@ -12986,4 +12986,83 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
   }
 }
 
+/* ═════════════════════════════════════════════════════════
+   TOPBAR LOCATION SELECTOR (PREMIUM STYLING)
+   ═════════════════════════════════════════════════════════ */
+.hwh-location-selector {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem 0.2rem 0.75rem;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  position: relative;
+  gap: 0.25rem;
+}
+
+.hwh-location-selector:hover,
+.hwh-location-selector:focus-within {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.hwh-location-selector svg {
+  color: #F22F3A;
+  flex-shrink: 0;
+  animation: hwh-pulse 2s ease infinite;
+}
+
+#hwh-location-dropdown {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding-right: 1.15rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.hwh-location-selector::after {
+  content: "";
+  position: absolute;
+  right: 0.75rem;
+  top: calc(50% - 2px);
+  display: block;
+  width: 7px;
+  height: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.hwh-location-selector:focus-within::after,
+.hwh-location-selector:hover::after {
+  opacity: 1;
+}
+
+.hwh-location-selector:focus-within::after {
+  transform: rotate(180deg);
+}
+
+#hwh-location-dropdown option {
+  background: #0F2440;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
 }
