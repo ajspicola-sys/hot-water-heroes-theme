@@ -32,11 +32,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop" alt="Corroded water heater before replacement" style="filter: grayscale(100%) brightness(80%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop" alt="New energy-efficient water heater installed">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
@@ -57,11 +57,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=800&auto=format&fit=crop" alt="Leaking burst copper pipe under sink" style="filter: grayscale(100%) brightness(85%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop" alt="Clean copper pipe repair with clean solder joints">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
@@ -82,11 +82,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?q=80&w=800&auto=format&fit=crop" alt="Old galvanized pipes in master bath studs" style="filter: grayscale(100%) brightness(80%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1605647540924-852290f6b0d5?q=80&w=800&auto=format&fit=crop" alt="Brand new, clean PEX lines routed through wall studs">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
@@ -107,11 +107,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop" alt="Severely clogged sewer line block" style="filter: grayscale(100%) brightness(75%) contrast(120%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1618973136611-85244815b16a?q=80&w=800&auto=format&fit=crop" alt="Fully cleared drain pipe after hydro-jetting">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
@@ -132,11 +132,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop" alt="Bulky outdated water heater tank" style="filter: grayscale(100%) brightness(80%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop" alt="Compact modern tankless water heater wall mount">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
@@ -157,11 +157,11 @@ get_header(); ?>
                     <div class="gallery-card__images before-after-slider">
                         <div class="gallery-card__before">
                             <span class="gallery-card__label">Before</span>
-                            <div class="gallery-card__placeholder">Before Photo</div>
+                            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop" alt="Hidden slab leak spot in foundation" style="filter: grayscale(100%) brightness(75%);">
                         </div>
                         <div class="gallery-card__after">
                             <span class="gallery-card__label gallery-card__label--after">After</span>
-                            <div class="gallery-card__placeholder gallery-card__placeholder--after">After Photo</div>
+                            <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?q=80&w=800&auto=format&fit=crop" alt="Foundation leak repaired and slab patched clean">
                         </div>
                         <input type="range" min="0" max="100" value="50" class="slider-range" aria-label="Before and after comparison slider">
                         <div class="slider-handle" aria-hidden="true">
