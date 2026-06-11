@@ -283,52 +283,8 @@ $hwh_menu_services = hwh_get_menu_services();
                     <li class="hwh-nav__item<?php if (is_front_page()) echo ' hwh-nav__item--active'; ?>">
                         <a href="<?php echo esc_url(home_url('/')); ?>" class="hwh-nav__link"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>Home</a>
                     </li>
-                    <li class="hwh-nav__item hwh-nav__item--has-drop<?php if (is_post_type_archive('service') || is_singular('service')) echo ' hwh-nav__item--active'; ?>">
-                        <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-nav__link">
-                            Services <span class="hwh-nav__arrow" aria-hidden="true">▾</span>
-                        </a>
-                        <div class="hwh-drop">
-                            <div class="hwh-drop__inner">
-
-                                 <?php if ( ! empty( $hwh_menu_services ) ) :
-                                    foreach ( $hwh_menu_services as $cat_name => $posts ) :
-                                ?>
-                                <div class="hwh-drop__col">
-                                    <span class="hwh-drop__heading"><?php echo esc_html( $cat_name ); ?></span>
-                                    <?php foreach ( array_slice( $posts, 0, 8 ) as $s ) :
-                                        $icon    = get_post_meta( $s->ID, '_service_icon', true ) ?: '';
-                                        $excerpt = wp_trim_words( get_post_field( 'post_excerpt', $s->ID ) ?: get_post_field( 'post_content', $s->ID ), 7, '' );
-                                    ?>
-                                    <a href="<?php echo esc_url( get_permalink( $s->ID ) ); ?>" class="hwh-drop__item">
-                                        <?php if ($icon && strlen($icon) > 4) : ?><span class="hwh-drop__icon"><?php echo esc_html( $icon ); ?></span><?php endif; ?>
-                                        <span>
-                                            <strong><?php echo esc_html( $s->post_title ); ?></strong>
-                                            <?php if ( $excerpt ) : ?><em><?php echo esc_html( $excerpt ); ?></em><?php endif; ?>
-                                        </span>
-                                    </a>
-                                    <?php endforeach; ?>
-                                </div>
-                                <?php endforeach; ?>
-
-                                <?php else : ?>
-                                <!-- Fallback: no services in WP yet -->
-                                <div class="hwh-drop__col">
-                                    <span class="hwh-drop__heading">Popular Services</span>
-                                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-drop__item">
-                                        <span class="hwh-drop__icon"></span>
-                                        <span><strong>Browse All Services</strong></span>
-                                    </a>
-                                </div>
-                                <?php endif; ?>
-
-
-                            </div>
-                            <div class="hwh-drop__footer">
-                                <div class="hwh-drop__footer__inner">
-                                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-drop__footer-cta">View All Services →</a>
-                                </div>
-                            </div>
-                        </div>
+                    <li class="hwh-nav__item<?php if (is_post_type_archive('service') || is_singular('service')) echo ' hwh-nav__item--active'; ?>">
+                        <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-nav__link">Services</a>
                     </li>
                     <li class="hwh-nav__item<?php if (is_page('about')) echo ' hwh-nav__item--active'; ?>">
                         <a href="<?php echo esc_url(home_url('/about/')); ?>" class="hwh-nav__link">About</a>
