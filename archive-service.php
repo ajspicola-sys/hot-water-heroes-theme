@@ -7,23 +7,7 @@
 get_header();
 ?>
 
-<style>
-    /* Services archive — full-width card images */
-    .hwh-services .hwh-service-card__img {
-        margin: -2.2rem -2rem 1rem -2rem;
-        border-radius: 18px 18px 0 0;
-        aspect-ratio: 16 / 9;
-        width: calc(100% + 4rem) !important;
-        max-width: none !important;
-    }
 
-    .hwh-services .hwh-service-card__img img {
-        border-radius: 0;
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-    }
-</style>
 
 <main class="site-main" id="main-content">
 
