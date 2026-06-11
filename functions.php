@@ -2886,6 +2886,7 @@ add_filter( 'register_post_type_args', function( $args, $post_type ) {
 function hwh_get_locations() {
     $locations = get_posts([
         'post_type'      => 'location',
+        'post_parent'    => 0,
         'post_status'    => 'publish',
         'posts_per_page' => -1,
         'orderby'        => 'title',

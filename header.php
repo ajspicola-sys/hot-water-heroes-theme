@@ -235,6 +235,7 @@ $hwh_menu_services = hwh_get_menu_services();
                         <?php
                         $locs = get_posts([
                             'post_type' => 'location',
+                            'post_parent' => 0,
                             'post_status' => 'publish',
                             'posts_per_page' => -1,
                             'orderby' => 'title',
