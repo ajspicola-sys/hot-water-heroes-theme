@@ -356,7 +356,6 @@ $hwh_menu_services = hwh_get_menu_services();
 
     <!-- hwh-geolocation-script -->
     <script>
-    window.hwhLocalizedServices = <?php echo json_encode(array_keys(get_option('hwh_existing_localized_services', []))); ?>;
     (function() {
         const geoMapping = {
             'brandon': { name: 'Brandon' },
@@ -426,13 +425,10 @@ $hwh_menu_services = hwh_get_menu_services();
                             }
                         }
                         
-                        // Re-apply the selected location suffix (only if it exists in window.hwhLocalizedServices registry!)
+                        // Re-apply the selected location suffix (unless it's 'tampa')
                         let newSlug = baseSlug;
                         if (locationKey !== 'tampa') {
-                            let targetSlug = baseSlug + '-' + locationKey;
-                            if (window.hwhLocalizedServices && window.hwhLocalizedServices.includes(targetSlug)) {
-                                newSlug = targetSlug;
-                            }
+                            newSlug = baseSlug + '-' + locationKey;
                         }
                         
                         // Maintain base prefix and normalize to '/services/'
@@ -616,12 +612,7 @@ $hwh_menu_services = hwh_get_menu_services();
                     if (selected === 'tampa') {
                         redirectUrl = origin + pathPrefix + baseSlug + '/';
                     } else {
-                        let targetSlug = baseSlug + '-' + selected;
-                        if (window.hwhLocalizedServices && window.hwhLocalizedServices.includes(targetSlug)) {
-                            redirectUrl = origin + pathPrefix + targetSlug + '/';
-                        } else {
-                            redirectUrl = origin + pathPrefix + baseSlug + '/';
-                        }
+                        redirectUrl = origin + pathPrefix + baseSlug + '-' + selected + '/';
                     }
                 }
                 
