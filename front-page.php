@@ -133,96 +133,118 @@ get_header(); ?>
             'no_found_rows'  => true,
         ]);
         $fallback = [
-            ['title'=>'Water Heater Repair',      'text'=>'Fast diagnosis and repair of all water heater brands and sizes. No hot water? We fix it same-day.', 'price' => '$99+'],
-            ['title'=>'Water Heater Installation', 'text'=>'Full installation of tank and tankless units — properly sized, up to code, done right the first time.', 'price' => 'Free Est.'],
-            ['title'=>'Tankless Water Heaters',   'text'=>'Endless hot water with a tankless upgrade. We sell, install, and service all major brands.', 'price' => 'Free Est.'],
-            ['title'=>'Drain Cleaning',           'text'=>'Slow drains or full blockages cleared with hydro-jetting and professional snaking.', 'price' => '$99+'],
-            ['title'=>'Emergency Plumbing',       'text'=>'Burst pipe? Major leak? We\'re available 24/7 — nights, weekends, and holidays.', 'price' => '24/7 Service'],
-            ['title'=>'Leak Detection & Repair',  'text'=>'Non-invasive technology finds hidden leaks before they cause major damage to your home.', 'price' => '$150+'],
+            [
+                'title' => 'Water Heater Repair',
+                'text' => 'Fast diagnosis and repair of all water heater brands and sizes. No hot water? We fix it same-day.',
+                'price' => '$99+',
+                'benefits' => ['Same-Day Hot Water', 'Element & Thermostats', 'All Major Brands'],
+                'img' => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=600'
+            ],
+            [
+                'title' => 'Water Heater Installation',
+                'text' => 'Full installation of tank and tankless units — properly sized, up to code, done right the first time.',
+                'price' => 'Free Est.',
+                'benefits' => ['Expert Sizing', 'Code-Compliant Sinks', 'Energy Efficient'],
+                'img' => 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=600'
+            ],
+            [
+                'title' => 'Tankless Water Heaters',
+                'text' => 'Endless hot water with a tankless upgrade. We sell, install, and service all major brands.',
+                'price' => 'Free Est.',
+                'benefits' => ['Endless Hot Water', 'Space-Saving Design', 'Lower Energy Bills'],
+                'img' => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=600'
+            ],
+            [
+                'title' => 'Drain Cleaning',
+                'text' => 'Slow drains or full blockages cleared with hydro-jetting and professional snaking.',
+                'price' => '$99+',
+                'benefits' => ['Stubborn Clogs Cleared', 'Hydro-Jetting Available', 'Camera Inspections'],
+                'img' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=600'
+            ],
+            [
+                'title' => 'Emergency Plumbing',
+                'text' => 'Burst pipe? Major leak? We\'re available 24/7 — nights, weekends, and holidays.',
+                'price' => '24/7 Service',
+                'benefits' => ['60-Min Dispatch', 'Burst Pipe Control', '24/7 Support'],
+                'img' => 'https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=600'
+            ],
+            [
+                'title' => 'Leak Detection & Repair',
+                'text' => 'Non-invasive technology finds hidden leaks before they cause major damage to your home.',
+                'price' => '$150+',
+                'benefits' => ['Pinpoint Locating', 'Thermal Cameras', 'Water Line Repair'],
+                'img' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=600'
+            ],
         ];
-
-        // Safe helper to return custom SVGs and gradient classes for core plumbing services
-        if (!function_exists('hwh_get_service_visuals')) {
-            function hwh_get_service_visuals($title) {
-                $title_clean = strtolower($title);
-                $grad = 'hwh-gradient-navy';
-                $svg = '';
-
-                if (strpos($title_clean, 'repair') !== false && (strpos($title_clean, 'heater') !== false || strpos($title_clean, 'water') !== false)) {
-                    $grad = 'hwh-gradient-red';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/><path d="M12 13c1.5 0 2.5-1.5 2.5-3S12 7 12 7s-2.5 1.5-2.5 3 1 3 2.5 3z" fill="currentColor"/></svg>';
-                } elseif (strpos($title_clean, 'install') !== false && (strpos($title_clean, 'heater') !== false || strpos($title_clean, 'water') !== false)) {
-                    $grad = 'hwh-gradient-orange';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" /><path d="M12 6V2M9 10h6M9 14h6" /><circle cx="12" cy="18" r="1.5" fill="currentColor" /><path d="M19 13v6M16 16h6" /></svg>';
-                } elseif (strpos($title_clean, 'tankless') !== false) {
-                    $grad = 'hwh-gradient-crimson';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2" /><path d="M9 20v2M15 20v2" /><path d="M12 9c-1.5 0-2.5 1-2.5 2.5s2.5 2.5 2.5 4 1.5 1.5 2.5 1.5c1 0 1.5-.5 1.5-1.5s-2.5-2.5-2.5-4C13.5 10 13 9 12 9z" /><path d="M8 8h8" /></svg>';
-                } elseif (strpos($title_clean, 'drain') !== false) {
-                    $grad = 'hwh-gradient-blue';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h4v6a6 6 0 0 0 12 0V5h4" /><path d="M8 12c1.5 1.5 3 0 4.5-1.5s3 0 4.5 1.5" /><path d="M10 15c1 1 2 0 3-1s2 0 3 1" /></svg>';
-                } elseif (strpos($title_clean, 'emergency') !== false || strpos($title_clean, '24/7') !== false) {
-                    $grad = 'hwh-gradient-darkred';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M12 8v5M12 16h.01" stroke-width="3" /></svg>';
-                } elseif (strpos($title_clean, 'leak') !== false || strpos($title_clean, 'detection') !== false) {
-                    $grad = 'hwh-gradient-teal';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h10M18 12h4" /><circle cx="15" cy="12" r="4" /><path d="M18 15l4 4" /><path d="M15 10c0 1.5-1.5 2.5-1.5 2.5S12 11.5 12 10s1.5-2.5 1.5-2.5S15 8.5 15 10z" fill="currentColor" stroke="none" /></svg>';
-                } else {
-                    $grad = 'hwh-gradient-navy';
-                    $svg = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
-                }
-
-                return ['grad' => $grad, 'svg' => $svg];
-            }
-        }
         ?>
 
         <div class="hwh-services-grid">
             <?php if ($services->have_posts()) :
+                $idx = 1;
                 while ($services->have_posts()) : $services->the_post();
-                    $icon  = get_post_meta(get_the_ID(), '_service_icon', true) ?: '';
+                    $num = str_pad($idx, 2, '0', STR_PAD_LEFT);
                     $price = get_post_meta(get_the_ID(), '_service_price', true);
+                    $benefits_text = get_post_meta(get_the_ID(), '_service_benefits', true);
+                    $benefits = [];
+                    if (!empty($benefits_text)) {
+                        $benefits = array_filter(array_map('trim', explode("\n", $benefits_text)));
+                    }
+                    if (empty($benefits)) {
+                        $benefits = ['Licensed & Insured', 'Upfront Flat Rates', 'Same-Day Response'];
+                    }
             ?>
-                <div class="hwh-service-card reveal">
-                    <div class="hwh-service-card__header-row">
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="hwh-service-card__img">
-                                <?php the_post_thumbnail("medium", ["loading" => "lazy", "decoding" => "async"]); ?>
-                            </div>
-                        <?php else :
-                            $visuals = hwh_get_service_visuals(get_the_title());
-                        ?>
-                            <div class="hwh-service-card__icon-wrap <?php echo esc_attr($visuals['grad']); ?>">
-                                <?php echo $visuals['svg']; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if ($price) : ?>
-                            <span class="hwh-service-card__price-badge">From <?php echo esc_html($price); ?></span>
-                        <?php endif; ?>
+                <a href="<?php the_permalink(); ?>" class="hwh-service-card reveal">
+                    <div class="hwh-service-card__img-wrap">
+                        <img src="<?php echo esc_url(hwh_get_service_image_url(get_the_ID())); ?>" alt="<?php the_title_attribute(); ?>" class="hwh-service-card__img" loading="lazy" decoding="async">
+                        <div class="hwh-service-card__number"><?php echo esc_html($num); ?></div>
                     </div>
-                    <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
-                    <p class="hwh-service-card__text"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
-                    <a href="<?php the_permalink(); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php the_title(); ?></span> →</a>
-                </div>
-            <?php endwhile; wp_reset_postdata();
+                    <div class="hwh-service-card__info">
+                        <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
+                        <p class="hwh-service-card__text"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
+                        <ul class="hwh-service-card__list">
+                            <?php foreach ($benefits as $benefit) : ?>
+                                <li>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hwh-checkmark-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <?php echo esc_html($benefit); ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <div class="hwh-service-card__link">Learn More <i class="hwh-link-arrow">→</i></div>
+                    </div>
+                </a>
+            <?php 
+                $idx++;
+                endwhile; 
+                wp_reset_postdata();
             else :
+                $idx = 1;
                 foreach ($fallback as $svc) : 
-                    $visuals = hwh_get_service_visuals($svc['title']);
+                    $num = str_pad($idx, 2, '0', STR_PAD_LEFT);
                 ?>
-                <div class="hwh-service-card reveal">
-                    <div class="hwh-service-card__header-row">
-                        <div class="hwh-service-card__icon-wrap <?php echo esc_attr($visuals['grad']); ?>">
-                            <?php echo $visuals['svg']; ?>
-                        </div>
-                        <?php if (!empty($svc['price'])) : ?>
-                            <span class="hwh-service-card__price-badge">From <?php echo esc_html($svc['price']); ?></span>
-                        <?php endif; ?>
+                <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card reveal">
+                    <div class="hwh-service-card__img-wrap">
+                        <img src="<?php echo esc_url($svc['img']); ?>" alt="<?php echo esc_attr($svc['title']); ?>" class="hwh-service-card__img" loading="lazy" decoding="async">
+                        <div class="hwh-service-card__number"><?php echo esc_html($num); ?></div>
                     </div>
-                    <h3 class="hwh-service-card__title"><?php echo esc_html($svc['title']); ?></h3>
-                    <p class="hwh-service-card__text"><?php echo esc_html($svc['text']); ?></p>
-                    <a href="<?php echo esc_url(home_url('/services/')); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php echo esc_html($svc['title']); ?></span> →</a>
-                </div>
-            <?php endforeach; endif; ?>
+                    <div class="hwh-service-card__info">
+                        <h3 class="hwh-service-card__title"><?php echo esc_html($svc['title']); ?></h3>
+                        <p class="hwh-service-card__text"><?php echo esc_html($svc['text']); ?></p>
+                        <ul class="hwh-service-card__list">
+                            <?php foreach ($svc['benefits'] as $benefit) : ?>
+                                <li>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hwh-checkmark-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <?php echo esc_html($benefit); ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <div class="hwh-service-card__link">Learn More <i class="hwh-link-arrow">→</i></div>
+                    </div>
+                </a>
+            <?php 
+                $idx++;
+                endforeach; 
+            endif; 
+            ?>
         </div>
 
         <div class="hwh-center hwh-center--spaced">

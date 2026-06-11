@@ -3018,3 +3018,44 @@ function hwh_adjust_service_permalink( $post_link, $post ) {
 add_filter( 'post_type_link', 'hwh_adjust_service_permalink', 10, 2 );
 
 
+/**
+ * Get dynamic curated featured image URL for service posts based on service slug.
+ */
+function hwh_get_service_image_url($post_id) {
+    if (has_post_thumbnail($post_id)) {
+        return get_the_post_thumbnail_url($post_id, 'medium_large');
+    }
+
+    $post = get_post($post_id);
+    if (!$post || $post->post_type !== 'service') {
+        return 'https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=800&auto=format&fit=crop'; // default blueprint fallback
+    }
+
+    $slug = $post->post_name;
+
+    // Strip location suffixes to find the base service slug
+    $suffixes = ['-brandon', '-st-petersburg', '-south-tampa', '-carrollwood', '-lutz', '-citrus-park', '-westchase', '-land-o-lakes', '-riverview', '-wesley-chapel', '-new-tampa', '-temple-terrace', '-odessa', '-zephyrhills'];
+    $base_slug = $slug;
+    foreach ($suffixes as $suffix) {
+        if (substr($base_slug, -strlen($suffix)) === $suffix) {
+            $base_slug = substr($base_slug, 0, -strlen($suffix));
+            break;
+        }
+    }
+
+    // Map slugs to highly tailored unsplash image URLs
+    $images = [
+        'water-leak-repair'            => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop',
+        'pipe-repair'                  => 'https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?q=80&w=800&auto=format&fit=crop',
+        'drain-cleaning'               => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop',
+        'water-heater-repair'          => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop',
+        'sewer-line-repair'            => 'https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=800&auto=format&fit=crop',
+        'water-heater-installation'    => 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop',
+        'leak-detection-and-repair'    => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800&auto=format&fit=crop',
+        'tankless-water-heater-repair' => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop',
+        'water-heater-maintenance'     => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop',
+        'water-filtration'             => 'https://images.unsplash.com/photo-1618973136611-85244815b16a?q=80&w=800&auto=format&fit=crop',
+    ];
+
+    return isset($images[$base_slug]) ? $images[$base_slug] : 'https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=800&auto=format&fit=crop';
+}

@@ -154,10 +154,20 @@ get_header();
             if ($services_query->have_posts()): ?>
 
                 <div class="hwh-services-grid">
-                    <?php while ($services_query->have_posts()):
+                    <?php 
+                    $idx = 1;
+                    while ($services_query->have_posts()):
                         $services_query->the_post();
-                        $icon = get_post_meta(get_the_ID(), '_service_icon', true) ?: '';
+                        $num = str_pad($idx, 2, '0', STR_PAD_LEFT);
                         $price = get_post_meta(get_the_ID(), '_service_price', true);
+                        $benefits_text = get_post_meta(get_the_ID(), '_service_benefits', true);
+                        $benefits = [];
+                        if (!empty($benefits_text)) {
+                            $benefits = array_filter(array_map('trim', explode("\n", $benefits_text)));
+                        }
+                        if (empty($benefits)) {
+                            $benefits = ['Licensed & Insured', 'Upfront Flat Rates', 'Same-Day Response'];
+                        }
 
                         $excerpt = get_post_field('post_excerpt', get_the_ID());
                         $content = get_post_field('post_content', get_the_ID());
@@ -169,34 +179,28 @@ get_header();
                             $desc = 'Expert plumbing service from Tampa Bay\'s trusted team. Licensed, insured, and available 24/7.';
                         }
                         ?>
-                        <div class="hwh-service-card reveal">
-
-                            <?php if (has_post_thumbnail()): ?>
-                                <div class="hwh-service-card__img" style="margin: -2.2rem -2rem 1rem -2rem;border-radius: 18px 18px 0 0;aspect-ratio: 16 / 9;overflow:hidden;width:calc(100% + 4rem) !important;max-width:none !important;">
-                                    <?php the_post_thumbnail('medium', [
-                                        'loading' => 'lazy',
-                                        'decoding' => 'async',
-                                        'alt' => esc_attr(get_the_title()),
-                                        'style' => 'width:100% !important;height:100% !important;object-fit:cover !important;'
-                                    ]); ?>
-                                </div>
-                            <?php elseif ($icon): ?>
-                                <div class="hwh-service-card__icon"><?php echo esc_html($icon); ?></div>
-                            <?php else: ?>
-                                <div class="hwh-service-card__icon">🔧</div>
-                            <?php endif; ?>
-
-                            <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
-                            <p class="hwh-service-card__text"><?php echo esc_html($desc); ?></p>
-
-                            <?php if ($price): ?>
-                                <span class="hwh-service-card__price">From <?php echo esc_html($price); ?></span>
-                            <?php endif; ?>
-
-                            <a href="<?php the_permalink(); ?>" class="hwh-service-card__link">Learn More <span class="hwh-visually-hidden">about <?php the_title(); ?></span> →</a>
-
-                        </div>
-                    <?php endwhile;
+                        <a href="<?php the_permalink(); ?>" class="hwh-service-card reveal">
+                            <div class="hwh-service-card__img-wrap">
+                                <img src="<?php echo esc_url(hwh_get_service_image_url(get_the_ID())); ?>" alt="<?php the_title_attribute(); ?>" class="hwh-service-card__img" loading="lazy" decoding="async">
+                                <div class="hwh-service-card__number"><?php echo esc_html($num); ?></div>
+                            </div>
+                            <div class="hwh-service-card__info">
+                                <h3 class="hwh-service-card__title"><?php the_title(); ?></h3>
+                                <p class="hwh-service-card__text"><?php echo esc_html($desc); ?></p>
+                                <ul class="hwh-service-card__list">
+                                    <?php foreach ($benefits as $benefit) : ?>
+                                        <li>
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hwh-checkmark-svg"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <?php echo esc_html($benefit); ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <div class="hwh-service-card__link">Learn More <i class="hwh-link-arrow">→</i></div>
+                            </div>
+                        </a>
+                    <?php 
+                        $idx++;
+                    endwhile;
                     wp_reset_postdata(); ?>
                 </div>
 
