@@ -57,12 +57,12 @@
             <div class="hwh-foot__col">
                 <h3 class="hwh-foot__heading">Our Services</h3>
                 <ul class="hwh-foot__links">
-                    <li><a href="<?php echo esc_url(home_url('/services/expert-water-heater-repair-services-in-tampa/')); ?>">Water Heater Repair</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/services/water-heater-repair/')); ?>">Water Heater Repair</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/water-heater-installation/')); ?>">Water Heater Installation</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/tankless-water-heater-repair/')); ?>">Tankless Water Heaters</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/drain-cleaning/')); ?>">Drain Cleaning</a></li>
                     <li><a href="<?php echo esc_url(home_url('/contact/')); ?>">Emergency Plumbing</a></li>
-                    <li><a href="<?php echo esc_url(home_url('/services/leak-detection-repair/')); ?>">Leak Detection &amp; Repair</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/services/leak-detection-and-repair/')); ?>">Leak Detection &amp; Repair</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/')); ?>">All Services &rarr;</a></li>
                 </ul>
             </div>
