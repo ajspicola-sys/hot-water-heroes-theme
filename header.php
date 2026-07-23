@@ -4,32 +4,6 @@
  * Two-layer: dark top bar + white nav bar
  */
 
-/* ── Mega-menu: services grouped by category ──────────────────────
-   Pull all published services, bucket them by their first
-   service_category term. Cached per request via a static var.
-   ----------------------------------------------------------------- */
-function hwh_get_menu_services() {
-    static $cols = null;
-    if ( $cols !== null ) return $cols;
-
-    $services = get_posts( [
-        'post_type'      => 'service',
-        'post_status'    => 'publish',
-        'posts_per_page' => 30,
-        'orderby'        => 'menu_order',
-        'order'          => 'ASC',
-        'no_found_rows'  => true,
-    ] );
-
-    $cols = [];   // [ 'Category Name' => [ post, ... ] ]
-    foreach ( $services as $s ) {
-        $terms = get_the_terms( $s->ID, 'service_category' );
-        $cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Services';
-        $cols[ $cat ][] = $s;
-    }
-    return $cols;
-}
-$hwh_menu_services = hwh_get_menu_services();
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -110,6 +84,9 @@ $hwh_menu_services = hwh_get_menu_services();
         .hwh-header { position: fixed; top: 0; left: 0; right: 0; z-index: 200; }
         .hwh-topbar { background: #0F2440; height: 40px; display: flex; align-items: center; }
         .hwh-topbar__inner { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem,1rem + 2vw,3rem); display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 1.5rem; }
+        .hwh-topbar__promise { display: flex; align-items: center; gap: .5rem; font-family: 'Inter','Helvetica Neue',Arial,sans-serif; font-size: .8rem; font-weight: 700; color: #fff; white-space: nowrap; text-decoration: none; }
+        .hwh-topbar__promise svg { color: #F22F3A; flex-shrink: 0; }
+        .hwh-topbar__badge { background: #F22F3A; color: #fff; font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .2rem .55rem; border-radius: 9999px; line-height: 1; }
         .hwh-nav-bar { background: rgba(255,255,255,0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 2px 20px rgba(0,0,0,0.08); padding: 0.85rem 0; transition: padding .3s ease; }
         .hwh-nav-bar__inner { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem,1rem + 2vw,3rem); display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
         .hwh-location-selector {
@@ -120,7 +97,6 @@ $hwh_menu_services = hwh_get_menu_services();
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 4px;
             padding: 2px 8px;
-            margin-right: 10px;
             transition: all 0.3s ease;
         }
         .hwh-location-selector svg {
@@ -157,14 +133,9 @@ $hwh_menu_services = hwh_get_menu_services();
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         @media (max-width: 768px) {
-            .hwh-topbar__left .hwh-topbar__item:nth-child(3),
-            .hwh-topbar__left .hwh-topbar__sep:nth-child(4),
-            .hwh-topbar__left .hwh-topbar__item:nth-child(5) {
-                display: none !important;
-            }
-            .hwh-location-selector {
-                margin-right: 0;
-            }
+            /* Location selector lives in the mobile menu below 768px */
+            .hwh-topbar .hwh-location-selector { display: none; }
+            .hwh-topbar__inner { justify-content: center; }
         }
     </style>
 </head>
@@ -180,62 +151,36 @@ $hwh_menu_services = hwh_get_menu_services();
 <header class="hwh-header" id="site-header" role="banner">
 
     <!-- ── LAYER 1: Top Info Bar ── -->
+    <?php
+    // Location <option> list is built once and reused by the topbar (desktop)
+    // and mobile-menu selectors — keep both in sync.
+    $hwh_loc_options = '<option value="tampa">Tampa (Main)</option>';
+    $locs = get_posts([
+        'post_type' => 'location',
+        'post_parent' => 0,
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC'
+    ]);
+    foreach ($locs as $loc) {
+        $hwh_loc_options .= '<option value="' . esc_attr($loc->post_name) . '">' . esc_html($loc->post_title) . '</option>';
+    }
+    ?>
     <div class="hwh-topbar" role="complementary" aria-label="Contact information">
         <div class="hwh-topbar__inner">
 
-            <!-- Left: quick info -->
-            <div class="hwh-topbar__left">
-                <a href="tel:+18134275862" class="hwh-topbar__item hwh-topbar__item--phone">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                    813-42-PLUMB (75862)
-                </a>
-                <span class="hwh-topbar__sep" aria-hidden="true">|</span>
-                <span class="hwh-topbar__item">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Open 24 Hours &nbsp;·&nbsp; 7 Days a Week
-                </span>
-                <span class="hwh-topbar__sep" aria-hidden="true">|</span>
-                <span class="hwh-topbar__item hwh-topbar__item--live">
-                    <span class="hwh-topbar__dot" aria-hidden="true"></span>
-                    Available Now
-                </span>
-            </div>
+            <a href="tel:+18134275862" class="hwh-topbar__promise">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <strong>813-42-PLUMB (75862)</strong>
+                <span class="hwh-topbar__badge">24/7 Emergency</span>
+            </a>
 
-            <!-- Right: search + social -->
-            <div class="hwh-topbar__right">
-                <div class="hwh-location-selector">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 4px; vertical-align: middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <select id="hwh-location-dropdown" aria-label="Select dispatch location">
-                        <option value="tampa">Tampa (Main)</option>
-                        <?php
-                        $locs = get_posts([
-                            'post_type' => 'location',
-                            'post_parent' => 0,
-                            'post_status' => 'publish',
-                            'posts_per_page' => -1,
-                            'orderby' => 'title',
-                            'order' => 'ASC'
-                        ]);
-                        foreach ($locs as $loc) {
-                            echo '<option value="' . esc_attr($loc->post_name) . '">' . esc_html($loc->post_title) . '</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-                <!-- Mini search -->
-                <form class="hwh-topbar__search" role="search" action="<?php echo esc_url(home_url('/')); ?>" method="get" aria-label="Site search">
-                    <input type="search" name="s" class="hwh-topbar__search-input" placeholder="Search services…" aria-label="Search" value="<?php echo esc_attr(get_search_query()); ?>">
-                    <button type="submit" class="hwh-topbar__search-btn" aria-label="Submit search">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    </button>
-                </form>
-                <!-- Social -->
-                <a href="https://www.facebook.com/hotwaterheroes/" class="hwh-topbar__social" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                </a>
-                <a href="https://www.instagram.com/hotwaterheroes/" class="hwh-topbar__social" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
-                </a>
+            <div class="hwh-location-selector">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 4px; vertical-align: middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <select id="hwh-location-dropdown" class="hwh-location-select" aria-label="Select dispatch location">
+                    <?php echo $hwh_loc_options; ?>
+                </select>
             </div>
 
         </div>
@@ -288,7 +233,7 @@ $hwh_menu_services = hwh_get_menu_services();
     <!-- hwh-geolocation-script -->
     <script>
     (function() {
-        window.hwhLocalizedServices = <?php echo json_encode(array_keys(get_option('hwh_existing_localized_services', []))); ?>;
+        window.hwhLocalizedServices = <?php echo wp_json_encode(array_keys((array) get_option('hwh_existing_localized_services', []))); ?>;
         const geoMapping = {
             'brandon': { name: 'Brandon' },
             'st-petersburg': { name: 'St. Petersburg' },
@@ -318,7 +263,7 @@ $hwh_menu_services = hwh_get_menu_services();
             }
         }
 
-        const dropdown = document.getElementById('hwh-location-dropdown');
+        const dropdowns = Array.prototype.slice.call(document.querySelectorAll('.hwh-location-select'));
 
         function updateServiceLinks(locationKey) {
             if (!locationKey) return;
@@ -472,10 +417,10 @@ $hwh_menu_services = hwh_get_menu_services();
         function updateUI(locationKey) {
             if (!geoMapping[locationKey]) return;
             
-            if (dropdown) {
-                dropdown.value = locationKey;
-            }
-            
+            dropdowns.forEach(function(d) {
+                d.value = locationKey;
+            });
+
             document.cookie = "hwh_user_geo=" + encodeURIComponent(locationKey) + "; path=/; max-age=" + (30 * 24 * 60 * 60) + "; SameSite=Lax";
             
             updateServiceLinks(locationKey);
@@ -550,7 +495,7 @@ $hwh_menu_services = hwh_get_menu_services();
                 });
         }
 
-        if (dropdown) {
+        dropdowns.forEach(function(dropdown) {
             dropdown.addEventListener('change', function() {
                 const selected = this.value;
                 localStorage.setItem('hwh_user_geo', selected);
@@ -565,21 +510,32 @@ $hwh_menu_services = hwh_get_menu_services();
                 if (serviceMatch && serviceMatch[1] !== 'services') {
                     let currentSlug = serviceMatch[1];
                     let baseSlug = currentSlug;
-                    
+
                     for (const suffix of suffixes) {
                         if (baseSlug.endsWith('-' + suffix)) {
                             baseSlug = baseSlug.slice(0, -(suffix.length + 1));
                             break;
                         }
                     }
-                    
+
                     const idx = path.indexOf('/services/');
                     const pathPrefix = path.substring(0, idx) + '/services/';
-                    
+                    const registry = window.hwhLocalizedServices || [];
+
                     if (selected === 'tampa') {
-                        redirectUrl = origin + pathPrefix + baseSlug + '/';
+                        // Only redirect if we're currently on a localized page
+                        if (currentSlug !== baseSlug) {
+                            redirectUrl = origin + pathPrefix + baseSlug + '/';
+                        }
                     } else {
-                        redirectUrl = origin + pathPrefix + baseSlug + '-' + selected + '/';
+                        const targetSlug = baseSlug + '-' + selected;
+                        if (registry.includes(targetSlug)) {
+                            redirectUrl = origin + pathPrefix + targetSlug + '/';
+                        } else if (currentSlug !== baseSlug) {
+                            // Localized page for the new city doesn't exist — fall back to the base page
+                            redirectUrl = origin + pathPrefix + baseSlug + '/';
+                        }
+                        // Otherwise stay put; updateUI() rewrites the on-page text dynamically
                     }
                 }
                 
@@ -604,7 +560,7 @@ $hwh_menu_services = hwh_get_menu_services();
                     }
                 }
             });
-        }
+        });
 
         function initGeoAndLinks() {
             const currentGeo = localStorage.getItem('hwh_user_geo') || 'tampa';
@@ -641,19 +597,29 @@ $hwh_menu_services = hwh_get_menu_services();
             </button>
         </form>
 
+        <!-- Mobile location selector (topbar hides its own below 768px) -->
+        <div class="hwh-mobile-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <select class="hwh-location-select" aria-label="Select dispatch location">
+                <?php echo $hwh_loc_options; ?>
+            </select>
+        </div>
+
         <nav class="mobile-menu__nav" aria-label="Mobile navigation">
             <ul class="mobile-menu__links">
                 <li><a href="<?php echo esc_url(home_url('/')); ?>"<?php if (is_front_page()) echo ' aria-current="page"'; ?>>Home</a></li>
                 <li><a href="<?php echo esc_url(home_url('/services/')); ?>">All Services</a></li>
                 <?php
-                // Dynamic mobile service sub-links (up to 6 total)
+                // Dynamic mobile service sub-links (up to 6 total).
+                // suppress_filters false so localized-service pages stay excluded.
                 $mobile_svcs = get_posts( [
-                    'post_type'      => 'service',
-                    'post_status'    => 'publish',
-                    'posts_per_page' => -1,
-                    'orderby'        => 'menu_order',
-                    'order'          => 'ASC',
-                    'no_found_rows'  => true,
+                    'post_type'        => 'service',
+                    'post_status'      => 'publish',
+                    'posts_per_page'   => 6,
+                    'orderby'          => 'menu_order',
+                    'order'            => 'ASC',
+                    'no_found_rows'    => true,
+                    'suppress_filters' => false,
                 ] );
                 foreach ( $mobile_svcs as $ms ) :
                     $ms_icon = get_post_meta( $ms->ID, '_service_icon', true ) ?: '';

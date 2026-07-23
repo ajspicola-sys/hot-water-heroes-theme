@@ -33,10 +33,9 @@ function hwh_auto_purge_on_deploy() {
     // Theme files changed — update stored fingerprint
     update_option( 'hwh_deploy_fingerprint', $fingerprint, false );
 
-    // Purge LiteSpeed Cache
-    if ( class_exists( '\LiteSpeed\Purge' ) ) {
-        do_action( 'litespeed_purge_all' );
-    }
+    // Purge LiteSpeed Cache (incl. ESI edge-cached fragments)
+    do_action( 'litespeed_purge_all' );
+    do_action( 'litespeed_purge_all_esi' );
     // Purge WP Rocket
     if ( function_exists( 'rocket_clean_domain' ) ) {
         rocket_clean_domain();
@@ -148,8 +147,6 @@ function hwh_force_page_templates($template) {
             'values'       => 'page-values.php',
             'before-after' => 'page-before-after.php',
             'privacy-policy'      => 'page-privacy-policy.php',
-            'cancellation-policy' => 'page-cancellation-policy.php',
-            'refund-policy'       => 'page-refund-policy.php',
             'specials'         => 'page-maintenance-plan.php',
             'service-areas'    => 'page-service-areas.php',
         ];
@@ -528,7 +525,7 @@ function hwh_create_pages() {
 
     foreach ($pages as $title => $content) {
         // Skip if page already exists
-        $existing = get_page_by_title($title, OBJECT, 'page');
+        $existing = hwh_get_post_by_title($title, 'page');
         if ($existing) continue;
 
         $page_id = wp_insert_post([
@@ -559,14 +556,14 @@ function hwh_fix_reading_settings() {
     if (get_option('hwh_reading_fixed_v2')) return;
 
     // Find the Blog page and set it as posts page
-    $blog_page = get_page_by_title('Blog', OBJECT, 'page');
+    $blog_page = hwh_get_post_by_title('Blog', 'page');
     if ($blog_page) {
         update_option('show_on_front', 'page');
         update_option('page_for_posts', $blog_page->ID);
     }
 
     // Find the Home page and set it as front page
-    $home_page = get_page_by_title('Home', OBJECT, 'page');
+    $home_page = hwh_get_post_by_title('Home', 'page');
     if ($home_page) {
         update_option('page_on_front', $home_page->ID);
     }
@@ -574,6 +571,21 @@ function hwh_fix_reading_settings() {
     update_option('hwh_reading_fixed_v2', true);
 }
 add_action('init', 'hwh_fix_reading_settings');
+
+// -- Shared helper: find a post by exact title --------------------------
+// Replacement for get_page_by_title(), deprecated since WP 6.2.
+function hwh_get_post_by_title( $title, $post_type = 'page' ) {
+    $posts = get_posts([
+        'post_type'              => $post_type,
+        'title'                  => $title,
+        'post_status'            => 'any',
+        'posts_per_page'         => 1,
+        'no_found_rows'          => true,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+    ]);
+    return $posts ? $posts[0] : null;
+}
 
 // -- Shared helper: check if a page with a given slug exists (any status) --
 function hwh_page_slug_exists( $slug ) {
@@ -643,7 +655,7 @@ function hwh_create_blog_posts() {
     if (get_option('hwh_blog_created_v1')) return;
 
     // Create blog categories
-    $categories = ['Tips & Maintenance', 'Water Heater Services', 'Emergency Services', 'How-To Guides', 'HWH News'];
+    $categories = ['Tips & Maintenance', 'Water Heater Services', 'Drain & Pipe Services', 'Emergency Services', 'How-To Guides', 'HWH News'];
     $cat_ids = [];
     foreach ($categories as $cat) {
         $existing = term_exists($cat, 'category');
@@ -791,7 +803,7 @@ function hwh_create_blog_posts() {
     ];
 
     foreach ($posts as $post_data) {
-        $existing = get_page_by_title($post_data['title'], OBJECT, 'post');
+        $existing = hwh_get_post_by_title($post_data['title'], 'post');
         if ($existing) continue;
 
         $post_id = wp_insert_post([
@@ -860,7 +872,7 @@ function hwh_create_services() {
     ];
 
     foreach ($services as $service) {
-        $existing = get_page_by_title($service['title'], OBJECT, 'service');
+        $existing = hwh_get_post_by_title($service['title'], 'service');
         if ($existing) {
             if (isset($cat_ids[$service['category']])) {
                 wp_set_object_terms($existing->ID, (int) $cat_ids[$service['category']], 'service_category');
@@ -1194,8 +1206,8 @@ function hwh_service_meta_html($post) {
     <div class="hwh-meta-row">
         <div class="hwh-meta-field">
             <label for="service_icon">Icon (emoji)</label>
-            <input type="text" id="service_icon" name="service_icon" value="<?php echo esc_attr($icon); ?>" placeholder="??">
-            <p class="description">Paste an emoji like ?? ? ?? ?? ? ??</p>
+            <input type="text" id="service_icon" name="service_icon" value="<?php echo esc_attr($icon); ?>" placeholder="🔧">
+            <p class="description">Paste an emoji like 🔧 🚿 🔥 💧 🚽 🛠️</p>
         </div>
         <div class="hwh-meta-field">
             <label for="service_price">Starting Price</label>
@@ -1362,7 +1374,7 @@ function hwh_seo_meta_box() {
     foreach ($post_types as $pt) {
         add_meta_box(
             'hwh_seo_meta',
-            '?? SEO Settings',
+            '🔍 SEO Settings',
             'hwh_seo_meta_html',
             $pt,
             'normal',
@@ -1649,9 +1661,6 @@ function hwh_faq_schema() {
 }
 add_action('wp_head', 'hwh_faq_schema', 6);
 
-// -- Disable XML-RPC for security ----------------------------------
-add_filter('xmlrpc_enabled', '__return_false');
-
 // -- Add security headers ------------------------------------------
 function hwh_security_headers() {
     if (!is_admin()) {
@@ -1688,7 +1697,7 @@ function hwh_handle_contact_form() {
     if ( empty($recipients) ) $recipients = ['joe@hotwaterheroesplumbing.com'];
     $to = $recipients;
 
-    $subject = '? New Message — Hot Water Heroes Plumbing Website';
+    $subject = 'New Message — Hot Water Heroes Plumbing Website';
 
     // -- Prepare substitution values ---------------------------------
     $service_display = $service ? ucwords(str_replace('-', ' ', $service)) : 'Not specified';
@@ -1810,11 +1819,16 @@ function hwh_settings_page_html() {
         $emails_clean = implode(', ', array_filter(array_map('sanitize_email', array_map('trim', explode(',', $emails_raw))), 'is_email'));
         update_option('hwh_notification_emails', $emails_clean ?: 'joe@hotwaterheroesplumbing.com');
 
-        // Email template — allow HTML
-        $template = wp_unslash($_POST['hwh_email_template'] ?? '');
-        update_option('hwh_email_template', $template);
-
-        echo '<div class="notice notice-success is-dismissible"><p><strong>? Settings saved!</strong></p></div>';
+        if ( isset($_POST['hwh_reset_template']) ) {
+            // Reset button clicked — empty option falls back to the default template
+            update_option('hwh_email_template', '');
+            echo '<div class="notice notice-success is-dismissible"><p><strong>✓ Template reset to default.</strong></p></div>';
+        } else {
+            // Email template — allow HTML
+            $template = wp_unslash($_POST['hwh_email_template'] ?? '');
+            update_option('hwh_email_template', $template);
+            echo '<div class="notice notice-success is-dismissible"><p><strong>✓ Settings saved!</strong></p></div>';
+        }
     }
 
     $current_emails  = get_option('hwh_notification_emails', 'joe@hotwaterheroesplumbing.com');
@@ -1822,7 +1836,7 @@ function hwh_settings_page_html() {
     ?>
     <div class="wrap">
         <h1 style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
-            <span style="font-size:1.4rem;">?</span> Hot Water Heroes Plumbing — Settings
+            <span style="font-size:1.4rem;">🔥</span> Hot Water Heroes Plumbing — Settings
         </h1>
 
         <form method="post">
@@ -1830,7 +1844,7 @@ function hwh_settings_page_html() {
 
             <!-- Section: Recipients -->
             <div style="background:#fff;border-radius:10px;padding:28px 32px;max-width:800px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <h2 style="margin:0 0 6px;font-size:16px;">?? Notification Recipients</h2>
+                <h2 style="margin:0 0 6px;font-size:16px;">📧 Notification Recipients</h2>
                 <p style="margin:0 0 20px;color:#666;font-size:13px;">Separate multiple email addresses with commas. All recipients receive every submission.</p>
                 <label for="hwh_notification_emails" style="display:block;font-weight:600;margin-bottom:6px;font-size:13px;">Email Address(es)</label>
                 <input type="text" id="hwh_notification_emails" name="hwh_notification_emails"
@@ -1842,7 +1856,7 @@ function hwh_settings_page_html() {
 
             <!-- Section: Email Template -->
             <div style="background:#fff;border-radius:10px;padding:28px 32px;max-width:800px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <h2 style="margin:0 0 6px;font-size:16px;">?? Email Template (HTML)</h2>
+                <h2 style="margin:0 0 6px;font-size:16px;">📝 Email Template (HTML)</h2>
                 <p style="margin:0 0 16px;color:#666;font-size:13px;">Customize the HTML email that gets sent to your inbox. Use the tags below to insert form data — they'll be replaced automatically.</p>
 
                 <!-- Placeholder Tags Reference -->
@@ -1865,14 +1879,14 @@ function hwh_settings_page_html() {
                                   onclick="insertTag('<?php echo esc_js($tag); ?>')"><?php echo esc_html($tag); ?></span>
                         <?php endforeach; ?>
                     </div>
-                    <p style="margin:10px 0 0;font-size:11px;color:#888;">?? Click a tag to insert it at your cursor position in the editor below.</p>
+                    <p style="margin:10px 0 0;font-size:11px;color:#888;">💡 Click a tag to insert it at your cursor position in the editor below.</p>
                 </div>
 
                 <label for="hwh_email_template" style="display:block;font-weight:600;margin-bottom:6px;font-size:13px;">HTML Template</label>
                 <textarea id="hwh_email_template" name="hwh_email_template"
                           rows="24"
                           style="width:100%;font-family:'Courier New',monospace;font-size:12px;line-height:1.6;padding:14px;border:1px solid #ddd;border-radius:6px;resize:vertical;background:#1a1a2e;color:#e8e8f0;"><?php echo esc_textarea($current_template); ?></textarea>
-                <p style="margin:8px 0 0;font-size:12px;color:#888;">?? Click "Reset to Default" to restore the original branded template.</p>
+                <p style="margin:8px 0 0;font-size:12px;color:#888;">💡 Click "Reset to Default" to restore the original branded template.</p>
             </div>
 
             <div style="max-width:800px;display:flex;gap:12px;align-items:center;">
@@ -1897,17 +1911,12 @@ function hwh_settings_page_html() {
     }
     </script>
     <?php
-
-    // Handle reset separately
-    if ( isset($_POST['hwh_reset_template']) && isset($_POST['hwh_settings_nonce']) && wp_verify_nonce($_POST['hwh_settings_nonce'], 'hwh_save_settings') ) {
-        update_option('hwh_email_template', '');
-    }
 }
 
 function hwh_add_settings_menu() {
     add_options_page(
         'Hot Water Heroes Plumbing Settings',
-        '? HWH Settings',
+        '🔥 HWH Settings',
         'manage_options',
         'hwh-settings',
         'hwh_settings_page_html'
@@ -1916,13 +1925,13 @@ function hwh_add_settings_menu() {
 add_action('admin_menu', 'hwh_add_settings_menu');
 
 // -- Deal Popup — Customizer Controls -------------------------------
-// Client manages all popup content from Appearance ? Customize ? ?? Deal Popup
+// Client manages all popup content from Appearance → Customize → Deal Popup
 // Zero code required. Changes go live on Save & Publish.
 add_action('customize_register', 'hwh_popup_customizer');
 function hwh_popup_customizer($wp_customize) {
 
     $wp_customize->add_section('hwh_popup', [
-        'title'       => '?? Deal Popup',
+        'title'       => '🎁 Deal Popup',
         'priority'    => 30,
         'description' => 'Control the promotional popup. Turn it on/off, set the offer text, button, and when it expires. Visitors only see it once every 7 days.',
     ]);
@@ -1936,12 +1945,12 @@ function hwh_popup_customizer($wp_customize) {
     ]);
 
     // Badge
-    $wp_customize->add_setting('hwh_popup_badge', ['default' => '? Limited Time Offer', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+    $wp_customize->add_setting('hwh_popup_badge', ['default' => '🔥 Limited Time Offer', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
     $wp_customize->add_control('hwh_popup_badge', [
         'type'        => 'text',
         'section'     => 'hwh_popup',
         'label'       => 'Badge Label',
-        'description' => 'Small tag above the title. e.g. "? New Client Special"',
+        'description' => 'Small tag above the title. e.g. "🔥 New Client Special"',
     ]);
 
     // Title
@@ -2017,20 +2026,20 @@ function hwh_popup_customizer($wp_customize) {
 }
 
 
-// -- Service Page Extras ? Video & Benefits Meta Box ----------------
+// -- Service Page Extras — Video & Benefits Meta Box ----------------
 add_action('add_meta_boxes', 'hwh_service_extras_meta_box');
 function hwh_service_extras_meta_box() {
-    add_meta_box('hwh_service_extras','?? Video & Key Benefits','hwh_service_extras_html','service','normal','high');
+    add_meta_box('hwh_service_extras','🎬 Video & Key Benefits','hwh_service_extras_html','service','normal','high');
 }
 function hwh_service_extras_html($post) {
     wp_nonce_field('hwh_service_extras', 'hwh_service_extras_nonce');
     $video    = get_post_meta($post->ID, '_service_video', true);
     $benefits = get_post_meta($post->ID, '_service_benefits', true);
     echo '<table class="form-table" style="width:100%">';
-    echo '<tr><th style="width:160px;padding:12px 0;vertical-align:top"><label for="_service_video"><strong>?? Video URL</strong></label></th>';
+    echo '<tr><th style="width:160px;padding:12px 0;vertical-align:top"><label for="_service_video"><strong>🎬 Video URL</strong></label></th>';
     echo '<td><input type="url" id="_service_video" name="_service_video" value="' . esc_attr($video) . '" style="width:100%;padding:6px 10px;border:1px solid #ddd;border-radius:4px" placeholder="https://youtube.com/watch?v=...">';
     echo '<p style="color:#666;font-size:12px;margin:4px 0 0">Paste a YouTube or Vimeo URL. Leave blank to hide the video section.</p></td></tr>';
-    echo '<tr><th style="padding:12px 0;vertical-align:top"><label for="_service_benefits"><strong>? Key Benefits</strong></label></th>';
+    echo '<tr><th style="padding:12px 0;vertical-align:top"><label for="_service_benefits"><strong>✓ Key Benefits</strong></label></th>';
     echo '<td><textarea id="_service_benefits" name="_service_benefits" rows="6" style="width:100%;padding:6px 10px;border:1px solid #ddd;border-radius:4px;font-family:inherit" placeholder="Same-day service available&#10;Licensed & insured technicians&#10;Free written estimate included">' . esc_textarea($benefits) . '</textarea>';
     echo '<p style="color:#666;font-size:12px;margin:4px 0 0">One benefit per line. Leave blank to hide the benefits section.</p></td></tr>';
     echo '</table>';
@@ -2077,7 +2086,7 @@ function hwh_importer_admin_notice() {
 
     echo '<div class="notice notice-info" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1.5rem;">';
     echo '<div>';
-    echo '<strong>?? Hot Water Heroes Plumbing Theme</strong> ? ';
+    echo '<strong>🔧 Hot Water Heroes Plumbing Theme</strong> — ';
     echo 'Import all services, posts, categories, and custom fields from the bundled demo content?';
     echo '</div>';
     echo '<a href="' . esc_url( $import_url ) . '" class="button button-primary" style="white-space:nowrap;">Import Content Now</a>';
@@ -2143,7 +2152,7 @@ function hwh_run_demo_import() {
         exit;
 
     } else {
-        // WordPress Importer plugin not active ? fall back to lightweight WXR parser
+        // WordPress Importer plugin not active — fall back to lightweight WXR parser
         hwh_lightweight_wxr_import( $xml_file );
         update_option( 'hwh_demo_imported', current_time( 'mysql' ) );
         delete_transient( 'hwh_just_activated' );
@@ -2182,7 +2191,7 @@ function hwh_lightweight_wxr_import( $xml_file ) {
     }
 
     // Second pass: import items (posts, pages, CPTs)
-    $post_mapping = []; // old ID ? new ID
+    $post_mapping = []; // old ID → new ID
 
     foreach ( $xml->channel->item as $item ) {
         $wp = $item->children( $wp_ns );
@@ -2266,14 +2275,14 @@ add_action( 'admin_notices', 'hwh_import_success_notice' );
 function hwh_import_success_notice() {
     if ( ! isset( $_GET['hwh_imported'] ) ) return;
     echo '<div class="notice notice-success is-dismissible"><p>';
-    echo '? <strong>HWH Demo Content imported successfully!</strong> ';
+    echo '✅ <strong>HWH Demo Content imported successfully!</strong> ';
     echo 'Your services, posts, and categories have been restored. ';
-    echo '<a href="' . esc_url( admin_url( 'edit.php?post_type=service' ) ) . '">View Services ?</a>';
+    echo '<a href="' . esc_url( admin_url( 'edit.php?post_type=service' ) ) . '">View Services →</a>';
     echo '</p></div>';
 }
 
 // -- Helper: re-run importer at any time from the importer page ---------------
-// Visit: WP Admin ? Appearance ? Import Demo Content
+// Visit: WP Admin → Appearance → Import Demo Content
 add_action( 'admin_menu', 'hwh_importer_menu' );
 function hwh_importer_menu() {
     add_theme_page(
@@ -2291,82 +2300,21 @@ function hwh_importer_page() {
         'hwh_import_nonce'
     );
     echo '<div class="wrap">';
-    echo '<h1>?? HWH Demo Content Importer</h1>';
+    echo '<h1>🔧 HWH Demo Content Importer</h1>';
     if ( $already && $already !== 'dismissed' ) {
         echo '<p>Content was last imported on <strong>' . esc_html( $already ) . '</strong>.</p>';
-        echo '<p>You can re-import at any time ? existing posts with the same slug will be skipped.</p>';
+        echo '<p>You can re-import at any time — existing posts with the same slug will be skipped.</p>';
     }
     echo '<p>This will import all services, pages, blog posts, categories, and custom field data from the bundled <code>demo-content/content.xml</code> file.</p>';
     echo '<p><strong>Note:</strong> Images won\'t be re-uploaded automatically unless the WordPress Importer plugin is active and the original URLs are reachable.</p>';
     echo '<a href="' . esc_url( $import_url ) . '" class="button button-primary button-large">Run Import Now</a>';
-    // Allow re-import
+    // Allow re-import (the import handler doesn't gate on hwh_demo_imported,
+    // so the flag stays intact just from viewing this page)
     echo '<script>document.querySelector(".button-primary").addEventListener("click",function(){';
     echo 'if(!confirm("This will import all demo content. Continue?"))event.preventDefault();';
     echo '});</script>';
-    // Reset flag so importer can run again
-    delete_option( 'hwh_demo_imported' );
     echo '</div>';
 }
-
-
-// =============================================================================
-// AUTO-PURGE LITESPEED CACHE ON THEME UPDATE
-// Fires automatically after every git pull / theme file change.
-// Compares the combined modified-time of key theme files against a stored
-// value. If anything changed, it purges LiteSpeed, Cloudflare (via LSC), and
-// the WP object cache — zero manual effort required.
-// =============================================================================
-add_action( 'init', function () {
-    $theme_dir = get_template_directory();
-
-    // Hash the mtime of the files most likely to change after a deploy
-    $watch = [
-        $theme_dir . '/functions.php',
-        $theme_dir . '/style.css',
-        $theme_dir . '/front-page.php',
-        $theme_dir . '/footer.php',
-        $theme_dir . '/header.php',
-    ];
-
-    $current_sig = '';
-    foreach ( $watch as $f ) {
-        if ( file_exists( $f ) ) {
-            $current_sig .= filemtime( $f );
-        }
-    }
-    $current_sig = md5( $current_sig );
-
-    $stored_sig = get_option( 'hwh_theme_sig', '' );
-
-    if ( $current_sig === $stored_sig ) {
-        return; // Nothing changed — skip
-    }
-
-    // Files changed: update stored signature
-    update_option( 'hwh_theme_sig', $current_sig, false );
-
-    // 1. LiteSpeed Cache full purge
-    do_action( 'litespeed_purge_all' );
-
-    // 2. LiteSpeed ESI purge (covers edge-cached fragments)
-    do_action( 'litespeed_purge_all_esi' );
-
-    // 3. WP Object Cache flush (Redis / Memcached if active)
-    if ( function_exists( 'wp_cache_flush' ) ) {
-        wp_cache_flush();
-    }
-
-    // 4. WP Rocket compatibility (in case both are active)
-    if ( function_exists( 'rocket_clean_domain' ) ) {
-        rocket_clean_domain();
-    }
-
-    // 5. W3 Total Cache compatibility
-    if ( function_exists( 'w3tc_flush_all' ) ) {
-        w3tc_flush_all();
-    }
-
-}, 1 ); // Priority 1 — run early
 
 
 // =============================================================================
@@ -2743,7 +2691,7 @@ function hwh_create_locations() {
     ];
 
     foreach ($locations as $loc) {
-        $existing = get_page_by_title($loc['title'], OBJECT, 'location');
+        $existing = hwh_get_post_by_title($loc['title'], 'location');
         if ($existing) continue;
 
         wp_insert_post([
@@ -2878,9 +2826,10 @@ function hwh_update_localized_services_registry() {
 add_action('save_post_service', 'hwh_update_localized_services_registry');
 add_action('delete_post', 'hwh_update_localized_services_registry');
 
-// Run one-time or periodically to ensure registry is initialized
+// Run once to ensure registry is initialized (an empty array is a valid,
+// already-built registry — only rebuild when the option doesn't exist yet)
 add_action('init', function() {
-    if (!get_option('hwh_existing_localized_services') || get_option('hwh_existing_localized_services') === '') {
+    if (false === get_option('hwh_existing_localized_services', false)) {
         hwh_update_localized_services_registry();
     }
 }, 99);

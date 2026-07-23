@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&amp;display=swap');
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1080" fill="#0F2440"/>
+
+  <!-- Top red bar -->
+  <rect x="0" y="0" width="1080" height="18" fill="#F22F3A"/>
+
+  <!-- ===== LOGO AREA — paste your logo image here in Canva ===== -->
+  <rect x="290" y="52" width="500" height="130" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="10,6" stroke-opacity="0.18"/>
+  <text x="540" y="124" text-anchor="middle" font-family="Oswald, Arial, sans-serif" font-size="22" font-weight="400" fill="#FFFFFF" fill-opacity="0.20" letter-spacing="6">YOUR LOGO HERE</text>
+
+  <!-- Divider -->
+  <line x1="220" y1="390" x2="860" y2="390" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.12"/>
+
+  <!-- "LIMITED AVAILABILITY" label -->
+  <text x="540" y="444" text-anchor="middle" font-family="Oswald, Arial, sans-serif" font-size="22" font-weight="400" fill="#FFFFFF" fill-opacity="0.38" letter-spacing="7">LIMITED AVAILABILITY</text>
+
+  <!-- WE'RE -->
+  <text x="540" y="572" text-anchor="middle" font-family="Oswald, Arial Black, sans-serif" font-size="148" font-weight="700" fill="#FFFFFF" letter-spacing="-1">WE'RE</text>
+
+  <!-- AVAILABLE -->
+  <text x="540" y="710" text-anchor="middle" font-family="Oswald, Arial Black, sans-serif" font-size="148" font-weight="700" fill="#F22F3A" letter-spacing="-1">AVAILABLE</text>
+
+  <!-- Red days badge -->
+  <rect x="148" y="738" width="784" height="110" fill="#F22F3A"/>
+  <text x="540" y="810" text-anchor="middle" font-family="Oswald, Arial Black, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF" letter-spacing="3">THIS THURSDAY &amp; FRIDAY</text>
+
+  <!-- Bottom divider -->
+  <line x1="220" y1="892" x2="860" y2="892" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.12"/>
+
+  <!-- CTA label -->
+  <text x="540" y="942" text-anchor="middle" font-family="Oswald, Arial, sans-serif" font-size="20" font-weight="400" fill="#FFFFFF" fill-opacity="0.38" letter-spacing="6">BOOK YOUR SERVICE TODAY</text>
+
+  <!-- Phone -->
+  <text x="540" y="998" text-anchor="middle" font-family="Oswald, Arial Black, sans-serif" font-size="50" font-weight="600" fill="#FFFFFF" letter-spacing="3">813-42-PLUMB</text>
+
+  <!-- Website -->
+  <text x="540" y="1040" text-anchor="middle" font-family="Oswald, Arial, sans-serif" font-size="20" font-weight="400" fill="#FFFFFF" fill-opacity="0.30" letter-spacing="2">hotwaterheroesplumbing.com</text>
+
+  <!-- Bottom red bar -->
+  <rect x="0" y="1062" width="1080" height="18" fill="#F22F3A"/>
+</svg>

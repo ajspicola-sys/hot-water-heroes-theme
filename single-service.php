@@ -236,7 +236,7 @@ $location_name = $loc_info ? $loc_info['location_name'] : 'Tampa Bay';
                 <div class="svc-trust__stat">
                     <span class="svc-trust__stat-stars">★★★★★</span>
                     <div>
-                        <strong>4.9 / 5.0</strong>
+                        <strong>5.0 / 5.0</strong>
                         <span>Google Rating — 30+ Reviews</span>
                     </div>
                 </div>

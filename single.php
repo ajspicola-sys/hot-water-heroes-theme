@@ -61,7 +61,7 @@ get_header(); ?>
                     </div>
                     <div class="post-author-bar__share">
                         <span class="post-author-bar__share-label">Share</span>
-                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode(get_the_title()); ?>" target="_blank" rel="noopener noreferrer" class="post-share-link" aria-label="Share on Twitter">??</a>
+                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode(get_the_title()); ?>" target="_blank" rel="noopener noreferrer" class="post-share-link" aria-label="Share on X (Twitter)">X</a>
                         <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="post-share-link" aria-label="Share on Facebook">f</a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ get_header(); ?>
                     <div class="post-content__tags">
                         <?php the_tags('<span class="post-tag">', '</span><span class="post-tag">', '</span>'); ?>
                     </div>
-                    <a href="<?php echo esc_url(home_url('/blog/')); ?>" class="btn btn--outline">? Back to Blog</a>
+                    <a href="<?php echo esc_url(home_url('/blog/')); ?>" class="btn btn--outline">← Back to Blog</a>
                 </div>
 
                 <!-- Related Posts -->

@@ -12,3 +12,6 @@ node_modules/
 
 # Logs
 *.log
+
+# Deploy helper with secret key - keep local only
+assets/deploy.php

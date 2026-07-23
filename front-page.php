@@ -82,7 +82,6 @@ get_header(); ?>
                      class="hwh-hero__van">
             </div>
         </div>
-        </div>
     </div>
 </section>
 
@@ -865,6 +864,7 @@ get_header(); ?>
             </a>
         </div>
     </div>
+</section>
 
 </main>
 

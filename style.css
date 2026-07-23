@@ -10537,24 +10537,12 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
 .hwh-topbar { background: #0F2440; height: 40px; overflow: hidden; transition: height .3s ease, opacity .3s ease; }
 /* topbar always visible */
 .hwh-topbar__inner { max-width:1280px; margin:0 auto; padding:0 clamp(1.25rem,1rem + 2vw,3rem); display:flex; align-items:center; justify-content:space-between; height:100%; gap:1.5rem; }
-.hwh-topbar__left { display:flex; align-items:center; gap:.75rem; flex-shrink:0; }
-.hwh-topbar__right { display:flex; align-items:center; gap:.6rem; flex-shrink:0; }
-.hwh-topbar__item { display:flex; align-items:center; gap:.4rem; font-family:'Inter',sans-serif; font-size:.7rem; font-weight:500; color:rgba(255,255,255,.65); white-space:nowrap; text-decoration:none; transition:color .2s ease; }
-.hwh-topbar__item--phone { color:#fff; font-weight:700; }
-.hwh-topbar__item--phone:hover { color:#F22F3A; }
-.hwh-topbar__item--live { color:rgba(255,255,255,.7); }
-.hwh-topbar__sep { color:rgba(255,255,255,.2); font-size:.75rem; }
-.hwh-topbar__dot { width:6px; height:6px; background:#4ade80; border-radius:50%; animation:hwh-pulse 2s ease infinite; display:inline-block; }
 
-/* Search form */
-.hwh-topbar__search { display:flex; align-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:9999px; overflow:hidden; transition:all .25s ease; }
-.hwh-topbar__search:focus-within { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.25); }
-.hwh-topbar__search-input { background:transparent; border:none; outline:none; padding:.25rem .75rem; font-family:'Inter',sans-serif; font-size:.7rem; color:#fff; width:160px; }
-.hwh-topbar__search-input::placeholder { color:rgba(255,255,255,.4); }
-.hwh-topbar__search-btn { background:transparent; border:none; cursor:pointer; padding:.25rem .6rem .25rem 0; color:rgba(255,255,255,.5); display:flex; align-items:center; transition:color .2s ease; }
-.hwh-topbar__search-btn:hover { color:#F22F3A; }
-.hwh-topbar__social { color:rgba(255,255,255,.5); transition:color .2s ease; display:flex; align-items:center; padding:.2rem; }
-.hwh-topbar__social:hover { color:#F22F3A; }
+/* Single high-contrast promise: phone + 24/7 badge, whole thing a tel: link */
+.hwh-topbar__promise { display:flex; align-items:center; gap:.5rem; font-family:'Inter',sans-serif; font-size:.8rem; font-weight:700; color:#fff; white-space:nowrap; text-decoration:none; transition:color .2s ease; }
+.hwh-topbar__promise svg { color:#F22F3A; flex-shrink:0; }
+.hwh-topbar__promise:hover strong { text-decoration:underline; text-underline-offset:3px; }
+.hwh-topbar__badge { background:#F22F3A; color:#fff; font-size:.62rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.2rem .55rem; border-radius:9999px; line-height:1; }
 
 /* ── Nav bar ─────────────────────────────────────────────────────── */
 .hwh-nav-bar { background:rgba(255,255,255,.97); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:0 2px 20px rgba(0,0,0,.07); padding:.85rem 0; transition:padding .3s ease, box-shadow .3s ease; }
@@ -10622,19 +10610,17 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
 .hwh-mobile-search button { background:transparent; border:none; cursor:pointer; padding:.65rem 1rem .65rem 0; color:#3D6491; display:flex; align-items:center; }
 .hwh-mobile-search button:hover { color:#F22F3A; }
 
+/* Mobile menu location selector (topbar hides its own below 768px) */
+.hwh-mobile-location { display:flex; align-items:center; gap:.5rem; margin:.6rem 1.5rem 0; background:#F8F9FB; border:1.5px solid #E5EBF5; border-radius:9999px; padding:.55rem 1rem; color:#F22F3A; }
+.hwh-mobile-location select { flex:1; background:transparent; border:none; outline:none; font-family:'Inter',sans-serif; font-size:.85rem; font-weight:500; color:#0F2440; cursor:pointer; -webkit-appearance:none; -moz-appearance:none; appearance:none; padding-right:18px; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%233D6491' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right center; background-size:10px; }
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media(max-width:1024px) {
   .hwh-nav { display:none; }
   .hwh-nav__hamburger { display:flex; }
-  .hwh-topbar__item:not(.hwh-topbar__item--phone):not(.hwh-topbar__item--live) { display:none; }
-  .hwh-topbar__sep { display:none; }
-  .hwh-topbar__search-input { width:120px; }
   .site-main { padding-top:100px; }
 }
 @media(max-width:640px) {
-  .hwh-topbar__search { display:none; }
-  .hwh-topbar__social { display:none; }
-  .hwh-topbar__right { gap:.4rem; }
   .hwh-nav__call { display:none; }
   .site-main { padding-top:90px; }
 }
@@ -12439,11 +12425,6 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
   .hwh-nav { display: none !important; }
   .hwh-nav__hamburger { display: flex !important; }
 
-  /* Topbar: shrink and hide extras */
-  .hwh-topbar__sep { display: none; }
-  .hwh-topbar__item:not(.hwh-topbar__item--phone):not(.hwh-topbar__item--live) { display: none; }
-  .hwh-topbar__search-input { width: 120px; }
-
   /* Logo slightly smaller */
   .hwh-nav__logo-img { height: 52px; }
 
@@ -12454,17 +12435,15 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
 @media (max-width: 768px) {
   /* Collapse topbar height on small tablets */
   .hwh-topbar { height: auto; min-height: 36px; padding: 0.3rem 0; }
-  .hwh-topbar__inner { flex-wrap: wrap; gap: 0.4rem; }
-  .hwh-topbar__search { display: none; }
-  .hwh-topbar__social { display: none; }
+  /* Topbar becomes a single centered promise; location selector moves to the mobile menu */
+  .hwh-topbar .hwh-location-selector { display: none; }
+  .hwh-topbar__inner { justify-content: center; }
   .hwh-nav__logo-img { height: 46px; }
   .site-main { padding-top: 88px; }
 }
 
 @media (max-width: 480px) {
-  /* On very small phones, topbar only shows phone number */
-  .hwh-topbar__item--live { display: none; }
-  .hwh-topbar__right { display: none; }
+  .hwh-topbar__promise { font-size: .75rem; }
   .hwh-nav__logo-img { height: 40px; }
   .hwh-nav__call { display: none; }
   .site-main { padding-top: 82px; }
