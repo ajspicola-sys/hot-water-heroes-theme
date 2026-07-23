@@ -10383,7 +10383,7 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
 
 /* Main body */
 .hwh-foot__main { padding: 5rem 0 4rem; }
-.hwh-foot__inner { max-width:1280px; margin:0 auto; padding:0 clamp(1.25rem,1rem + 2vw,3rem); display:grid; grid-template-columns:1.6fr 1fr 1fr 1.2fr; gap:3.5rem; }
+.hwh-foot__inner { max-width:1280px; margin:0 auto; padding:0 clamp(1.25rem,1rem + 2vw,3rem); display:grid; grid-template-columns:1.5fr 1fr .9fr 1.1fr 1.2fr; gap:2.75rem; }
 
 /* Brand col */
 .hwh-foot__logo img { height:auto; width:auto; margin-bottom:1.25rem; }
@@ -10399,6 +10399,8 @@ footer.hwh-foot { background: #0A1628; color: rgba(255,255,255,0.7); font-family
 .hwh-foot__links { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.6rem; }
 .hwh-foot__links a { font-size:.85rem; color:rgba(255,255,255,.55); text-decoration:none; transition:all .2s ease; display:inline-flex; align-items:center; gap:.35rem; }
 .hwh-foot__links a:hover { color:#fff; transform:translateX(3px); }
+.hwh-foot__links--split { display:block; column-count:2; column-gap:1.5rem; }
+.hwh-foot__links--split li { margin-bottom:.6rem; break-inside:avoid; }
 
 /* Contact col */
 .hwh-foot__contact { display:flex; flex-direction:column; gap:.9rem; }

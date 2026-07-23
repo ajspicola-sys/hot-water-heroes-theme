@@ -63,6 +63,8 @@
                     <li><a href="<?php echo esc_url(home_url('/services/drain-cleaning/')); ?>">Drain Cleaning</a></li>
                     <li><a href="<?php echo esc_url(home_url('/contact/')); ?>">Emergency Plumbing</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/leak-detection-and-repair/')); ?>">Leak Detection &amp; Repair</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/service-category/water-heater-services/')); ?>">Water Heater Services</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/service-category/drain-pipe-services/')); ?>">Drain &amp; Pipe Services</a></li>
                     <li><a href="<?php echo esc_url(home_url('/services/')); ?>">All Services &rarr;</a></li>
                 </ul>
             </div>
@@ -72,10 +74,28 @@
                 <h3 class="hwh-foot__heading">Company</h3>
                 <ul class="hwh-foot__links">
                     <li><a href="<?php echo esc_url(home_url('/about/')); ?>">About Us</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/values/')); ?>">Our Values</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/careers/')); ?>">Careers</a></li>
+                    <li><a href="<?php echo esc_url(home_url('/maintenance-plan/')); ?>">Maintenance Plan</a></li>
                     <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">Plumbing Tips Blog</a></li>
                     <li><a href="<?php echo esc_url(home_url('/contact/')); ?>">Contact Us</a></li>
                 </ul>
             </div>
+
+            <?php
+            // Areas We Serve — parent location pages only (no matrix children)
+            $hwh_foot_areas = function_exists('hwh_get_locations') ? hwh_get_locations() : [];
+            if ($hwh_foot_areas) : ?>
+            <!-- Areas col -->
+            <div class="hwh-foot__col">
+                <h3 class="hwh-foot__heading">Areas We Serve</h3>
+                <ul class="hwh-foot__links hwh-foot__links--split">
+                    <?php foreach ($hwh_foot_areas as $hwh_foot_area) : ?>
+                    <li><a href="<?php echo esc_url(get_permalink($hwh_foot_area)); ?>"><?php echo esc_html($hwh_foot_area->post_title); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
 
             <!-- Contact col -->
             <div class="hwh-foot__col">
