@@ -203,9 +203,10 @@ function hwh_resource_hints() {
     // DNS prefetch for external image CDN
     echo '<link rel="dns-prefetch" href="//hotwaterheroesplumbing.com">' . "\n";
 
-    // Preload HWH critical font files (Inter 600 + Montserrat 700 - weights used above the fold)
-    echo '<link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>' . "\n";
-    echo '<link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCtr6Hw5aXo.woff2" as="font" type="font/woff2" crossorigin>' . "\n";
+    // Preload self-hosted variable fonts (same-origin, declared in style.css)
+    $font_dir = get_stylesheet_directory_uri() . '/assets/fonts';
+    echo '<link rel="preload" href="' . esc_url( $font_dir . '/inter-var-latin.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+    echo '<link rel="preload" href="' . esc_url( $font_dir . '/montserrat-var-latin.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 }
 add_action('wp_head', 'hwh_resource_hints', 1);
 

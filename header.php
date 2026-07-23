@@ -87,8 +87,6 @@ $hwh_menu_services = hwh_get_menu_services();
     <meta name="twitter:description" content="<?php echo esc_attr($og_desc); ?>">
     <meta name="twitter:image"       content="<?php echo esc_url($og_img); ?>">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://hotwaterheroesplumbing.com" crossorigin>
 
     <!-- Preload LCP hero image (desktop) -->
@@ -96,8 +94,7 @@ $hwh_menu_services = hwh_get_menu_services();
           href="https://hotwaterheroesplumbing.com/wp-content/uploads/2025/12/HWH-HERO-VAN.png"
           fetchpriority="high">
 
-    <!-- Google Fonts: Loaded synchronously with preconnects to completely eliminate Flash of Unstyled Text (FOUT) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+    <!-- Fonts are self-hosted (declared in style.css, preloaded via hwh_resource_hints) -->
 
     <?php
     $theme_ver = filemtime(get_stylesheet_directory() . '/style.css');
@@ -115,28 +112,6 @@ $hwh_menu_services = hwh_get_menu_services();
         .hwh-topbar__inner { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem,1rem + 2vw,3rem); display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 1.5rem; }
         .hwh-nav-bar { background: rgba(255,255,255,0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 2px 20px rgba(0,0,0,0.08); padding: 0.85rem 0; transition: padding .3s ease; }
         .hwh-nav-bar__inner { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem,1rem + 2vw,3rem); display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-        /* Montserrat fallback — size-adjust prevents CLS when font swaps in */
-        @font-face {
-            font-family: 'Montserrat';
-            font-display: swap;
-            src: local('Montserrat Bold'), local('Montserrat-Bold');
-            font-weight: 700 800;
-            size-adjust: 108%;
-            ascent-override: 85%;
-            descent-override: 22%;
-            line-gap-override: 0%;
-        }
-        /* Inter fallback — tighter metrics than Helvetica Neue */
-        @font-face {
-            font-family: 'Inter';
-            font-display: swap;
-            src: local('Inter'), local('Inter-Regular');
-            font-weight: 400 600;
-            size-adjust: 100%;
-            ascent-override: 90%;
-            descent-override: 22%;
-            line-gap-override: 0%;
-        }
         .hwh-location-selector {
             display: inline-flex;
             align-items: center;
