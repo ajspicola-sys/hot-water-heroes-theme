@@ -22,9 +22,12 @@
         $yoast_meta = YoastSEO()->meta->for_current_page();
         $meta_desc  = $yoast_meta ? $yoast_meta->description : '';
     }
+    if ( empty( $meta_desc ) && is_singular() ) {
+        $meta_desc = get_post_meta( get_the_ID(), '_hwh_seo_desc', true );
+    }
     if ( empty( $meta_desc ) ) {
         if ( is_front_page() ) {
-            $meta_desc = 'Hot Water Heroes is a trusted Tampa plumbing company specializing in water heater repair, replacement, and same-day service. Call 813-42-PLUMB.';
+            $meta_desc = 'Hot Water Heroes Plumbing is a trusted Tampa plumbing company specializing in water heater repair, replacement, and same-day service. Call 813-42-PLUMB (75862).';
         } elseif ( is_singular() ) {
             $meta_desc = wp_strip_all_tags( get_the_excerpt() );
         } else {
@@ -43,6 +46,10 @@
     if (has_post_thumbnail()) {
         $td = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
         if ($td) $og_img = esc_url($td[0]);
+    }
+    if ( is_singular() ) {
+        $custom_og = get_post_meta( get_the_ID(), '_hwh_og_image', true );
+        if ( $custom_og ) $og_img = esc_url( $custom_og );
     }
     ?>
     <meta property="og:locale"       content="en_US">
@@ -218,7 +225,7 @@
 
             <!-- Actions -->
             <div class="hwh-nav__actions">
-                <a href="tel:+18134275862" class="hwh-nav__call" aria-label="Call 813-42-PLUMB">
+                <a href="tel:+18134275862" class="hwh-nav__call" aria-label="Call 813-42-PLUMB (75862)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                 </a>
                 <a href="/contact/" class="hwh-btn hwh-btn--red hwh-btn--sm">Book Service</a>

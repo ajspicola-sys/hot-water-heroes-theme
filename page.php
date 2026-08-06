@@ -1,51 +1,9 @@
 <?php
 /**
  * Hot Water Heroes Plumbing — Generic Page Template
- * Auto-routes to custom templates based on page slug
+ * Slug-to-template routing lives in hwh_force_page_templates() (functions.php),
+ * which runs on template_include before this file is ever chosen.
  */
-
-// Auto-route to custom templates by slug
-global $post;
-$slug = '';
-if ($post) {
-    $slug = $post->post_name;
-}
-
-$custom_templates = [
-    'team'         => 'page-team.php',
-    'meet-the-team'=> 'page-team.php',
-    'our-team'     => 'page-team.php',
-    'about'        => 'page-about.php',
-    'about-us'     => 'page-about.php',
-    'contact'      => 'page-contact.php',
-    'contact-us'   => 'page-contact.php',
-    'products'     => 'page-products.php',
-    'our-products' => 'page-products.php',
-    'shop'         => 'page-products.php',
-    'values'       => 'page-values.php',
-    'our-values'   => 'page-values.php',
-    'mission'      => 'page-values.php',
-    'before-after' => 'page-before-after.php',
-];
-
-if ($slug && isset($custom_templates[$slug])) {
-    $custom = get_template_directory() . '/' . $custom_templates[$slug];
-    if (file_exists($custom)) {
-        include($custom);
-        return;
-    }
-}
-
-// Also check by page title as fallback
-$title_slug = sanitize_title(get_the_title());
-if ($title_slug && isset($custom_templates[$title_slug])) {
-    $custom = get_template_directory() . '/' . $custom_templates[$title_slug];
-    if (file_exists($custom)) {
-        include($custom);
-        return;
-    }
-}
-
 get_header(); ?>
 
 <main class="site-main" id="main-content">

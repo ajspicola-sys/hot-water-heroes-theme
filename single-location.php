@@ -24,7 +24,7 @@ get_header();
       "image": "https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png",
       "@id": "<?php the_permalink(); ?>#plumbingservice",
       "url": "<?php the_permalink(); ?>",
-      "telephone": "813-427-5862",
+      "telephone": "+18134275862",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
@@ -46,7 +46,7 @@ get_header();
         "@type": "LocalBusiness",
         "name": "Hot Water Heroes Plumbing",
         "image": "https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png",
-        "telephone": "813-427-5862"
+        "telephone": "+18134275862"
       }
     }
     </script>
@@ -110,22 +110,22 @@ get_header();
     </section>
 
     <!-- ── Trust Badges Section ──────────────────────────────────── -->
-    <section class="hwh-trust-bar" style="background:#F0F4F8;padding:2.5rem 0;border-top:1px solid #E1E8F0;border-bottom:1px solid #E1E8F0;">
+    <section class="hwh-trust-bar" style="background:#F4F6FA;padding:2.5rem 0;border-top:1px solid #E5EBF5;border-bottom:1px solid #E5EBF5;">
         <div class="hwh-section-inner">
             <div style="display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:2rem;">
                 <div style="text-align:center;flex:1;min-width:200px;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">⭐ ⭐ ⭐ ⭐ ⭐</div>
-                    <strong style="color:#0B2347;display:block;">5.0 Google Rating</strong>
+                    <strong style="color:#0F2440;display:block;">5.0 Google Rating</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">30+ verified local reviews</span>
                 </div>
-                <div style="text-align:center;flex:1;min-width:200px;border-left:1px solid #D0DBE6;border-right:1px solid #D0DBE6;">
+                <div style="text-align:center;flex:1;min-width:200px;border-left:1px solid #D0DAEA;border-right:1px solid #D0DAEA;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">⏱️</div>
-                    <strong style="color:#0B2347;display:block;">Same-Day Service</strong>
+                    <strong style="color:#0F2440;display:block;">Same-Day Service</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">Available for most plumbing repairs</span>
                 </div>
                 <div style="text-align:center;flex:1;min-width:200px;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">💼</div>
-                    <strong style="color:#0B2347;display:block;">Licensed & Insured</strong>
+                    <strong style="color:#0F2440;display:block;">Licensed & Insured</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">Professional service you can trust</span>
                 </div>
             </div>
@@ -220,14 +220,14 @@ get_header();
     <?php hwh_render_reviews_section(get_the_ID(), get_the_title()); ?>
 
     <!-- ── Map Section ───────────────────────────────────────────── -->
-    <section class="hwh-location-map" aria-label="Our Service Area Map in <?php the_title(); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
+    <section class="hwh-location-map" aria-label="Our Service Area Map in <?php the_title(); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F8F9FB;border-top:1px solid #EEF2F8;">
         <div class="hwh-section-inner">
             <div style="text-align:center;margin-bottom:3rem;">
                 <span class="hwh-label">Find Us Nearby</span>
                 <h2 class="hwh-section-title">Our <?php the_title(); ?> Service Area</h2>
                 <p class="hwh-section-desc">Prompt, local, and reliable plumbing response directly to your neighborhood in <?php the_title(); ?>, FL.</p>
             </div>
-            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EAF0F6;max-width:1000px;margin:0 auto;">
+            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EEF2F8;max-width:1000px;margin:0 auto;">
                 <iframe 
                     width="100%" 
                     height="450" 

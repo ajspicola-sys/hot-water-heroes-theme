@@ -253,7 +253,7 @@
                 fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', { method:'POST', body:data, credentials:'same-origin' })
                     .then(function(r){ return r.json(); })
                     .then(function(res){ if(res.success){ contactForm.style.display='none'; formSuccess.classList.add('is-visible'); formSuccess.scrollIntoView({behavior:'smooth',block:'center'}); } else { if(btn){ btn.innerHTML=orig; btn.disabled=false; } alert((res.data&&res.data.message)?res.data.message:'Something went wrong.'); } })
-                    .catch(function(){ if(btn){ btn.innerHTML=orig; btn.disabled=false; } alert('Connection error. Please call us at 813-42-PLUMB.'); });
+                    .catch(function(){ if(btn){ btn.innerHTML=orig; btn.disabled=false; } alert('Connection error. Please call us at 813-42-PLUMB (75862).'); });
             });
         }
         var phoneInput = document.getElementById('cf-phone');

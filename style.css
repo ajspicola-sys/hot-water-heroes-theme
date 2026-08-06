@@ -48,6 +48,7 @@ Text Domain:      hot-water-heroes
   --brand-882:        #AF2D37;
   --brand-navy:       #18375D;
   --brand-navy-dark:  #0F2440;
+  --brand-ink-deep:   #0A1628;   /* footer/hero/map-pin deep ink */
 
   /* RGB channels for rgba() */
   --brand-rgb:        242, 47, 58;
@@ -409,7 +410,7 @@ html {
 }
 
 .site-logo__name {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
   font-weight: 300;
   letter-spacing: 0.06em;
@@ -824,7 +825,7 @@ html {
 }
 
 .mega-menu__promo-title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.9rem);
   font-weight: 300;
   color: var(--text-dark);
@@ -1051,7 +1052,7 @@ html {
 .mobile-menu__links a {
   display: block;
   padding: 1rem 0;
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
   font-weight: 500;
   color: var(--text-dark);
@@ -1439,7 +1440,7 @@ html {
 }
 
 .hero__stat-num {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1.8rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -2470,7 +2471,7 @@ html {
 }
 
 .supplements__partner-label {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -2776,7 +2777,7 @@ html {
 
 .why-us__stat-number {
   display: block;
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.8rem, 1.5rem + 1.2vw, 2.4rem);
   font-weight: 600;
   color: var(--brand);
@@ -3344,7 +3345,7 @@ html {
 }
 
 .error-404__digit {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(5rem, 4rem + 5vw, 9rem);
   font-weight: 300;
   color: rgba(var(--brand-rgb), 0.15);
@@ -3364,7 +3365,7 @@ html {
 }
 
 .error-404__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.8rem, 1.5rem + 2vw, 2.8rem);
   font-weight: 500;
   color: var(--text-dark);
@@ -3605,7 +3606,7 @@ html {
 .page-content__body h2,
 .page-content__body h3,
 .page-content__body h4 {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   color: var(--text-dark);
   margin-top: 2rem;
   margin-bottom: 0.75rem;
@@ -4061,7 +4062,7 @@ html {
 
 /* Form */
 .contact-form__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -5680,7 +5681,7 @@ a.contact-card__text:hover {
 
 .stats-bar__number {
   display: block;
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
   font-weight: 600;
   color: var(--brand);
@@ -5795,7 +5796,7 @@ a.contact-card__text:hover {
 }
 
 .value-card__number {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 2rem;
   font-weight: 300;
   color: var(--brand);
@@ -5978,7 +5979,7 @@ a.contact-card__text:hover {
 }
 
 .product-card__name {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.6rem);
   font-weight: 500;
   color: var(--text-dark);
@@ -6187,7 +6188,7 @@ a.contact-card__text:hover {
   color: rgba(var(--brand-rgb), 0.25);
   font-weight: 300;
   letter-spacing: 0.2em;
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
 }
 
 /* ── Info Area ─────────────────────────────────────────────────── */
@@ -6216,7 +6217,7 @@ a.contact-card__text:hover {
 }
 
 .team-member__name {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem);
   font-weight: 400;
   margin-bottom: 0.4rem;
@@ -6311,7 +6312,7 @@ a.contact-card__text:hover {
 }
 
 .mission-quote {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.4rem);
   font-weight: 300;
   font-style: italic;
@@ -6402,7 +6403,7 @@ a.contact-card__text:hover {
 }
 
 .value-detail__number {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 2.5rem;
   font-weight: 300;
   color: var(--brand);
@@ -6410,7 +6411,7 @@ a.contact-card__text:hover {
 }
 
 .value-detail__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.6rem);
   font-weight: 400;
   margin-bottom: 0.75rem;
@@ -7179,7 +7180,7 @@ a.contact-card__text:hover {
 }
 
 .blog-empty__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1.8rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -7299,7 +7300,7 @@ a.contact-card__text:hover {
 }
 
 .related-posts__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-dark);
@@ -7389,7 +7390,7 @@ a.contact-card__text:hover {
 }
 
 .membership-step__number {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: rgba(var(--brand-rgb), 0.2);
@@ -7608,7 +7609,7 @@ a.contact-card__text:hover {
 }
 
 .party-block__subtitle {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.3rem, 1rem + 1.5vw, 1.8rem);
   font-weight: 600;
   color: var(--text-dark);
@@ -7716,7 +7717,7 @@ a.contact-card__text:hover {
 }
 
 .party-divider__text {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1.1rem;
   font-style: italic;
   color: var(--text-faint);
@@ -7751,7 +7752,7 @@ a.contact-card__text:hover {
 }
 
 .party-step__number {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 2rem;
   font-weight: 700;
   color: var(--brand);
@@ -8793,7 +8794,7 @@ a.contact-card__text:hover {
 }
 
 .compare-table th {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 1.1rem;
   font-weight: 400;
   color: #FFFFFF;
@@ -9740,7 +9741,7 @@ a.contact-card__text:hover {
 }
 
 .maint-plan-step__num {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: 3.5rem;
   font-weight: 300;
   background: linear-gradient(135deg, var(--brand), var(--brand-pink));
@@ -9998,7 +9999,7 @@ a.contact-card__text:hover {
 }
 
 .deal-popup__title {
-  font-family: 'Montserrat', serif;
+  font-family: 'Montserrat', Georgia, serif;
   font-size: clamp(1.9rem, 5vw, 2.6rem);
   font-weight: 600;
   line-height: 1.1;

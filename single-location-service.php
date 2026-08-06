@@ -69,7 +69,7 @@ if ($content) {
     <h3>Our Service Standards</h3>
     <p>We stand behind every ' . esc_html(strtolower($base_title)) . ' we perform with a 100% satisfaction guarantee. Whether you are dealing with a minor leak, require a full commercial water heater installation, or need emergency drain cleaning, our team is equipped with state-of-the-art tools and equipment to complete the job cleanly and efficiently.</p>
     
-    <p>Don\'t let a small plumbing issue turn into a major headache. Call <strong>813-42-PLUMB</strong> or schedule your service online today to get a Hot Water Hero dispatched to your door in ' . esc_html($city_name) . '.</p>';
+    <p>Don\'t let a small plumbing issue turn into a major headache. Call <strong>813-42-PLUMB (75862)</strong> or schedule your service online today to get a Hot Water Hero dispatched to your door in ' . esc_html($city_name) . '.</p>';
 }
 
 $has_image = has_post_thumbnail($base_id);
@@ -86,7 +86,7 @@ $has_image = has_post_thumbnail($base_id);
       "image": "https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png",
       "@id": "<?php the_permalink(); ?>#plumbingservice",
       "url": "<?php the_permalink(); ?>",
-      "telephone": "813-427-5862",
+      "telephone": "+18134275862",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
@@ -108,7 +108,7 @@ $has_image = has_post_thumbnail($base_id);
         "@type": "LocalBusiness",
         "name": "Hot Water Heroes Plumbing",
         "image": "https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png",
-        "telephone": "813-427-5862"
+        "telephone": "+18134275862"
       }
     }
     </script>
@@ -175,7 +175,7 @@ $has_image = has_post_thumbnail($base_id);
         <div class="hwh-section-inner" style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:4rem;">
             
             <!-- Left Side: Main localized copy -->
-            <div style="background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.02);border:1px solid #EAF0F6;padding:3rem;font-size:1.15rem;line-height:1.8;color:#3D6491;">
+            <div style="background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.02);border:1px solid #EEF2F8;padding:3rem;font-size:1.15rem;line-height:1.8;color:#3D6491;">
                 <?php if ($has_image): ?>
                     <div style="margin:-3rem -3rem 3rem -3rem;border-radius:18px 18px 0 0;overflow:hidden;aspect-ratio:21/9;">
                         <?php echo get_the_post_thumbnail($base_id, 'large', array('style' => 'width:100%;height:100%;object-fit:cover;')); ?>
@@ -191,22 +191,22 @@ $has_image = has_post_thumbnail($base_id);
     </section>
 
     <!-- ── Local Trust Bar ───────────────────────────────────────── -->
-    <section class="hwh-trust-bar" style="background:#F0F4F8;padding:2.5rem 0;border-top:1px solid #E1E8F0;border-bottom:1px solid #E1E8F0;">
+    <section class="hwh-trust-bar" style="background:#F4F6FA;padding:2.5rem 0;border-top:1px solid #E5EBF5;border-bottom:1px solid #E5EBF5;">
         <div class="hwh-section-inner">
             <div style="display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:2rem;">
                 <div style="text-align:center;flex:1;min-width:200px;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">⭐ ⭐ ⭐ ⭐ ⭐</div>
-                    <strong style="color:#0B2347;display:block;">5.0 Google Rating</strong>
+                    <strong style="color:#0F2440;display:block;">5.0 Google Rating</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">30+ verified local reviews</span>
                 </div>
-                <div style="text-align:center;flex:1;min-width:200px;border-left:1px solid #D0DBE6;border-right:1px solid #D0DBE6;">
+                <div style="text-align:center;flex:1;min-width:200px;border-left:1px solid #D0DAEA;border-right:1px solid #D0DAEA;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">⏱️</div>
-                    <strong style="color:#0B2347;display:block;">Same-Day Service</strong>
+                    <strong style="color:#0F2440;display:block;">Same-Day Service</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">Water Heaters & Repairs in <?php echo esc_html($city_name); ?></span>
                 </div>
                 <div style="text-align:center;flex:1;min-width:200px;">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">🛡️</div>
-                    <strong style="color:#0B2347;display:block;">100% Satisfaction</strong>
+                    <strong style="color:#0F2440;display:block;">100% Satisfaction</strong>
                     <span style="font-size:0.9rem;color:#3D6491;">We stand behind all our plumbing work</span>
                 </div>
             </div>
@@ -220,14 +220,14 @@ $has_image = has_post_thumbnail($base_id);
     <?php hwh_render_reviews_section($parent_id, $city_name); ?>
 
     <!-- ── Local Google Map ──────────────────────────────────────── -->
-    <section class="hwh-location-map" aria-label="Our Service Map in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
+    <section class="hwh-location-map" aria-label="Our Service Map in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F8F9FB;border-top:1px solid #EEF2F8;">
         <div class="hwh-section-inner">
             <div style="text-align:center;margin-bottom:3rem;">
                 <span class="hwh-label">Find Us Nearby</span>
                 <h2 class="hwh-section-title">Serving <?php echo esc_html($city_name); ?>, FL</h2>
                 <p class="hwh-section-desc">Prompt response times for <?php echo esc_html(strtolower($base_title)); ?> directly to <?php echo esc_html($city_name); ?> homeowners.</p>
             </div>
-            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EAF0F6;max-width:1000px;margin:0 auto;">
+            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EEF2F8;max-width:1000px;margin:0 auto;">
                 <iframe 
                     width="100%" 
                     height="450" 

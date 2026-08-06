@@ -27,7 +27,7 @@ if (empty($photos) && has_post_thumbnail($job_id)) {
       "name": "Hot Water Heroes Plumbing — <?php echo esc_js(get_the_title()); ?>",
       "@id": "<?php the_permalink(); ?>#plumbingservice",
       "url": "<?php the_permalink(); ?>",
-      "telephone": "813-427-5862",
+      "telephone": "+18134275862",
       "priceRange": "$$",
       "areaServed": {
         "@type": "City",
@@ -37,7 +37,7 @@ if (empty($photos) && has_post_thumbnail($job_id)) {
       "provider": {
         "@type": "LocalBusiness",
         "name": "Hot Water Heroes Plumbing",
-        "telephone": "813-427-5862"
+        "telephone": "+18134275862"
       }
     }
     </script>
@@ -80,7 +80,7 @@ if (empty($photos) && has_post_thumbnail($job_id)) {
                         $full = wp_get_attachment_image_url($pid, 'large');
                         if (!$full) continue; ?>
                         <img src="<?php echo esc_url($full); ?>" alt="<?php echo esc_attr(get_the_title() . ' — job photo'); ?>"
-                             style="width:100%;height:280px;object-fit:cover;border-radius:14px;border:1px solid #EAF0F6;box-shadow:0 8px 20px rgba(11,35,71,0.06);" loading="lazy" decoding="async">
+                             style="width:100%;height:280px;object-fit:cover;border-radius:14px;border:1px solid #EEF2F8;box-shadow:0 8px 20px rgba(15,36,64,0.06);" loading="lazy" decoding="async">
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
@@ -103,14 +103,14 @@ if (empty($photos) && has_post_thumbnail($job_id)) {
     <!-- ── Local Reviews + Map ───────────────────────────────────── -->
     <?php if ($location_id) hwh_render_reviews_section($location_id, $city_name); ?>
 
-    <section class="hwh-location-map" aria-label="Service area map — <?php echo esc_attr($city_name); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
+    <section class="hwh-location-map" aria-label="Service area map — <?php echo esc_attr($city_name); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F8F9FB;border-top:1px solid #EEF2F8;">
         <div class="hwh-section-inner">
             <div style="text-align:center;margin-bottom:3rem;">
                 <span class="hwh-label">Your Neighborhood</span>
                 <h2 class="hwh-section-title">We Work All Over <?php echo esc_html($city_name); ?></h2>
                 <p class="hwh-section-desc">Need the same thing done at your place? We're already in the area.</p>
             </div>
-            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EAF0F6;max-width:1000px;margin:0 auto;">
+            <div style="box-shadow:0 15px 35px rgba(0,0,0,0.06);border-radius:18px;overflow:hidden;border:1px solid #EEF2F8;max-width:1000px;margin:0 auto;">
                 <iframe width="100%" height="400" frameborder="0" style="border:0;display:block;"
                     src="https://maps.google.com/maps?q=<?php echo urlencode($city_name . ', FL'); ?>&t=&z=13&ie=UTF8&iwloc=&output=embed"
                     allowfullscreen aria-label="Google Map showing <?php echo esc_attr($city_name); ?>, FL"></iframe>

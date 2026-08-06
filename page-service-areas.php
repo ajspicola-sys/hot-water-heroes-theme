@@ -119,7 +119,7 @@ get_header(); ?>
     }
     ksort($grouped_services);
     ?>
-    <section class="hwh-directory-section" style="padding: 5rem 0; background: #fff; border-top: 1px solid #EAF0F6;">
+    <section class="hwh-directory-section" style="padding: 5rem 0; background: #fff; border-top: 1px solid #EEF2F8;">
         <div class="section__inner">
             <div class="section__header reveal">
                 <span class="section__label">Service Directory</span>
@@ -129,8 +129,8 @@ get_header(); ?>
             
             <div class="hwh-directory-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; margin-top: 3rem;">
                 <?php foreach ($grouped_services as $location => $svcs): ?>
-                    <div class="hwh-directory-col" style="background: #F9FBFC; padding: 2rem; border-radius: 12px; border: 1px solid #EAF0F6;">
-                        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 700; color: #0B2347; margin-bottom: 1.25rem; border-bottom: 2px solid #F22F3A; padding-bottom: 0.5rem; display: inline-block;">
+                    <div class="hwh-directory-col" style="background: #F8F9FB; padding: 2rem; border-radius: 12px; border: 1px solid #EEF2F8;">
+                        <h3 style="font-family: 'Montserrat', Georgia, serif; font-size: 1.25rem; font-weight: 700; color: #0F2440; margin-bottom: 1.25rem; border-bottom: 2px solid #F22F3A; padding-bottom: 0.5rem; display: inline-block;">
                             📍 <?php echo esc_html($location); ?>
                         </h3>
                         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
@@ -177,7 +177,7 @@ get_header(); ?>
                 <details class="faq-item">
                     <summary class="faq-item__question">Do you offer emergency service on weekends?</summary>
                     <div class="faq-item__answer">
-                        <p>Yes! Our emergency plumbing service is available 24/7, 365 days a year — including weekends and holidays. Call 813-42-PLUMB anytime.</p>
+                        <p>Yes! Our emergency plumbing service is available 24/7, 365 days a year — including weekends and holidays. Call 813-42-PLUMB (75862) anytime.</p>
                     </div>
                 </details>
             </div>

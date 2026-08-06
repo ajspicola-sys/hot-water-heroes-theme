@@ -58,7 +58,7 @@ get_header(); ?>
             <div class="hwh-hero__actions">
                 <a href="tel:+18134275862" class="hwh-btn hwh-btn--red hwh-btn--lg">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                    813-42-PLUMB — (813) 427-5862
+                    813-42-PLUMB (75862)
                 </a>
                 <a href="/contact/" class="hwh-btn hwh-btn--ghost hwh-btn--lg">
                     Book Online →
@@ -601,110 +601,7 @@ get_header(); ?>
                      loading="lazy" decoding="async" width="500" height="500"
                      class="hwh-areas__map">
                                 
-                <!-- 
-                   Bulletproof, Cache-Immune Styles for Hot Water Heroes Map Pins.
-                   These styles are placed inline in front-page.php to bypass CDN and browser cache delays 
-                   and ensure the HTML structure and CSS are always perfectly synced.
-                -->
-                <style>
-                .hwh-areas__visual .hwh-map-pin {
-                    position: absolute !important;
-                    transform: translate(-50%, -50%) !important;
-                    display: flex !important;
-                    flex-direction: column !important;
-                    align-items: center !important;
-                    z-index: 10 !important;
-                    cursor: pointer !important;
-                    pointer-events: auto !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
-
-                .hwh-areas__visual .hwh-map-pin__marker {
-                    position: relative !important;
-                    width: 12px !important;
-                    height: 12px !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    flex-shrink: 0 !important;
-                    margin: 0 auto !important;
-                }
-
-                .hwh-areas__visual .hwh-map-pin__dot {
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    width: 12px !important;
-                    height: 12px !important;
-                    background-color: #F22F3A !important;
-                    border-radius: 50% !important;
-                    box-shadow: 0 0 8px rgba(242,47,58,0.8) !important;
-                    z-index: 2 !important;
-                    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease !important;
-                    display: block !important;
-                }
-
-                .hwh-areas__visual .hwh-map-pin__pulse {
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    width: 12px !important;
-                    height: 12px !important;
-                    background-color: rgba(242,47,58,0.45) !important;
-                    border-radius: 50% !important;
-                    animation: hwh-map-pulse-inline 2s infinite ease-out !important;
-                    pointer-events: none !important;
-                    z-index: 1 !important;
-                    display: block !important;
-                    margin: 0 !important;
-                }
-
-                @keyframes hwh-map-pulse-inline {
-                    0% {
-                        transform: scale(1) !important;
-                        opacity: 1 !important;
-                    }
-                    100% {
-                        transform: scale(4) !important;
-                        opacity: 0 !important;
-                    }
-                }
-
-                .hwh-areas__visual .hwh-map-pin__label {
-                    font-family: 'Inter', sans-serif !important;
-                    font-size: 0.7rem !important;
-                    font-weight: 700 !important;
-                    color: #0A1628 !important;
-                    background: rgba(255, 255, 255, 0.92) !important;
-                    padding: 0.2rem 0.5rem !important;
-                    border-radius: 4px !important;
-                    margin-top: 6px !important;
-                    border: 1px solid rgba(10,22,40,0.12) !important;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
-                    white-space: nowrap !important;
-                    pointer-events: none !important;
-                    transition: all 0.3s ease !important;
-                    display: block !important;
-                }
-
-                /* Hover and Active states */
-                .hwh-areas__visual .hwh-map-pin:hover .hwh-map-pin__dot,
-                .hwh-areas__visual .hwh-map-pin.is-active .hwh-map-pin__dot {
-                    transform: scale(1.35) !important;
-                    background-color: #0A1628 !important;
-                    box-shadow: 0 0 12px rgba(10, 22, 40, 0.8) !important;
-                }
-
-                .hwh-areas__visual .hwh-map-pin:hover .hwh-map-pin__label,
-                .hwh-areas__visual .hwh-map-pin.is-active .hwh-map-pin__label {
-                    background-color: #F22F3A !important;
-                    color: #ffffff !important;
-                    border-color: #F22F3A !important;
-                    box-shadow: 0 4px 12px rgba(242, 47, 58, 0.3) !important;
-                }
-                </style>
-
+                
                 <!-- Premium Pulsing Coordinate pins on Map Overlay -->
                 <div class="hwh-map-pin" data-city="tampa" style="top: 59%; left: 76%;" aria-hidden="true">
                     <div class="hwh-map-pin__marker">

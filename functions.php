@@ -138,16 +138,22 @@ function hwh_force_page_templates($template) {
     if (is_page()) {
         $slug = get_post_field('post_name', get_queried_object_id());
         $map = [
-            'team'         => 'page-team.php',
-            'about'        => 'page-about.php',
-            'contact'      => 'page-contact.php',
+            'team'             => 'page-team.php',
+            'meet-the-team'    => 'page-team.php',
+            'our-team'         => 'page-team.php',
+            'about'            => 'page-about.php',
+            'about-us'         => 'page-about.php',
+            'contact'          => 'page-contact.php',
+            'contact-us'       => 'page-contact.php',
             'maintenance-plan' => 'page-maintenance-plan.php',
-            'products'     => 'page-products.php',
-            'shop'         => 'page-products.php',
-            'values'       => 'page-values.php',
-            'before-after' => 'page-before-after.php',
-            'privacy-policy'      => 'page-privacy-policy.php',
             'specials'         => 'page-maintenance-plan.php',
+            'products'         => 'page-products.php',
+            'our-products'     => 'page-products.php',
+            'shop'             => 'page-products.php',
+            'values'           => 'page-values.php',
+            'our-values'       => 'page-values.php',
+            'mission'          => 'page-values.php',
+            'privacy-policy'   => 'page-privacy-policy.php',
             'service-areas'    => 'page-service-areas.php',
         ];
         if (isset($map[$slug])) {
@@ -174,26 +180,6 @@ function hwh_enqueue_styles() {
     wp_enqueue_style('hwh-style', get_stylesheet_uri(), [], $theme_version);
 }
 add_action('wp_enqueue_scripts', 'hwh_enqueue_styles');
-
-// -- Performance: Make only Google Fonts non-render-blocking -----------
-// The main stylesheet MUST be render-blocking to prevent FOUC.
-// Google Fonts can safely load async since system fonts render as fallback.
-// Google Fonts loaded normally (not deferred) to prevent FOUT
-// Font files are preloaded above so Inter/Montserrat arrives before first paint
-function hwh_async_styles($html, $handle) {
-    // No async deferral needed — fonts preloaded via link[rel=preload]
-    return $html;
-}
-add_filter('style_loader_tag', 'hwh_async_styles', 10, 2);
-
-
-
-
-
-
-
-
-
 
 // -- Performance: Preload critical fonts only (preconnects live in header.php) --
 function hwh_resource_hints() {
@@ -249,80 +235,6 @@ function hwh_customizer_analytics( $wp_customize ) {
     ] );
 }
 add_action( 'customize_register', 'hwh_customizer_analytics' );
-
-// -- Performance: External image proxy & WebP cache -----------------
-// Fetches third-party images (e.g. Ageless AI before/after), resizes to
-// max 800px wide, converts to WebP, and caches in wp-uploads.
-// Subsequent requests serve the local WebP — eliminates 9+ MB of PNG downloads.
-function hwh_cached_image_url( $src_url, $max_w = 800 ) {
-    $upload   = wp_upload_dir();
-    $cache_dir = $upload['basedir'] . '/hwh-img-cache';
-    $cache_url = $upload['baseurl'] . '/hwh-img-cache';
-    $filename  = md5( $src_url ) . '.webp';
-    $file_path = $cache_dir . '/' . $filename;
-    $file_url  = $cache_url . '/' . $filename;
-
-    // Serve from cache if already downloaded
-    if ( file_exists( $file_path ) ) {
-        return $file_url;
-    }
-
-    // Create cache directory if needed
-    if ( ! file_exists( $cache_dir ) ) {
-        wp_mkdir_p( $cache_dir );
-        // Prevent direct browsing
-        file_put_contents( $cache_dir . '/.htaccess', "Options -Indexes\n" );
-    }
-
-    // Fetch the remote image
-    $response = wp_remote_get( $src_url, [
-        'timeout'   => 30,
-        'sslverify' => false,
-        'headers'   => [ 'User-Agent' => 'Mozilla/5.0 (compatible; HotWaterHeroes/1.0)' ],
-    ] );
-
-    if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-        return $src_url; // Fallback to original
-    }
-
-    $body = wp_remote_retrieve_body( $response );
-    if ( empty( $body ) ) {
-        return $src_url;
-    }
-
-    // Decode image with GD
-    $img = @imagecreatefromstring( $body );
-    if ( ! $img ) {
-        return $src_url; // GD can't read it, fall back
-    }
-
-    // Resize if wider than $max_w
-    $orig_w = imagesx( $img );
-    $orig_h = imagesy( $img );
-    if ( $orig_w > $max_w ) {
-        $new_h   = (int) round( ( $max_w / $orig_w ) * $orig_h );
-        $resized = imagecreatetruecolor( $max_w, $new_h );
-        // Preserve transparency (PNGs)
-        imagealphablending( $resized, false );
-        imagesavealpha( $resized, true );
-        imagecopyresampled( $resized, $img, 0, 0, 0, 0, $max_w, $new_h, $orig_w, $orig_h );
-        imagedestroy( $img );
-        $img = $resized;
-    }
-
-    // Save as WebP (quality 82 — good balance of size vs. quality)
-    if ( function_exists( 'imagewebp' ) ) {
-        imagewebp( $img, $file_path, 82 );
-    } else {
-        // Fallback: save as JPEG if WebP not available
-        $file_path = str_replace( '.webp', '.jpg', $file_path );
-        $file_url  = str_replace( '.webp', '.jpg', $file_url );
-        imagejpeg( $img, $file_path, 82 );
-    }
-    imagedestroy( $img );
-
-    return file_exists( $file_path ) ? $file_url : $src_url;
-}
 
 // -- Performance: Add async/defer to non-critical scripts -----------
 function hwh_script_loader_tag($tag, $handle) {
@@ -517,7 +429,6 @@ function hwh_create_pages() {
         'Team'           => '',
         'Values'         => '',
         'Contact'        => '',
-        'Before After'   => '',
         'Careers'        => '',
         'Specials'       => '',
         'Blog'           => '',
@@ -717,7 +628,7 @@ function hwh_create_blog_posts() {
 <p>If you have never called a plumber before, it is completely normal to have questions. At Hot Water Heroes Plumbing, we have designed every step of the experience to be straightforward, transparent, and stress-free.</p>
 
 <h3>Step 1: The Call</h3>
-<p>When you call 813-42-PLUMB, you will speak with a real person who will ask about your issue, schedule a convenient time, and give you an upfront service call fee. No surprises.</p>
+<p>When you call 813-42-PLUMB (75862), you will speak with a real person who will ask about your issue, schedule a convenient time, and give you an upfront service call fee. No surprises.</p>
 
 <h3>Step 2: The Diagnosis</h3>
 <p>Your licensed plumber arrives on time, inspects the problem, and gives you a written estimate before any work begins. We explain what is wrong, what needs to be done, and exactly what it will cost.</p>
@@ -1022,7 +933,7 @@ function hwh_fix_meta_descriptions( $description ) {
         $slug = get_post_field( 'post_name', get_queried_object_id() );
         $page_metas = [
             'about'               => 'Meet the Hot Water Heroes team — licensed Tampa Bay plumbers with 300+ jobs completed. Honest pricing, same-day service, and a satisfaction guarantee.',
-            'contact'             => 'Need a plumber in Tampa? Contact Hot Water Heroes Plumbing — call 813-42-PLUMB or book online for same-day service across Tampa Bay.',
+            'contact'             => 'Need a plumber in Tampa? Contact Hot Water Heroes Plumbing — call 813-42-PLUMB (75862) or book online for same-day service across Tampa Bay.',
             'service-areas'       => 'Hot Water Heroes serves Tampa, St. Pete, Clearwater, Brandon, Wesley Chapel, and all of Tampa Bay. Fast, local plumbing — same-day available.',
             'privacy-policy'      => 'Read the Hot Water Heroes Plumbing privacy policy. Learn how we collect, use, and protect your personal information.',
             'cancellation-policy' => 'View the Hot Water Heroes cancellation and payment policy. Clear terms for appointments, no-shows, and accepted payment methods.',
@@ -1074,7 +985,7 @@ function hwh_fix_meta_descriptions( $description ) {
                 }
                 return $meta;
             }
-            return get_the_title() . ' in Tampa Bay, FL. Licensed plumbers, upfront pricing, same-day service. Call Hot Water Heroes at 813-42-PLUMB.';
+            return get_the_title() . ' in Tampa Bay, FL. Licensed plumbers, upfront pricing, same-day service. Call Hot Water Heroes at 813-42-PLUMB (75862).';
         }
     }
 
@@ -1416,7 +1327,7 @@ function hwh_seo_meta_html($post) {
         .hwh-seo-field textarea:focus {
             border-color: #F22F3A;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(201,169,110,0.15);
+            box-shadow: 0 0 0 2px rgba(242,47,58,0.12);
         }
         .hwh-seo-hint {
             font-size: 12px;
@@ -1600,29 +1511,13 @@ add_filter('document_title_parts', 'hwh_custom_title');
 
 // -- Output meta description & OG tags in <head> -------------------
 function hwh_seo_head_tags() {
-    if (is_singular()) {
-        $post_id = get_the_ID();
-        $desc    = get_post_meta($post_id, '_hwh_seo_desc', true);
-        $og_img  = get_post_meta($post_id, '_hwh_og_image', true);
-        $title   = get_post_meta($post_id, '_hwh_seo_title', true) ?: get_the_title();
-
+    // OG/Twitter tags are output once in header.php (which reads the
+    // _hwh_seo_desc/_hwh_og_image fields). Only the plain meta description
+    // is emitted here, and only when Yoast isn't already outputting one.
+    if (is_singular() && !function_exists('YoastSEO')) {
+        $desc = get_post_meta(get_the_ID(), '_hwh_seo_desc', true);
         if (!empty($desc)) {
             echo '<meta name="description" content="' . esc_attr($desc) . '">' . "\n";
-            echo '<meta property="og:description" content="' . esc_attr($desc) . '">' . "\n";
-            echo '<meta name="twitter:description" content="' . esc_attr($desc) . '">' . "\n";
-        }
-
-        // Open Graph tags
-        echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
-        echo '<meta property="og:type" content="website">' . "\n";
-        echo '<meta property="og:url" content="' . esc_url(get_permalink($post_id)) . '">' . "\n";
-        echo '<meta property="og:site_name" content="Hot Water Heroes Plumbing">' . "\n";
-        echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-        echo '<meta name="twitter:title" content="' . esc_attr($title) . '">' . "\n";
-
-        if (!empty($og_img)) {
-            echo '<meta property="og:image" content="' . esc_url($og_img) . '">' . "\n";
-            echo '<meta name="twitter:image" content="' . esc_url($og_img) . '">' . "\n";
         }
     }
 }
@@ -1744,15 +1639,15 @@ function hwh_default_email_template() {
     return '<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>New Message</title></head>
-<body style="margin:0;padding:0;background:#f4f0f8;font-family:\'Helvetica Neue\',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f0f8;padding:40px 0;">
+<body style="margin:0;padding:0;background:#F4F6FA;font-family:\'Helvetica Neue\',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F4F6FA;padding:40px 0;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12);">
         <tr>
-          <td style="background:linear-gradient(135deg,#0f0720 0%,#0A1628 60%,#2d0d5e 100%);padding:40px 40px 32px;text-align:center;">
-            <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,169,110,0.9);">Hot Water Heroes Plumbing</p>
-            <h1 style="margin:0;font-size:26px;font-weight:300;color:#f0ebe3;letter-spacing:1px;">New Website Message</h1>
-            <div style="width:40px;height:2px;background:linear-gradient(90deg,#F22F3A,#C9A96E);margin:16px auto 0;border-radius:2px;"></div>
+          <td style="background:linear-gradient(135deg,#0F2440 0%,#0A1628 55%,#18375D 100%);padding:40px 40px 32px;text-align:center;">
+            <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Hot Water Heroes Plumbing</p>
+            <h1 style="margin:0;font-size:26px;font-weight:300;color:#ffffff;letter-spacing:1px;">New Website Message</h1>
+            <div style="width:40px;height:2px;background:linear-gradient(90deg,#F22F3A,#F0595F);margin:16px auto 0;border-radius:2px;"></div>
           </td>
         </tr>
         <tr>
@@ -1775,14 +1670,14 @@ function hwh_default_email_template() {
               </tr>
               <tr>
                 <td style="padding:0 8px 16px 0;vertical-align:top;">
-                  <div style="background:#FFF5F5;border-radius:10px;padding:16px 18px;border-left:3px solid #C9A96E;">
-                    <p style="margin:0 0 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#C9A96E;font-weight:600;">Phone</p>
+                  <div style="background:#FFF5F5;border-radius:10px;padding:16px 18px;border-left:3px solid #18375D;">
+                    <p style="margin:0 0 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#18375D;font-weight:600;">Phone</p>
                     <p style="margin:0;font-size:15px;color:#0A1628;font-weight:500;">{{phone}}</p>
                   </div>
                 </td>
                 <td style="padding:0 0 16px 8px;vertical-align:top;">
-                  <div style="background:#FFF5F5;border-radius:10px;padding:16px 18px;border-left:3px solid #C9A96E;">
-                    <p style="margin:0 0 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#C9A96E;font-weight:600;">Service Interest</p>
+                  <div style="background:#FFF5F5;border-radius:10px;padding:16px 18px;border-left:3px solid #18375D;">
+                    <p style="margin:0 0 4px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#18375D;font-weight:600;">Service Interest</p>
                     <p style="margin:0;font-size:15px;color:#0A1628;font-weight:500;">{{service}}</p>
                   </div>
                 </td>
@@ -1793,13 +1688,13 @@ function hwh_default_email_template() {
               <p style="margin:0;font-size:15px;color:#333;line-height:1.7;">{{message}}</p>
             </div>
             <div style="text-align:center;margin-top:32px;">
-              <a href="mailto:{{email}}" style="display:inline-block;background:linear-gradient(135deg,#F22F3A,#C41E27);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:50px;font-size:14px;font-weight:600;letter-spacing:0.5px;">Reply to {{first_name}} ?</a>
+              <a href="mailto:{{email}}" style="display:inline-block;background:linear-gradient(135deg,#F22F3A,#AF2D37);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:50px;font-size:14px;font-weight:600;letter-spacing:0.5px;">Reply to {{first_name}} →</a>
             </div>
           </td>
         </tr>
         <tr>
-          <td style="background:#0f0720;padding:24px 40px;text-align:center;">
-            <p style="margin:0;font-size:11px;color:rgba(240,235,227,0.4);letter-spacing:1px;">Hot Water Heroes Plumbing &middot; Tampa Bay, FL &middot; <a href="https://hotwaterheroesplumbing.com" style="color:rgba(172,19,249,0.7);text-decoration:none;">hotwaterheroesplumbing.com</a></p>
+          <td style="background:#0A1628;padding:24px 40px;text-align:center;">
+            <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:1px;">Hot Water Heroes Plumbing &middot; Tampa Bay, FL &middot; <a href="https://hotwaterheroesplumbing.com" style="color:#F0595F;text-decoration:none;">hotwaterheroesplumbing.com</a></p>
           </td>
         </tr>
       </table>
@@ -1850,8 +1745,8 @@ function hwh_settings_page_html() {
                 <input type="text" id="hwh_notification_emails" name="hwh_notification_emails"
                        value="<?php echo esc_attr($current_emails); ?>"
                        style="width:100%;max-width:600px;padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:14px;"
-                       placeholder="joe@hotwaterheroesplumbing.com, joe@hotwaterheroesplumbing.com">
-                <p style="margin:8px 0 0;font-size:12px;color:#888;">Example: <code>joe@hotwaterheroesplumbing.com, joe@hotwaterheroesplumbing.com</code></p>
+                       placeholder="joe@hotwaterheroesplumbing.com, office@hotwaterheroesplumbing.com">
+                <p style="margin:8px 0 0;font-size:12px;color:#888;">Example: <code>joe@hotwaterheroesplumbing.com, office@hotwaterheroesplumbing.com</code></p>
             </div>
 
             <!-- Section: Email Template -->
@@ -1860,7 +1755,7 @@ function hwh_settings_page_html() {
                 <p style="margin:0 0 16px;color:#666;font-size:13px;">Customize the HTML email that gets sent to your inbox. Use the tags below to insert form data — they'll be replaced automatically.</p>
 
                 <!-- Placeholder Tags Reference -->
-                <div style="background:#FFF5F5;border:1px solid #e8d8ff;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+                <div style="background:#FFF5F5;border:1px solid #D0DAEA;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
                     <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#F22F3A;letter-spacing:1px;text-transform:uppercase;">Available Placeholder Tags</p>
                     <div style="display:flex;flex-wrap:wrap;gap:8px;">
                         <?php
@@ -1874,7 +1769,7 @@ function hwh_settings_page_html() {
                             '{{message}}'    => 'Their message',
                         ];
                         foreach ($tags as $tag => $desc) : ?>
-                            <span style="background:#fff;border:1px solid #d8b4ff;border-radius:5px;padding:4px 10px;font-size:12px;cursor:pointer;"
+                            <span style="background:#fff;border:1px solid #C8D5E6;border-radius:5px;padding:4px 10px;font-size:12px;cursor:pointer;"
                                   title="<?php echo esc_attr($desc); ?>"
                                   onclick="insertTag('<?php echo esc_js($tag); ?>')"><?php echo esc_html($tag); ?></span>
                         <?php endforeach; ?>
@@ -2054,270 +1949,6 @@ function hwh_save_service_extras($post_id) {
 }
 
 // =============================================================================
-// HWH DEMO CONTENT IMPORTER
-// Bundles /demo-content/content.xml and provides a one-click admin importer.
-// Fires automatically on theme activation; can also be re-run any time from
-// the WP admin notice or directly via: ?hwh_run_import=1 (admin only).
-// =============================================================================
-
-// -- Flag theme activation so we can show the notice on next page load --------
-add_action( 'after_switch_theme', 'hwh_importer_set_activation_flag' );
-function hwh_importer_set_activation_flag() {
-    set_transient( 'hwh_just_activated', true, 300 );
-}
-
-// -- Admin notice with Import button ------------------------------------------
-add_action( 'admin_notices', 'hwh_importer_admin_notice' );
-function hwh_importer_admin_notice() {
-    // Only show to admins
-    if ( ! current_user_can( 'manage_options' ) ) return;
-
-    // Already imported? Never show again.
-    if ( get_option( 'hwh_demo_imported' ) ) return;
-
-    // Only show right after activation OR when the user revisits the notice
-    if ( ! get_transient( 'hwh_just_activated' ) && ! isset( $_GET['hwh_import_notice'] ) ) return;
-
-    $import_url = wp_nonce_url(
-        add_query_arg( 'hwh_run_import', '1', admin_url() ),
-        'hwh_import_nonce'
-    );
-    $dismiss_url = add_query_arg( 'hwh_dismiss_import', '1', admin_url() );
-
-    echo '<div class="notice notice-info" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1.5rem;">';
-    echo '<div>';
-    echo '<strong>🔧 Hot Water Heroes Plumbing Theme</strong> — ';
-    echo 'Import all services, posts, categories, and custom fields from the bundled demo content?';
-    echo '</div>';
-    echo '<a href="' . esc_url( $import_url ) . '" class="button button-primary" style="white-space:nowrap;">Import Content Now</a>';
-    echo '<a href="' . esc_url( add_query_arg( [ 'hwh_dismiss_import' => '1', '_wpnonce' => wp_create_nonce('hwh_dismiss') ], admin_url() ) ) . '" class="button" style="white-space:nowrap;">Dismiss</a>';
-    echo '</div>';
-}
-
-// -- Dismiss handler ----------------------------------------------------------
-add_action( 'admin_init', 'hwh_importer_handle_dismiss' );
-function hwh_importer_handle_dismiss() {
-    if ( ! isset( $_GET['hwh_dismiss_import'] ) ) return;
-    if ( ! current_user_can( 'manage_options' ) ) return;
-    check_admin_referer( 'hwh_dismiss' );
-    update_option( 'hwh_demo_imported', 'dismissed' );
-    delete_transient( 'hwh_just_activated' );
-    wp_safe_redirect( admin_url() );
-    exit;
-}
-
-// -- Main importer ------------------------------------------------------------
-add_action( 'admin_init', 'hwh_run_demo_import' );
-function hwh_run_demo_import() {
-    if ( ! isset( $_GET['hwh_run_import'] ) ) return;
-    if ( ! current_user_can( 'manage_options' ) ) return;
-    check_admin_referer( 'hwh_import_nonce' );
-
-    $xml_file = get_stylesheet_directory() . '/demo-content/content.xml';
-    if ( ! file_exists( $xml_file ) ) {
-        add_action( 'admin_notices', function() {
-            echo '<div class="notice notice-error"><p><strong>HWH Importer:</strong> demo-content/content.xml not found.</p></div>';
-        });
-        return;
-    }
-
-    // Make sure the WordPress importer is available
-    if ( ! defined( 'WP_LOAD_IMPORTERS' ) ) {
-        define( 'WP_LOAD_IMPORTERS', true );
-    }
-
-    $importer_file = ABSPATH . 'wp-admin/includes/import.php';
-    if ( file_exists( $importer_file ) ) {
-        require_once $importer_file;
-    }
-
-    // Try to use the WordPress Importer plugin if active
-    $wp_importer = WP_PLUGIN_DIR . '/wordpress-importer/wordpress-importer.php';
-    if ( ! class_exists( 'WP_Import' ) && file_exists( $wp_importer ) ) {
-        require_once $wp_importer;
-    }
-
-    if ( class_exists( 'WP_Import' ) ) {
-        // Full import via WordPress Importer plugin
-        $importer = new WP_Import();
-        $importer->fetch_attachments = true; // pull remote images
-        ob_start();
-        $importer->import( $xml_file );
-        ob_end_clean();
-
-        update_option( 'hwh_demo_imported', current_time( 'mysql' ) );
-        delete_transient( 'hwh_just_activated' );
-
-        wp_safe_redirect( add_query_arg( 'hwh_imported', '1', admin_url( 'edit.php?post_type=service' ) ) );
-        exit;
-
-    } else {
-        // WordPress Importer plugin not active — fall back to lightweight WXR parser
-        hwh_lightweight_wxr_import( $xml_file );
-        update_option( 'hwh_demo_imported', current_time( 'mysql' ) );
-        delete_transient( 'hwh_just_activated' );
-        wp_safe_redirect( add_query_arg( 'hwh_imported', '1', admin_url( 'edit.php?post_type=service' ) ) );
-        exit;
-    }
-}
-
-// -- Lightweight WXR parser (fallback when WordPress Importer plugin is absent)
-// Handles: posts, pages, custom post types, taxonomies, postmeta.
-// Does NOT handle authors or media re-attachment (use the plugin for that).
-function hwh_lightweight_wxr_import( $xml_file ) {
-    $xml = simplexml_load_file( $xml_file, 'SimpleXMLElement', LIBXML_NOCDATA );
-    if ( ! $xml ) return;
-
-    $namespaces = $xml->getNamespaces( true );
-    $wp_ns  = isset( $namespaces['wp'] )      ? $namespaces['wp']      : 'http://wordpress.org/export/1.2/';
-    $dc_ns  = isset( $namespaces['dc'] )      ? $namespaces['dc']      : 'http://purl.org/dc/elements/1.1/';
-    $ex_ns  = isset( $namespaces['excerpt'] ) ? $namespaces['excerpt'] : 'http://wordpress.org/export/1.2/excerpt/';
-    $con_ns = isset( $namespaces['content'] ) ? $namespaces['content'] : 'http://purl.org/rss/1.0/modules/content/';
-
-    // First pass: register all terms / taxonomies
-    foreach ( $xml->channel->children( $wp_ns )->term as $term ) {
-        $taxonomy    = (string) $term->children( $wp_ns )->term_taxonomy;
-        $slug        = (string) $term->children( $wp_ns )->term_slug;
-        $name        = (string) $term->children( $wp_ns )->term_name;
-        $description = (string) $term->children( $wp_ns )->term_description;
-        if ( $taxonomy && $slug && $name ) {
-            if ( ! term_exists( $slug, $taxonomy ) ) {
-                wp_insert_term( $name, $taxonomy, [
-                    'slug'        => $slug,
-                    'description' => $description,
-                ] );
-            }
-        }
-    }
-
-    // Second pass: import items (posts, pages, CPTs)
-    $post_mapping = []; // old ID → new ID
-
-    foreach ( $xml->channel->item as $item ) {
-        $wp = $item->children( $wp_ns );
-
-        $post_type   = (string) $wp->post_type;
-        $post_status = (string) $wp->post_status;
-        $post_date   = (string) $wp->post_date;
-        $post_name   = (string) $wp->post_name;
-        $old_id      = (int)    $wp->post_id;
-        $menu_order  = (int)    $wp->menu_order;
-
-        // Skip attachments and nav menu items for now
-        if ( in_array( $post_type, [ 'attachment', 'nav_menu_item' ], true ) ) continue;
-
-        // Skip if already exists (by slug + post type)
-        $existing = get_page_by_path( $post_name, OBJECT, $post_type );
-        if ( $existing ) {
-            $post_mapping[ $old_id ] = $existing->ID;
-            continue;
-        }
-
-        $content = '';
-        foreach ( $item->children( $con_ns ) as $c ) {
-            $content = (string) $c;
-        }
-        $excerpt = '';
-        foreach ( $item->children( $ex_ns ) as $e ) {
-            $excerpt = (string) $e;
-        }
-        $author = '';
-        foreach ( $item->children( $dc_ns ) as $d ) {
-            $author = (string) $d;
-        }
-        $author_obj = get_user_by( 'login', $author );
-        $author_id  = $author_obj ? $author_obj->ID : get_current_user_id();
-
-        $new_id = wp_insert_post( [
-            'post_title'    => (string) $item->title,
-            'post_content'  => $content,
-            'post_excerpt'  => $excerpt,
-            'post_status'   => in_array( $post_status, [ 'publish', 'draft', 'private' ], true ) ? $post_status : 'publish',
-            'post_type'     => $post_type,
-            'post_name'     => $post_name,
-            'post_date'     => $post_date,
-            'post_author'   => $author_id,
-            'menu_order'    => $menu_order,
-        ], true );
-
-        if ( is_wp_error( $new_id ) || ! $new_id ) continue;
-
-        $post_mapping[ $old_id ] = $new_id;
-
-        // Postmeta
-        foreach ( $wp->postmeta as $meta ) {
-            $key   = (string) $meta->meta_key;
-            $value = (string) $meta->meta_value;
-            if ( substr( $key, 0, 1 ) !== '_' || in_array( $key, [
-                '_service_icon', '_service_price', '_service_duration',
-                '_service_video', '_service_benefits', '_product_url',
-            ], true ) ) {
-                update_post_meta( $new_id, $key, $value );
-            }
-        }
-
-        // Taxonomy terms
-        foreach ( $item->children( $wp_ns )->category as $cat ) {
-            $domain = (string) $cat->attributes()->domain;
-            $slug   = (string) $cat->attributes()->nicename;
-            if ( $domain && $slug ) {
-                $term = get_term_by( 'slug', $slug, $domain );
-                if ( $term ) {
-                    wp_set_object_terms( $new_id, $term->term_id, $domain, true );
-                }
-            }
-        }
-    }
-}
-
-// -- Success notice after import ----------------------------------------------
-add_action( 'admin_notices', 'hwh_import_success_notice' );
-function hwh_import_success_notice() {
-    if ( ! isset( $_GET['hwh_imported'] ) ) return;
-    echo '<div class="notice notice-success is-dismissible"><p>';
-    echo '✅ <strong>HWH Demo Content imported successfully!</strong> ';
-    echo 'Your services, posts, and categories have been restored. ';
-    echo '<a href="' . esc_url( admin_url( 'edit.php?post_type=service' ) ) . '">View Services →</a>';
-    echo '</p></div>';
-}
-
-// -- Helper: re-run importer at any time from the importer page ---------------
-// Visit: WP Admin → Appearance → Import Demo Content
-add_action( 'admin_menu', 'hwh_importer_menu' );
-function hwh_importer_menu() {
-    add_theme_page(
-        'Import Demo Content',
-        'Import Demo Content',
-        'manage_options',
-        'hwh-importer',
-        'hwh_importer_page'
-    );
-}
-function hwh_importer_page() {
-    $already   = get_option( 'hwh_demo_imported' );
-    $import_url = wp_nonce_url(
-        add_query_arg( 'hwh_run_import', '1', admin_url() ),
-        'hwh_import_nonce'
-    );
-    echo '<div class="wrap">';
-    echo '<h1>🔧 HWH Demo Content Importer</h1>';
-    if ( $already && $already !== 'dismissed' ) {
-        echo '<p>Content was last imported on <strong>' . esc_html( $already ) . '</strong>.</p>';
-        echo '<p>You can re-import at any time — existing posts with the same slug will be skipped.</p>';
-    }
-    echo '<p>This will import all services, pages, blog posts, categories, and custom field data from the bundled <code>demo-content/content.xml</code> file.</p>';
-    echo '<p><strong>Note:</strong> Images won\'t be re-uploaded automatically unless the WordPress Importer plugin is active and the original URLs are reachable.</p>';
-    echo '<a href="' . esc_url( $import_url ) . '" class="button button-primary button-large">Run Import Now</a>';
-    // Allow re-import (the import handler doesn't gate on hwh_demo_imported,
-    // so the flag stays intact just from viewing this page)
-    echo '<script>document.querySelector(".button-primary").addEventListener("click",function(){';
-    echo 'if(!confirm("This will import all demo content. Continue?"))event.preventDefault();';
-    echo '});</script>';
-    echo '</div>';
-}
-
-
-// =============================================================================
 // AI SEARCH VISIBILITY — HOMEPAGE FAQ SCHEMA
 // These Q&As directly feed Google AI Overviews, ChatGPT, and Perplexity
 // when users ask questions about plumbing services in Tampa Bay.
@@ -2336,15 +1967,15 @@ function hwh_homepage_faq_schema() {
         ],
         [
             'q' => 'Where is Hot Water Heroes Plumbing located?',
-            'a' => 'Hot Water Heroes Plumbing is located at 9249 Lazy Ln, Tampa, FL 33614 (Egypt Lake-Leto neighborhood) — conveniently serving Carrollwood, Westchase, Lutz, Land O Lakes, and the greater Tampa Bay Bay area. Call (813) 427-5862 to book.',
+            'a' => 'Hot Water Heroes Plumbing is located at 9249 Lazy Ln, Tampa, FL 33614 (Egypt Lake-Leto neighborhood) — conveniently serving Carrollwood, Westchase, Lutz, Land O Lakes, and the greater Tampa Bay area. Call (813) 427-5862 to book.',
         ],
         [
             'q' => 'How much does a plumbing service call cost at Hot Water Heroes Plumbing?',
-            'a' => 'Service call pricing at Hot Water Heroes Plumbing depends on the type of work needed. We provide free written estimates before any work begins so you know exactly what to expect. Maintenance plan members receive 15% off all repairs.',
+            'a' => 'Service call pricing at Hot Water Heroes Plumbing depends on the type of work needed. We provide free written estimates before any work begins so you know exactly what to expect.',
         ],
         [
             'q' => 'Does Hot Water Heroes Plumbing offer free estimates?',
-            'a' => 'Yes! Hot Water Heroes Plumbing provides free estimates on all plumbing work. A licensed plumber will diagnose your issue and provide a written quote before any work begins. Book online or call 813-42-PLUMB.',
+            'a' => 'Yes! Hot Water Heroes Plumbing provides free estimates on all plumbing work. A licensed plumber will diagnose your issue and provide a written quote before any work begins. Book online or call (813) 427-5862.',
         ],
         [
             'q' => 'What are Hot Water Heroes Plumbing\'s hours?',
@@ -2352,7 +1983,7 @@ function hwh_homepage_faq_schema() {
         ],
         [
             'q' => 'What is the Maintenance Plan at Hot Water Heroes Plumbing?',
-            'a' => 'The Maintenance Plan is Hot Water Heroes Plumbing\'s annual service plan. Members receive priority scheduling, annual inspections, (starting at $50/month) that accumulates as credits redeemable for any service or product. Credits never expire while your membership is active, and members receive exclusive pricing and priority booking.',
+            'a' => 'The Maintenance Plan is Hot Water Heroes Plumbing\'s annual service plan. Members receive priority scheduling, annual inspections, and a monthly membership (starting at $50/month) that accumulates as credits redeemable for any service or product. Credits never expire while your membership is active, and members receive exclusive pricing and priority booking.',
         ],
         [
             'q' => 'Is Hot Water Heroes Plumbing good for first-time homeowners?',
@@ -2404,14 +2035,14 @@ function hwh_service_faq_schema() {
         [
             'q' => 'How much does ' . $service_name . ' cost at Hot Water Heroes Plumbing?',
             'a' => $price
-                ? $service_name . ' at Hot Water Heroes Plumbing starts at ' . esc_html($price) . '. We provide free written estimates before any work begins. Maintenance plan members save 15% on all repairs.'
+                ? $service_name . ' at Hot Water Heroes Plumbing starts at ' . esc_html($price) . '. We provide free written estimates before any work begins.'
                 : $service_name . ' pricing at Hot Water Heroes Plumbing depends on the scope of work. Call us for a free estimate from a licensed plumber.',
         ],
         [
             'q' => 'How long does ' . $service_name . ' take at Hot Water Heroes Plumbing?',
             'a' => $duration
                 ? $service_name . ' services at Hot Water Heroes Plumbing typically take ' . esc_html($duration) . '. Times may vary based on the scope of your specific job.'
-                : $service_name . ' treatment times vary by client. Contact Hot Water Heroes Plumbing at (813) 427-5862 for details.',
+                : $service_name . ' times vary depending on the scope of work. Contact Hot Water Heroes Plumbing at (813) 427-5862 for details.',
         ],
         [
             'q' => 'Is ' . $service_name . ' safe?',
@@ -2468,68 +2099,6 @@ function hwh_allow_ai_crawlers($output, $public) {
 }
 
 
-// =============================================================================
-// AI SEARCH VISIBILITY — HOMEPAGE REVIEW SCHEMA
-// Outputs 5 real-sounding sample reviews as Review entities on the homepage.
-// AI tools use Review schema to assess business authority and sentiment.
-// UPDATE these with real Google review content when available.
-// =============================================================================
-function hwh_review_schema() {
-    if ( ! is_front_page() ) return;
-
-    $reviews = [
-        [
-            'author'  => 'Bridget Breland',
-            'rating'  => 5,
-            'date'    => '2026-02-15',
-            'body'    => 'Hot Water Heroes are amazing. Fantastic communication, great plumbers, super nice and best of all your pricing seems very fair. I am a realtor in this area for 23 years and I use them for my personal home. Such an awesome job. I highly recommend them.',
-        ],
-        [
-            'author'  => 'Kirby Cummings',
-            'rating'  => 5,
-            'date'    => '2026-03-10',
-            'body'    => 'Hot Water Heroes Plumbing was absolutely outstanding! John was professional, knowledgeable, and showed up right on time. He quickly diagnosed the issue, explained everything clearly, and had it fixed faster than expected. The pricing was fair and the quality of work was top-notch.',
-        ],
-        [
-            'author'  => 'Mark Watklevicz',
-            'rating'  => 5,
-            'date'    => '2026-01-18',
-            'body'    => 'Wow, great service, good pricing, professional and explained everything. Good to see such service and pricing still exist. I will be calling you first for all my plumbing needs. It was a pleasure to have service like this during the holidays. Keep up the good work!',
-        ],
-        [
-            'author'  => 'Trinity Elise',
-            'rating'  => 5,
-            'date'    => '2026-02-05',
-            'body'    => 'I had a great experience with Hot Water Heroes Plumbing. The technician Eric was efficient and knowledgeable, answered my questions and replaced our water heater neatly. I would recommend this company to friends and family!',
-        ],
-        [
-            'author'  => 'Eric Whalen',
-            'rating'  => 5,
-            'date'    => '2026-02-10',
-            'body'    => 'Had Eric come out Monday morning to tackle our backed up sink and he was very professional. After 30 minutes everything was working like nothing happened. 10 out of 10 recommend.',
-        ],
-    ];
-
-    $schema_reviews = [];
-    foreach ($reviews as $r) {
-        $schema_reviews[] = [
-            '@type'         => 'Review',
-            'author'        => [ '@type' => 'Person', 'name' => $r['author'] ],
-            'reviewRating'  => [ '@type' => 'Rating', 'ratingValue' => $r['rating'], 'bestRating' => 5 ],
-            'datePublished' => $r['date'],
-            'reviewBody'    => $r['body'],
-            'itemReviewed'  => [
-                '@type' => 'Plumber',
-                'name'  => 'Hot Water Heroes Plumbing',
-                'image' => 'https://hotwaterheroesplumbing.com/wp-content/uploads/2025/08/HEROES-16-x-9-in-scaled-e1755179786780.png',
-            ],
-        ];
-    }
-
-    echo '<script type="application/ld+json">' . wp_json_encode($schema_reviews, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>' . "\n";
-}
-add_action('wp_head', 'hwh_review_schema', 8);
-
 // ============================================================================
 // SERVICE EXCERPT SANITIZER
 // Intercepts database-stored med-spa excerpts and replaces with plumbing copy
@@ -2578,7 +2147,7 @@ function hwh_sanitize_service_excerpt($excerpt) {
     }
 
     // Generic fallback
-    return 'Professional plumbing service by licensed Tampa Bay plumbers. Call 813-42-PLUMB for a free estimate.';
+    return 'Professional plumbing service by licensed Tampa Bay plumbers. Call 813-42-PLUMB (75862) for a free estimate.';
 }
 add_filter('get_the_excerpt', 'hwh_sanitize_service_excerpt', 20);
 
@@ -2614,7 +2183,7 @@ function hwh_sanitize_service_content($content) {
             <li><strong>Same-Day Service</strong> — Available for most repairs</li>
             <li><strong>Satisfaction Guaranteed</strong> — We stand behind our work</li>
         </ul>
-        <p>Call <strong>813-42-PLUMB</strong> or <a href="' . esc_url(home_url('/contact/')) . '">book online</a> to schedule your service today.</p>
+        <p>Call <strong>813-42-PLUMB (75862)</strong> or <a href="' . esc_url(home_url('/contact/')) . '">book online</a> to schedule your service today.</p>
     </div>';
 }
 add_filter('the_content', 'hwh_sanitize_service_content', 20);
@@ -2905,7 +2474,7 @@ function hwh_get_service_image_url($post_id) {
     $slug = $post->post_name;
 
     // Strip location suffixes to find the base service slug
-    $suffixes = ['-brandon', '-st-petersburg', '-south-tampa', '-carrollwood', '-lutz', '-citrus-park', '-westchase', '-land-o-lakes', '-riverview', '-wesley-chapel', '-new-tampa', '-temple-terrace', '-odessa', '-zephyrhills'];
+    $suffixes = get_option('hwh_localized_neighborhood_suffixes', ['-brandon', '-st-petersburg', '-south-tampa', '-carrollwood', '-lutz', '-citrus-park', '-westchase', '-land-o-lakes', '-riverview', '-wesley-chapel', '-new-tampa', '-temple-terrace', '-odessa', '-zephyrhills']);
     $base_slug = $slug;
     $is_localized_slug = false;
     foreach ($suffixes as $suffix) {
@@ -3102,7 +2671,7 @@ add_filter('manage_hwh_review_posts_columns', function ($columns) {
 add_action('manage_hwh_review_posts_custom_column', function ($column, $post_id) {
     if ($column === 'hwh_stars') {
         $rating = (int) (get_post_meta($post_id, '_review_rating', true) ?: 5);
-        echo '<span style="color:#F4B400;">' . esc_html(str_repeat('★', $rating)) . '</span>';
+        echo '<span style="color:#F5C542;">' . esc_html(str_repeat('★', $rating)) . '</span>';
     } elseif ($column === 'hwh_area') {
         $loc = (int) get_post_meta($post_id, '_review_location', true);
         echo $loc ? esc_html(get_the_title($loc)) : '<em>General</em>';
@@ -3356,7 +2925,7 @@ function hwh_render_jobs_section($location_id, $city_name) {
     $jobs = hwh_get_location_jobs($location_id);
     if (empty($jobs)) return;
     ?>
-    <section class="hwh-local-jobs" aria-label="Recent plumbing jobs in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:5rem;padding-bottom:2rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
+    <section class="hwh-local-jobs" aria-label="Recent plumbing jobs in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:5rem;padding-bottom:2rem;background:#F8F9FB;border-top:1px solid #EEF2F8;">
         <div class="hwh-section-inner">
             <div style="text-align:center;margin-bottom:3rem;">
                 <span class="hwh-label">Our Work Near You</span>
@@ -3368,13 +2937,13 @@ function hwh_render_jobs_section($location_id, $city_name) {
                     $jdate = get_post_meta($job->ID, '_job_date', true);
                     $thumb = get_the_post_thumbnail_url($job->ID, 'medium_large');
                     ?>
-                    <a href="<?php echo esc_url(get_permalink($job->ID)); ?>" style="display:flex;flex-direction:column;background:#fff;border:1px solid #EAF0F6;border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 8px 20px rgba(11,35,71,0.05);">
+                    <a href="<?php echo esc_url(get_permalink($job->ID)); ?>" style="display:flex;flex-direction:column;background:#fff;border:1px solid #EEF2F8;border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 8px 20px rgba(15,36,64,0.05);">
                         <?php if ($thumb): ?>
                             <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr($job->post_title); ?>" style="width:100%;height:200px;object-fit:cover;display:block;" loading="lazy" decoding="async">
                         <?php endif; ?>
                         <div style="padding:1.4rem;">
-                            <strong style="color:#0B2347;display:block;font-size:1.05rem;margin-bottom:0.35rem;"><?php echo esc_html($job->post_title); ?></strong>
-                            <span style="font-size:0.85rem;color:#6B87A6;display:block;margin-bottom:0.6rem;">
+                            <strong style="color:#0F2440;display:block;font-size:1.05rem;margin-bottom:0.35rem;"><?php echo esc_html($job->post_title); ?></strong>
+                            <span style="font-size:0.85rem;color:#5A7FA8;display:block;margin-bottom:0.6rem;">
                                 <?php echo esc_html($city_name); ?>, FL<?php echo $jdate ? ' · ' . esc_html(date_i18n('M j, Y', strtotime($jdate))) : ''; ?>
                             </span>
                             <p style="margin:0;color:#3D6491;font-size:0.95rem;line-height:1.6;"><?php echo esc_html(wp_trim_words(wp_strip_all_tags($job->post_content), 22)); ?></p>
@@ -3408,7 +2977,7 @@ function hwh_render_reviews_section($location_id, $city_name) {
     }
     if (empty($reviews)) return;
 
-    $google_url = 'https://www.google.com/search?q=' . rawurlencode('Hot Water Heroes Plumbing Tampa reviews');
+    $google_url = hwh_get_review_url();
     ?>
     <section class="hwh-local-reviews" aria-label="Google reviews from <?php echo esc_attr($city_name); ?> customers" style="padding-top:5rem;padding-bottom:5rem;background:#fff;">
         <div class="hwh-section-inner">
@@ -3425,15 +2994,15 @@ function hwh_render_reviews_section($location_id, $city_name) {
                     $svc    = (int) get_post_meta($review->ID, '_review_service', true);
                     $loc    = (int) get_post_meta($review->ID, '_review_location', true);
                     ?>
-                    <div class="hwh-review-card" style="background:#F9FBFC;border:1px solid #EAF0F6;border-radius:16px;padding:1.75rem;display:flex;flex-direction:column;gap:0.75rem;box-shadow:0 8px 20px rgba(11,35,71,0.04);">
+                    <div class="hwh-review-card" style="background:#F8F9FB;border:1px solid #EEF2F8;border-radius:16px;padding:1.75rem;display:flex;flex-direction:column;gap:0.75rem;box-shadow:0 8px 20px rgba(15,36,64,0.04);">
                         <div style="display:flex;align-items:center;justify-content:space-between;">
                             <svg width="22" height="22" viewBox="0 0 48 48" aria-label="Google review"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
-                            <span style="color:#F4B400;font-size:1.1rem;letter-spacing:2px;" aria-label="<?php echo $rating; ?> out of 5 stars"><?php echo esc_html(str_repeat('★', $rating)); ?></span>
+                            <span style="color:#F5C542;font-size:1.1rem;letter-spacing:2px;" aria-label="<?php echo $rating; ?> out of 5 stars"><?php echo esc_html(str_repeat('★', $rating)); ?></span>
                         </div>
                         <p style="margin:0;color:#3D6491;line-height:1.65;font-size:0.98rem;">&ldquo;<?php echo esc_html($text); ?>&rdquo;</p>
-                        <div style="margin-top:auto;padding-top:0.5rem;border-top:1px solid #EAF0F6;">
-                            <strong style="color:#0B2347;display:block;"><?php echo esc_html($review->post_title); ?></strong>
-                            <span style="font-size:0.85rem;color:#6B87A6;">
+                        <div style="margin-top:auto;padding-top:0.5rem;border-top:1px solid #EEF2F8;">
+                            <strong style="color:#0F2440;display:block;"><?php echo esc_html($review->post_title); ?></strong>
+                            <span style="font-size:0.85rem;color:#5A7FA8;">
                                 <?php
                                 $bits = [];
                                 if ($loc)   $bits[] = get_the_title($loc) . ', FL';

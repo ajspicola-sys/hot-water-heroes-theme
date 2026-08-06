@@ -42,7 +42,7 @@ $fi = 0;
                 <svg class="e404__pipe" viewBox="0 0 260 360" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <!-- Horizontal pipe body -->
                     <rect x="10" y="100" width="240" height="48" rx="10" fill="#18375D"/>
-                    <rect x="10" y="100" width="240" height="14" rx="10" fill="#1E4A7A" opacity=".6"/>
+                    <rect x="10" y="100" width="240" height="14" rx="10" fill="#2A4F7A" opacity=".6"/>
                     <!-- Left cap -->
                     <rect x="0"  y="92"  width="30"  height="64" rx="8" fill="#0F2440"/>
                     <!-- Right cap (broken end) -->
@@ -53,7 +53,7 @@ $fi = 0;
                     <rect x="14" y="104" width="220" height="6" rx="3" fill="white" opacity=".08"/>
                     <!-- Elbow going down -->
                     <rect x="106" y="145" width="48" height="90" rx="10" fill="#18375D"/>
-                    <rect x="106" y="145" width="14" height="90" rx="4" fill="#1E4A7A" opacity=".5"/>
+                    <rect x="106" y="145" width="14" height="90" rx="4" fill="#2A4F7A" opacity=".5"/>
                     <!-- Bottom ring -->
                     <rect x="100" y="225" width="60" height="18" rx="6" fill="#0F2440"/>
 
