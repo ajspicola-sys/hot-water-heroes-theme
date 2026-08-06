@@ -213,6 +213,9 @@ get_header();
         </div>
     </section>
 
+    <!-- ── Recent Jobs Near You ──────────────────────────────────── -->
+    <?php hwh_render_jobs_section(get_the_ID(), get_the_title()); ?>
+
     <!-- ── Local Google Reviews ──────────────────────────────────── -->
     <?php hwh_render_reviews_section(get_the_ID(), get_the_title()); ?>
 

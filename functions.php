@@ -3130,6 +3130,263 @@ function hwh_get_location_reviews($location_id, $limit = 6) {
     ]);
 }
 
+// ============================================================================
+// JOB CHECK-INS — REALWORK-STYLE PER-JOB PAGES
+// Post a job from your phone (/add-job): photos + note + neighborhood.
+// Each job becomes its own localized public page, feeds the matching city
+// page, and hands you a one-tap review-request text for the customer.
+// ============================================================================
+
+function hwh_register_jobs() {
+    register_post_type('hwh_job', [
+        'labels' => [
+            'name'          => 'Job Check-Ins',
+            'singular_name' => 'Job',
+            'add_new'       => 'Add Job',
+            'add_new_item'  => 'Add New Job',
+            'edit_item'     => 'Edit Job',
+            'view_item'     => 'View Job',
+            'search_items'  => 'Search Jobs',
+            'not_found'     => 'No jobs posted yet',
+            'menu_name'     => 'Job Check-Ins',
+        ],
+        'public'        => true,
+        'has_archive'   => false,
+        'rewrite'       => ['slug' => 'jobs', 'with_front' => false],
+        'menu_icon'     => 'dashicons-hammer',
+        'menu_position' => 8,
+        'supports'      => ['title', 'editor', 'thumbnail'],
+        'show_in_rest'  => true,
+    ]);
+}
+add_action('init', 'hwh_register_jobs');
+
+// One-time: create the phone-friendly /add-job page and flush permalinks
+function hwh_create_add_job_page() {
+    if (get_option('hwh_add_job_setup_v1')) return;
+    if (!hwh_get_post_by_title('Add Job', 'page')) {
+        wp_insert_post([
+            'post_title'  => 'Add Job',
+            'post_name'   => 'add-job',
+            'post_status' => 'publish',
+            'post_type'   => 'page',
+        ]);
+    }
+    update_option('hwh_add_job_setup_v1', true);
+    flush_rewrite_rules();
+}
+add_action('init', 'hwh_create_add_job_page', 25);
+
+// Keep the private add-job tool out of Google
+add_action('wp_head', function () {
+    if (is_page('add-job')) echo '<meta name="robots" content="noindex,nofollow">' . "\n";
+}, 1);
+
+// -- Google review link (Settings → General) -------------------------
+add_action('admin_init', function () {
+    register_setting('general', 'hwh_google_review_url', ['sanitize_callback' => 'esc_url_raw']);
+    add_settings_field('hwh_google_review_url', 'Google Review Link', function () {
+        echo '<input type="url" name="hwh_google_review_url" value="' . esc_attr(get_option('hwh_google_review_url')) . '" class="regular-text" placeholder="https://g.page/r/…/review">';
+        echo '<p class="description">Your "Ask for reviews" share link from your Google Business Profile. Used in the review-request text after posting a job.</p>';
+    }, 'general');
+});
+
+function hwh_get_review_url() {
+    $url = get_option('hwh_google_review_url');
+    return $url ?: 'https://www.google.com/search?q=' . rawurlencode('Hot Water Heroes Plumbing Tampa reviews');
+}
+
+// -- Job meta box (for desktop edits/corrections) --------------------
+function hwh_job_meta_boxes() {
+    add_meta_box('hwh_job_details', 'Job Details', 'hwh_job_meta_html', 'hwh_job', 'side', 'high');
+}
+add_action('add_meta_boxes', 'hwh_job_meta_boxes');
+
+function hwh_job_meta_html($post) {
+    wp_nonce_field('hwh_job_meta', 'hwh_job_nonce');
+    $location = (int) get_post_meta($post->ID, '_job_location', true);
+    $service  = (int) get_post_meta($post->ID, '_job_service', true);
+    $date     = get_post_meta($post->ID, '_job_date', true) ?: date('Y-m-d');
+
+    $locations = get_posts(['post_type' => 'location', 'post_parent' => 0, 'posts_per_page' => -1, 'orderby' => 'title', 'order' => 'ASC', 'post_status' => 'publish']);
+    $services  = get_posts(['post_type' => 'service', 'posts_per_page' => -1, 'orderby' => 'title', 'order' => 'ASC', 'post_status' => 'publish']);
+    ?>
+    <p><label style="font-weight:600;display:block;margin-bottom:4px;">Neighborhood</label>
+    <select name="job_location" style="width:100%;">
+        <option value="0">— Pick area —</option>
+        <?php foreach ($locations as $loc): ?>
+            <option value="<?php echo $loc->ID; ?>" <?php selected($location, $loc->ID); ?>><?php echo esc_html($loc->post_title); ?></option>
+        <?php endforeach; ?>
+    </select></p>
+    <p><label style="font-weight:600;display:block;margin-bottom:4px;">Service</label>
+    <select name="job_service" style="width:100%;">
+        <option value="0">— Pick service —</option>
+        <?php foreach ($services as $svc): ?>
+            <option value="<?php echo $svc->ID; ?>" <?php selected($service, $svc->ID); ?>><?php echo esc_html($svc->post_title); ?></option>
+        <?php endforeach; ?>
+    </select></p>
+    <p><label style="font-weight:600;display:block;margin-bottom:4px;">Job date</label>
+    <input type="date" name="job_date" value="<?php echo esc_attr($date); ?>" style="width:100%;"></p>
+    <?php
+}
+
+function hwh_save_job_meta($post_id) {
+    if (!isset($_POST['hwh_job_nonce']) || !wp_verify_nonce($_POST['hwh_job_nonce'], 'hwh_job_meta')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (isset($_POST['job_location'])) update_post_meta($post_id, '_job_location', (int) $_POST['job_location']);
+    if (isset($_POST['job_service']))  update_post_meta($post_id, '_job_service', (int) $_POST['job_service']);
+    if (isset($_POST['job_date']))     update_post_meta($post_id, '_job_date', sanitize_text_field($_POST['job_date']));
+}
+add_action('save_post_hwh_job', 'hwh_save_job_meta');
+
+// Admin list columns for jobs
+add_filter('manage_hwh_job_posts_columns', function ($columns) {
+    return [
+        'cb'        => $columns['cb'],
+        'title'     => 'Job',
+        'hwh_area'  => 'Neighborhood',
+        'hwh_svc'   => 'Service',
+        'hwh_jdate' => 'Job Date',
+    ];
+});
+add_action('manage_hwh_job_posts_custom_column', function ($column, $post_id) {
+    if ($column === 'hwh_area') {
+        $loc = (int) get_post_meta($post_id, '_job_location', true);
+        echo $loc ? esc_html(get_the_title($loc)) : '—';
+    } elseif ($column === 'hwh_svc') {
+        $svc = (int) get_post_meta($post_id, '_job_service', true);
+        echo $svc ? esc_html(get_the_title($svc)) : '—';
+    } elseif ($column === 'hwh_jdate') {
+        $d = get_post_meta($post_id, '_job_date', true);
+        echo $d ? esc_html(date_i18n('M j, Y', strtotime($d))) : '—';
+    }
+}, 10, 2);
+
+// -- Front-end submission handler (from /add-job) --------------------
+add_action('admin_post_hwh_add_job', 'hwh_handle_add_job');
+function hwh_handle_add_job() {
+    if (!isset($_POST['hwh_add_job_nonce']) || !wp_verify_nonce($_POST['hwh_add_job_nonce'], 'hwh_add_job')) {
+        wp_die('Session expired — go back and try again.');
+    }
+    if (!is_user_logged_in() || !current_user_can('edit_posts')) {
+        wp_die('You need to be logged in to post a job.');
+    }
+
+    $location_id = isset($_POST['job_location']) ? (int) $_POST['job_location'] : 0;
+    $service_id  = isset($_POST['job_service']) ? (int) $_POST['job_service'] : 0;
+    $note        = isset($_POST['job_note']) ? sanitize_textarea_field($_POST['job_note']) : '';
+
+    $location = $location_id ? get_post($location_id) : null;
+    $service  = $service_id ? get_post($service_id) : null;
+    if (!$location || $location->post_type !== 'location' || !$service || $service->post_type !== 'service') {
+        wp_die('Please pick both a neighborhood and a service, then try again.');
+    }
+
+    $job_id = wp_insert_post([
+        'post_title'   => $service->post_title . ' in ' . $location->post_title,
+        'post_content' => $note,
+        'post_status'  => 'publish',
+        'post_type'    => 'hwh_job',
+    ]);
+    if (!$job_id || is_wp_error($job_id)) {
+        wp_die('Could not save the job — go back and try again.');
+    }
+
+    update_post_meta($job_id, '_job_location', $location_id);
+    update_post_meta($job_id, '_job_service', $service_id);
+    update_post_meta($job_id, '_job_date', date('Y-m-d'));
+
+    // Photos
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+
+    $photo_ids = [];
+    if (!empty($_FILES['job_photos']) && is_array($_FILES['job_photos']['name'])) {
+        $count = count($_FILES['job_photos']['name']);
+        for ($i = 0; $i < $count; $i++) {
+            if (empty($_FILES['job_photos']['name'][$i]) || $_FILES['job_photos']['error'][$i] !== UPLOAD_ERR_OK) continue;
+            $_FILES['hwh_single_photo'] = [
+                'name'     => $_FILES['job_photos']['name'][$i],
+                'type'     => $_FILES['job_photos']['type'][$i],
+                'tmp_name' => $_FILES['job_photos']['tmp_name'][$i],
+                'error'    => $_FILES['job_photos']['error'][$i],
+                'size'     => $_FILES['job_photos']['size'][$i],
+            ];
+            $attach_id = media_handle_upload('hwh_single_photo', $job_id);
+            if (!is_wp_error($attach_id)) $photo_ids[] = $attach_id;
+        }
+    }
+    if (!empty($photo_ids)) {
+        set_post_thumbnail($job_id, $photo_ids[0]);
+        update_post_meta($job_id, '_job_photos', implode(',', $photo_ids));
+    }
+
+    // Stash review-request info for the success screen (not in the URL)
+    $customer = isset($_POST['customer_name']) ? sanitize_text_field($_POST['customer_name']) : '';
+    $phone    = isset($_POST['customer_phone']) ? preg_replace('/[^0-9+]/', '', $_POST['customer_phone']) : '';
+    set_transient('hwh_last_job_' . get_current_user_id(), [
+        'job_id'   => $job_id,
+        'customer' => $customer,
+        'phone'    => $phone,
+    ], 15 * MINUTE_IN_SECONDS);
+
+    wp_safe_redirect(add_query_arg('submitted', '1', home_url('/add-job/')));
+    exit;
+}
+
+// -- Front-end: fetch + render recent jobs for a location ------------
+function hwh_get_location_jobs($location_id, $limit = 3) {
+    return get_posts([
+        'post_type'      => 'hwh_job',
+        'post_status'    => 'publish',
+        'posts_per_page' => $limit,
+        'meta_key'       => '_job_date',
+        'orderby'        => 'meta_value',
+        'order'          => 'DESC',
+        'meta_query'     => [
+            ['key' => '_job_location', 'value' => (int) $location_id],
+        ],
+    ]);
+}
+
+function hwh_render_jobs_section($location_id, $city_name) {
+    $jobs = hwh_get_location_jobs($location_id);
+    if (empty($jobs)) return;
+    ?>
+    <section class="hwh-local-jobs" aria-label="Recent plumbing jobs in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:5rem;padding-bottom:2rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
+        <div class="hwh-section-inner">
+            <div style="text-align:center;margin-bottom:3rem;">
+                <span class="hwh-label">Our Work Near You</span>
+                <h2 class="hwh-section-title">Recent Jobs in <?php echo esc_html($city_name); ?></h2>
+                <p class="hwh-section-desc">Real photos from real jobs completed in your neighborhood.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto;">
+                <?php foreach ($jobs as $job):
+                    $jdate = get_post_meta($job->ID, '_job_date', true);
+                    $thumb = get_the_post_thumbnail_url($job->ID, 'medium_large');
+                    ?>
+                    <a href="<?php echo esc_url(get_permalink($job->ID)); ?>" style="display:flex;flex-direction:column;background:#fff;border:1px solid #EAF0F6;border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 8px 20px rgba(11,35,71,0.05);">
+                        <?php if ($thumb): ?>
+                            <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr($job->post_title); ?>" style="width:100%;height:200px;object-fit:cover;display:block;" loading="lazy" decoding="async">
+                        <?php endif; ?>
+                        <div style="padding:1.4rem;">
+                            <strong style="color:#0B2347;display:block;font-size:1.05rem;margin-bottom:0.35rem;"><?php echo esc_html($job->post_title); ?></strong>
+                            <span style="font-size:0.85rem;color:#6B87A6;display:block;margin-bottom:0.6rem;">
+                                <?php echo esc_html($city_name); ?>, FL<?php echo $jdate ? ' · ' . esc_html(date_i18n('M j, Y', strtotime($jdate))) : ''; ?>
+                            </span>
+                            <p style="margin:0;color:#3D6491;font-size:0.95rem;line-height:1.6;"><?php echo esc_html(wp_trim_words(wp_strip_all_tags($job->post_content), 22)); ?></p>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php
+}
+
 /**
  * Renders the "What neighbors say" Google-reviews section.
  * Falls back to the most recent general reviews when a city has none tagged

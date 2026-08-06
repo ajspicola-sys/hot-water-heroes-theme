@@ -213,6 +213,9 @@ $has_image = has_post_thumbnail($base_id);
         </div>
     </section>
 
+    <!-- ── Recent Jobs Near You ──────────────────────────────────── -->
+    <?php hwh_render_jobs_section($parent_id, $city_name); ?>
+
     <!-- ── Local Google Reviews ──────────────────────────────────── -->
     <?php hwh_render_reviews_section($parent_id, $city_name); ?>
 
