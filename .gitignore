@@ -15,3 +15,8 @@ node_modules/
 
 # Deploy helper with secret key - keep local only
 assets/deploy.php
+
+# One-shot dev/migration scripts — never commit these (a script with SSH
+# credentials was once committed here; keep all local tooling out of git)
+assets/*.py
+assets/*.ps1
