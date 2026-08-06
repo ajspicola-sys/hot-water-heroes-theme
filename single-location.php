@@ -213,6 +213,9 @@ get_header();
         </div>
     </section>
 
+    <!-- ── Local Google Reviews ──────────────────────────────────── -->
+    <?php hwh_render_reviews_section(get_the_ID(), get_the_title()); ?>
+
     <!-- ── Map Section ───────────────────────────────────────────── -->
     <section class="hwh-location-map" aria-label="Our Service Area Map in <?php the_title(); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
         <div class="hwh-section-inner">

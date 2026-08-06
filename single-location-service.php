@@ -213,6 +213,9 @@ $has_image = has_post_thumbnail($base_id);
         </div>
     </section>
 
+    <!-- ── Local Google Reviews ──────────────────────────────────── -->
+    <?php hwh_render_reviews_section($parent_id, $city_name); ?>
+
     <!-- ── Local Google Map ──────────────────────────────────────── -->
     <section class="hwh-location-map" aria-label="Our Service Map in <?php echo esc_attr($city_name); ?>, FL" style="padding-top:4rem;padding-bottom:5rem;background:#F9FBFC;border-top:1px solid #EAF0F6;">
         <div class="hwh-section-inner">

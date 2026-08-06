@@ -2951,3 +2951,248 @@ function hwh_get_service_image_url($post_id) {
 
     return isset($images[$base_slug]) ? $images[$base_slug] : 'https://images.unsplash.com/photo-1542013936693-8848e574047e?q=80&w=800&auto=format&fit=crop';
 }
+
+// ============================================================================
+// GOOGLE REVIEWS — NEIGHBORHOOD-TAGGED REVIEW SYSTEM
+// Paste a Google review, tag it with an Area Served + Service, and it
+// automatically appears on the matching city / city-service pages.
+// ============================================================================
+
+function hwh_register_reviews() {
+    register_post_type('hwh_review', [
+        'labels' => [
+            'name'          => 'Google Reviews',
+            'singular_name' => 'Review',
+            'add_new'       => 'Add Review',
+            'add_new_item'  => 'Add New Review',
+            'edit_item'     => 'Edit Review',
+            'search_items'  => 'Search Reviews',
+            'not_found'     => 'No reviews added yet',
+            'menu_name'     => 'Google Reviews',
+        ],
+        'public'        => false,
+        'show_ui'       => true,
+        'menu_icon'     => 'dashicons-star-filled',
+        'menu_position' => 7,
+        'supports'      => ['title'],
+    ]);
+}
+add_action('init', 'hwh_register_reviews');
+
+// Friendlier title placeholder on the add-review screen
+add_filter('enter_title_here', function ($placeholder, $post) {
+    if ($post && $post->post_type === 'hwh_review') {
+        return 'Customer name — exactly as it shows on Google (e.g. "John S.")';
+    }
+    return $placeholder;
+}, 10, 2);
+
+// -- Review meta box: everything on one simple screen ----------------
+function hwh_review_meta_boxes() {
+    add_meta_box('hwh_review_details', 'Review Details', 'hwh_review_meta_html', 'hwh_review', 'normal', 'high');
+}
+add_action('add_meta_boxes', 'hwh_review_meta_boxes');
+
+function hwh_review_meta_html($post) {
+    wp_nonce_field('hwh_review_meta', 'hwh_review_nonce');
+    $text     = get_post_meta($post->ID, '_review_text', true);
+    $rating   = get_post_meta($post->ID, '_review_rating', true) ?: 5;
+    $date     = get_post_meta($post->ID, '_review_date', true) ?: date('Y-m-d');
+    $location = (int) get_post_meta($post->ID, '_review_location', true);
+    $service  = (int) get_post_meta($post->ID, '_review_service', true);
+
+    $locations = get_posts([
+        'post_type'      => 'location',
+        'post_parent'    => 0,
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+        'post_status'    => 'publish',
+    ]);
+    $services = get_posts([
+        'post_type'      => 'service',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+        'post_status'    => 'publish',
+    ]);
+    ?>
+    <style>
+        .hwh-rev-row { display:flex; gap:1.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+        .hwh-rev-field { flex:1; min-width:180px; }
+        .hwh-rev-field label { display:block; font-weight:600; margin-bottom:4px; }
+        .hwh-rev-field input, .hwh-rev-field select, .hwh-rev-field textarea { width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:6px; }
+    </style>
+    <div class="hwh-rev-row">
+        <div class="hwh-rev-field" style="flex-basis:100%;">
+            <label for="review_text">Review text</label>
+            <textarea id="review_text" name="review_text" rows="5" placeholder="Copy the review from Google and paste it here."><?php echo esc_textarea($text); ?></textarea>
+        </div>
+    </div>
+    <div class="hwh-rev-row">
+        <div class="hwh-rev-field">
+            <label for="review_rating">Stars</label>
+            <select id="review_rating" name="review_rating">
+                <?php for ($i = 5; $i >= 1; $i--): ?>
+                    <option value="<?php echo $i; ?>" <?php selected((int) $rating, $i); ?>><?php echo $i; ?> ★</option>
+                <?php endfor; ?>
+            </select>
+        </div>
+        <div class="hwh-rev-field">
+            <label for="review_date">Review date</label>
+            <input type="date" id="review_date" name="review_date" value="<?php echo esc_attr($date); ?>">
+        </div>
+        <div class="hwh-rev-field">
+            <label for="review_location">Neighborhood</label>
+            <select id="review_location" name="review_location">
+                <option value="0">— Not sure / general —</option>
+                <?php foreach ($locations as $loc): ?>
+                    <option value="<?php echo $loc->ID; ?>" <?php selected($location, $loc->ID); ?>><?php echo esc_html($loc->post_title); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="hwh-rev-field">
+            <label for="review_service">Service (optional)</label>
+            <select id="review_service" name="review_service">
+                <option value="0">— Any / not sure —</option>
+                <?php foreach ($services as $svc): ?>
+                    <option value="<?php echo $svc->ID; ?>" <?php selected($service, $svc->ID); ?>><?php echo esc_html($svc->post_title); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <p class="description">Put the customer's name in the big title field above, paste the review, pick the neighborhood, hit Publish. It shows up on that area's page automatically.</p>
+    <?php
+}
+
+function hwh_save_review_meta($post_id) {
+    if (!isset($_POST['hwh_review_nonce']) || !wp_verify_nonce($_POST['hwh_review_nonce'], 'hwh_review_meta')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    if (isset($_POST['review_text'])) {
+        update_post_meta($post_id, '_review_text', sanitize_textarea_field($_POST['review_text']));
+    }
+    if (isset($_POST['review_rating'])) {
+        update_post_meta($post_id, '_review_rating', max(1, min(5, (int) $_POST['review_rating'])));
+    }
+    if (isset($_POST['review_date'])) {
+        update_post_meta($post_id, '_review_date', sanitize_text_field($_POST['review_date']));
+    }
+    if (isset($_POST['review_location'])) {
+        update_post_meta($post_id, '_review_location', (int) $_POST['review_location']);
+    }
+    if (isset($_POST['review_service'])) {
+        update_post_meta($post_id, '_review_service', (int) $_POST['review_service']);
+    }
+}
+add_action('save_post_hwh_review', 'hwh_save_review_meta');
+
+// -- Admin list columns: see everything at a glance ------------------
+add_filter('manage_hwh_review_posts_columns', function ($columns) {
+    return [
+        'cb'         => $columns['cb'],
+        'title'      => 'Customer',
+        'hwh_stars'  => 'Stars',
+        'hwh_area'   => 'Neighborhood',
+        'hwh_svc'    => 'Service',
+        'hwh_rdate'  => 'Review Date',
+    ];
+});
+add_action('manage_hwh_review_posts_custom_column', function ($column, $post_id) {
+    if ($column === 'hwh_stars') {
+        $rating = (int) (get_post_meta($post_id, '_review_rating', true) ?: 5);
+        echo '<span style="color:#F4B400;">' . esc_html(str_repeat('★', $rating)) . '</span>';
+    } elseif ($column === 'hwh_area') {
+        $loc = (int) get_post_meta($post_id, '_review_location', true);
+        echo $loc ? esc_html(get_the_title($loc)) : '<em>General</em>';
+    } elseif ($column === 'hwh_svc') {
+        $svc = (int) get_post_meta($post_id, '_review_service', true);
+        echo $svc ? esc_html(get_the_title($svc)) : '—';
+    } elseif ($column === 'hwh_rdate') {
+        $d = get_post_meta($post_id, '_review_date', true);
+        echo $d ? esc_html(date_i18n('M j, Y', strtotime($d))) : '—';
+    }
+}, 10, 2);
+
+// -- Front-end: fetch + render reviews for a location ----------------
+function hwh_get_location_reviews($location_id, $limit = 6) {
+    return get_posts([
+        'post_type'      => 'hwh_review',
+        'post_status'    => 'publish',
+        'posts_per_page' => $limit,
+        'meta_key'       => '_review_date',
+        'orderby'        => 'meta_value',
+        'order'          => 'DESC',
+        'meta_query'     => [
+            ['key' => '_review_location', 'value' => (int) $location_id],
+        ],
+    ]);
+}
+
+/**
+ * Renders the "What neighbors say" Google-reviews section.
+ * Falls back to the most recent general reviews when a city has none tagged
+ * yet, and outputs nothing if there are no reviews at all.
+ */
+function hwh_render_reviews_section($location_id, $city_name) {
+    $reviews  = hwh_get_location_reviews($location_id);
+    $is_local = !empty($reviews);
+
+    if (!$is_local) {
+        $reviews = get_posts([
+            'post_type'      => 'hwh_review',
+            'post_status'    => 'publish',
+            'posts_per_page' => 3,
+            'meta_key'       => '_review_date',
+            'orderby'        => 'meta_value',
+            'order'          => 'DESC',
+        ]);
+    }
+    if (empty($reviews)) return;
+
+    $google_url = 'https://www.google.com/search?q=' . rawurlencode('Hot Water Heroes Plumbing Tampa reviews');
+    ?>
+    <section class="hwh-local-reviews" aria-label="Google reviews from <?php echo esc_attr($city_name); ?> customers" style="padding-top:5rem;padding-bottom:5rem;background:#fff;">
+        <div class="hwh-section-inner">
+            <div style="text-align:center;margin-bottom:3rem;">
+                <span class="hwh-label">Verified Google Reviews</span>
+                <h2 class="hwh-section-title"><?php echo $is_local ? 'What ' . esc_html($city_name) . ' Neighbors Say' : 'What Tampa Bay Homeowners Say'; ?></h2>
+                <p class="hwh-section-desc"><?php echo $is_local ? 'Real reviews from real jobs in ' . esc_html($city_name) . ', FL.' : 'Real reviews from real jobs across Tampa Bay.'; ?></p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto;">
+                <?php foreach ($reviews as $review):
+                    $text   = get_post_meta($review->ID, '_review_text', true);
+                    $rating = (int) (get_post_meta($review->ID, '_review_rating', true) ?: 5);
+                    $rdate  = get_post_meta($review->ID, '_review_date', true);
+                    $svc    = (int) get_post_meta($review->ID, '_review_service', true);
+                    $loc    = (int) get_post_meta($review->ID, '_review_location', true);
+                    ?>
+                    <div class="hwh-review-card" style="background:#F9FBFC;border:1px solid #EAF0F6;border-radius:16px;padding:1.75rem;display:flex;flex-direction:column;gap:0.75rem;box-shadow:0 8px 20px rgba(11,35,71,0.04);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <svg width="22" height="22" viewBox="0 0 48 48" aria-label="Google review"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+                            <span style="color:#F4B400;font-size:1.1rem;letter-spacing:2px;" aria-label="<?php echo $rating; ?> out of 5 stars"><?php echo esc_html(str_repeat('★', $rating)); ?></span>
+                        </div>
+                        <p style="margin:0;color:#3D6491;line-height:1.65;font-size:0.98rem;">&ldquo;<?php echo esc_html($text); ?>&rdquo;</p>
+                        <div style="margin-top:auto;padding-top:0.5rem;border-top:1px solid #EAF0F6;">
+                            <strong style="color:#0B2347;display:block;"><?php echo esc_html($review->post_title); ?></strong>
+                            <span style="font-size:0.85rem;color:#6B87A6;">
+                                <?php
+                                $bits = [];
+                                if ($loc)   $bits[] = get_the_title($loc) . ', FL';
+                                if ($svc)   $bits[] = get_the_title($svc);
+                                if ($rdate) $bits[] = date_i18n('M Y', strtotime($rdate));
+                                echo esc_html(implode(' · ', $bits));
+                                ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div style="text-align:center;margin-top:2.5rem;">
+                <a href="<?php echo esc_url($google_url); ?>" target="_blank" rel="noopener" class="hwh-btn hwh-btn--ghost">Read All Our Google Reviews →</a>
+            </div>
+        </div>
+    </section>
+    <?php
+}
